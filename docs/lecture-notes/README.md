@@ -54,6 +54,7 @@ or reuse the published image without taking ownership of the study.
 - [Complex plane waves](waves/plane/complex-plane-waves/index.md)
 - [One-dimensional free-electron Bloch representation](../lecturenotes/solidstate/bloch1d/freeelectron/index.md)
 - [One-dimensional cosine-potential Bloch bands](../lecturenotes/solidstate/bloch1d/cosinepotential/index.md)
+- [Two-dimensional checkerboard-potential Bloch bands](../lecturenotes/solidstate/bloch2d/checkerboard/index.md)
 - [Periodic primitive-cell free particle in two dimensions](../lecturenotes/solidstate/semiconductors/effmass_2d/index.md)
 - [Three-dimensional periodic primitive-cell effective-mass reference](../lecturenotes/solidstate/semiconductors/effmass_3d/index.md)
 - [Nonorthogonal lattice metric geometry](../lecturenotes/solidstate/lattices/nonorthogonal-metric-geometry/index.md)

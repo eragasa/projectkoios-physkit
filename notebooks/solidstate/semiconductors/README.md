@@ -8,4 +8,11 @@ Dimension-specific effective-mass ownership follows the package naming scheme:
 - [`effmass_3d`](effmass_3d/README.md) contains the maintained
   research-facing periodic primitive-cell reference.
 
-The absent 1D laboratory is not an implemented capability.
+The absent 1D effective-mass laboratory is not an implemented capability.
+The related
+[cosine-potential intrinsic-statistics laboratory](../bloch1d/cosinepotential/intrinsic-semiconductor-statistics.ipynb)
+uses the maintained Bloch-band solver and keeps its exact 1D carrier model
+separate from the notebook's 3D bulk nondegenerate comparison. The related
+[checkerboard intrinsic-statistics laboratory](../bloch2d/checkerboard/intrinsic-semiconductor-statistics.ipynb)
+uses a genuine 2D Bloch Hamiltonian and reports dimensionally distinct sheet
+carrier densities.

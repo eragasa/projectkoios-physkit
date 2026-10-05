@@ -3,6 +3,7 @@
 This package owns reusable solid-state representations and models.
 
 - [`bloch1d`](bloch1d/index.md) owns one-dimensional Bloch physical models.
+- [`bloch2d`](bloch2d/index.md) owns two-dimensional Bloch physical models.
 - [`electronic`](electronic/index.md) owns reduced electronic solid-state models.
 - [`interatomic_potentials`](interatomic_potentials/index.md) owns idealized
   radial interactions used in solid-state model construction.

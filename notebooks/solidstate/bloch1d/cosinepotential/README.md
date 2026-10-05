@@ -2,6 +2,10 @@
 
 - [`cosine-potential-bands.ipynb`](cosine-potential-bands.ipynb) is the
   maintained package-backed band and first-gap laboratory.
+- [`intrinsic-semiconductor-statistics.ipynb`](intrinsic-semiconductor-statistics.ipynb)
+  uses the maintained PhysKit cosine-potential solver to calculate a
+  dimensionally explicit 1D intrinsic carrier state, then evaluates separate
+  3D bulk nondegenerate intrinsic-semiconductor relations.
 - [`exploratory-band-gap-prototype.ipynb`](exploratory-band-gap-prototype.ipynb)
   preserves the former `notebooks/semphy/cosine.bloch1d.ipynb` byte-for-byte.
 - [`exploratory-bands-dos-thermal-prototype.ipynb`](exploratory-bands-dos-thermal-prototype.ipynb)
