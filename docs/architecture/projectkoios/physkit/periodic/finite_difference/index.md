@@ -20,7 +20,16 @@ The represented operator is the geometric Laplacian only. This package does not
 apply `-hbar²/(2m)`, an effective-mass tensor, a potential, or any other
 Hamiltonian scaling.
 
-## Navigation
+## Architecture views
+
+- [Schematic](schematic/index.md): Mermaid component, construction-sequence,
+  indexing, phase, and ownership diagrams.
+- [Numerical](numerical/index.md): coordinate transformation, full metric
+  stencil, Bloch seam, discrete symbol, convergence, and numerical evidence.
+- [Scientific](scientific/index.md): assumptions, intended interpretation,
+  explicit model separations, limitations, and evidence boundaries.
+
+## Module navigation
 
 - [Module `grid`](grid/index.md)
 - [Module `laplacian`](laplacian/index.md)
