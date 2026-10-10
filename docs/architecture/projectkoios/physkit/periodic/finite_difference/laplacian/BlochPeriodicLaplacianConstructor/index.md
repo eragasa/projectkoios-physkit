@@ -31,8 +31,9 @@ required phase product. COO contributions are canonicalized into immutable CSR.
 ## Conventions and limitations
 
 - The Bloch convention is `psi(s+q)=exp(+2 pi i kappa dot q) psi(s)`.
-- Primitive vectors are square intrinsic-coordinate bases; 2D `3×2` embeddings
-  are outside this contract.
+- Primitive vectors consumed here are square intrinsic-coordinate bases. An
+  ambient 2D `3×2` basis first uses the explicit
+  [`periodic.lattice.embedding`](../../../lattice/embedding/index.md) adapter.
 - The centered stencil is second-order accurate for smooth modes.
 - No kinetic, mass-tensor, potential, or energy scaling is applied.
 

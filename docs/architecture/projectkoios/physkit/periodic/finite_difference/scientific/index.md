@@ -58,9 +58,11 @@ owned contract.
 
 ### Intrinsic 2D versus embedded 2D
 
-A `3×2` basis embedding a sheet in a three-dimensional slab or supercell is not
-silently projected into this intrinsic `2×2` contract. Such use requires an
-explicit embedding/projection map with its own invariants and validation.
+A `3×2` basis embedding a flat sheet in three-dimensional Cartesian space is
+not silently projected by the grid. Such input must use the explicit
+[`periodic.lattice.embedding`](../../lattice/embedding/index.md) adapter, which
+retains ambient orientation, frame, projector, and dual-basis data before
+supplying the intrinsic metric. A full `3×3` slab supercell remains distinct.
 
 ## Units and physical interpretation
 
@@ -109,8 +111,8 @@ review and acceptance criteria.
 Appropriate uses include reusable geometric operator construction, numerical
 method verification, and composition into separately owned isotropic kinetic
 models. Unsupported claims include material band-structure validation,
-anisotropic effective-mass equivalence, slab-embedding correctness, or
-production convergence at an undeclared grid resolution.
+anisotropic effective-mass equivalence, equivalence to a full slab-supercell
+model, or production convergence at an undeclared grid resolution.
 
 ## Navigation
 

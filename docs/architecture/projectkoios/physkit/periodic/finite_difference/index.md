@@ -10,11 +10,13 @@ complex sparse matrix quantities.
 
 ## Public contract
 
-The implementation is bounded to two and three dimensions. Direct primitive
-vectors are stored as the columns of a square `2×2` or `3×3` basis. A 2D basis
-embedded as a `3×2` matrix requires a separate explicit coordinate map and is
-not accepted here. Grid arrays use C-order flattening with the last fractional
-axis varying fastest.
+The implementation is bounded to two and three intrinsic dimensions. Direct
+primitive vectors consumed by the grid remain the columns of a square `2×2` or
+`3×3` basis. A flat 2D lattice supplied as an ambient `3×2` basis must first use
+the explicit [`periodic.lattice.embedding`](../lattice/embedding/index.md)
+adapter; the grid does not silently discard orientation or reinterpret the plane
+as a full slab. Grid arrays use C-order flattening with the last fractional axis
+varying fastest.
 
 The represented operator is the geometric Laplacian only. This package does not
 apply `-hbar²/(2m)`, an effective-mass tensor, a potential, or any other
