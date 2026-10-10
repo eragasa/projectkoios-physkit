@@ -10,6 +10,7 @@ from projectkoios.physkit.periodic.unit_cell.base import (
     AtomicBasis,
     ConventionalUnitCell,
     PrimitiveUnitCell,
+    UnitCell,
 )
 from projectkoios.physkit.periodic.unit_cell.errors import UnitCellSerializationError
 from projectkoios.physkit.periodic.unit_cell.serialization import UnitCellJsonCodec
@@ -35,7 +36,7 @@ def test_round_trip_preserves_primitive_nominal_type(
         expected_structure_id="Si.PrimitiveUnitCell",
     )
 
-    assert isinstance(restored, PrimitiveUnitCell)
+    assert type(restored) is PrimitiveUnitCell
     np.testing.assert_array_equal(restored.A.magnitude, cell.A.magnitude)
     np.testing.assert_array_equal(restored.H.magnitude, cell.H.magnitude)
 
@@ -58,7 +59,95 @@ def test_round_trip_preserves_conventional_nominal_type(
         expected_structure_id="Si.ConventionalUnitCell",
     )
 
-    assert isinstance(restored, ConventionalUnitCell)
+    assert type(restored) is ConventionalUnitCell
+
+
+def test__UnitCellJsonCodec_loads__base_unit_cell__preserves_exact_type_and_values(
+    fcc_direct_lattice: DirectLattice3D,
+    silicon_basis: AtomicBasis,
+) -> None:
+    cell = UnitCell(
+        direct_lattice=fcc_direct_lattice,
+        lattice_parameter=ScalarQuantity(5.43, PhysicalUnit("angstrom")),
+        atomic_basis=silicon_basis,
+    )
+    codec = UnitCellJsonCodec()
+
+    restored = codec.loads(
+        codec.dumps(cell, structure_id="Si.UnitCell"),
+        expected_structure_id="Si.UnitCell",
+    )
+
+    assert type(restored) is UnitCell
+    np.testing.assert_array_equal(restored.A.magnitude, cell.A.magnitude)
+    np.testing.assert_array_equal(restored.H.magnitude, cell.H.magnitude)
+    assert restored.lattice_parameter == cell.lattice_parameter
+    assert tuple(atom.symbol for atom in restored.atomic_basis.atoms) == ("Si", "Si")
+    for restored_atom, source_atom in zip(
+        restored.atomic_basis.atoms,
+        cell.atomic_basis.atoms,
+        strict=True,
+    ):
+        np.testing.assert_array_equal(
+            restored_atom.position_fractional.magnitude,
+            source_atom.position_fractional.magnitude,
+        )
+        assert restored_atom.position_fractional.unit == (
+            source_atom.position_fractional.unit
+        )
+
+
+def test__UnitCellJsonCodec_loads__unit_cell_representation__does_not_infer_semantics(
+    fcc_direct_lattice: DirectLattice3D,
+    silicon_basis: AtomicBasis,
+) -> None:
+    codec = UnitCellJsonCodec()
+    content = codec.dumps(
+        ConventionalUnitCell(
+            direct_lattice=fcc_direct_lattice,
+            lattice_parameter=ScalarQuantity(5.43, PhysicalUnit("angstrom")),
+            atomic_basis=silicon_basis,
+        ),
+        structure_id="Si.UnitCell",
+    )
+    payload = json.loads(content)
+    payload["representation"] = "unit-cell"
+
+    restored = codec.loads(
+        json.dumps(payload),
+        expected_structure_id="Si.UnitCell",
+    )
+
+    assert type(restored) is UnitCell
+    assert not isinstance(restored, ConventionalUnitCell | PrimitiveUnitCell)
+
+
+@pytest.mark.parametrize(
+    "representation",
+    ["UnitCell", "unit_cell", "base", "primitive-unit-cell"],
+)
+def test__UnitCellJsonCodec_loads__representation_alias__rejects_alias(
+    representation: str,
+    fcc_direct_lattice: DirectLattice3D,
+    silicon_basis: AtomicBasis,
+) -> None:
+    codec = UnitCellJsonCodec()
+    content = codec.dumps(
+        UnitCell(
+            direct_lattice=fcc_direct_lattice,
+            lattice_parameter=ScalarQuantity(5.43, PhysicalUnit("angstrom")),
+            atomic_basis=silicon_basis,
+        ),
+        structure_id="Si.UnitCell",
+    )
+    payload = json.loads(content)
+    payload["representation"] = representation
+
+    with pytest.raises(UnitCellSerializationError, match="representation must be"):
+        codec.loads(
+            json.dumps(payload),
+            expected_structure_id="Si.UnitCell",
+        )
 
 
 def test_rejects_structure_identity_mismatch(

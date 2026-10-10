@@ -15,6 +15,13 @@ repository does not install a top-level `projectkoios/__init__.py`. Defining
 modules are the default supported import locations; parent packages do not
 indiscriminately aggregate implementation classes.
 
+`src/python/projectkoios/physkit/` is the canonical and only packaged source
+root. An optional `src/physkit/` tree may exist, but every Python source path in
+it must be mirrored at the same relative path in the canonical tree. The legacy
+tree does not define a supported top-level import or a second implementation
+owner; caches and non-source workspace artifacts do not participate in the
+mirror contract.
+
 ## Navigation
 
 - [Package `projectkoios.physkit.core`](core/index.md)

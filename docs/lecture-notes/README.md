@@ -40,7 +40,10 @@ Notebooks are computational laboratories. They should contain:
 - brief interpretation of the calculated result.
 
 Notebook execution and attractive output are not substitutes for package tests
-or evidence that a lesson has been pedagogically validated.
+or evidence that a lesson has been pedagogically validated. Notebook directory
+paths follow pedagogical subject and laboratory ownership; they are not required
+to mirror `src/python/projectkoios/physkit/` or
+`tests/projectkoios/physkit/`, and distinct teaching trees may coexist.
 
 ### Computational studies
 

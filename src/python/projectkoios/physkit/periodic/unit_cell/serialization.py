@@ -27,6 +27,7 @@ _VECTOR_AXIS = "columns"
 _REPRESENTATION_BY_TYPE = {
     ConventionalUnitCell: "conventional",
     PrimitiveUnitCell: "primitive",
+    UnitCell: "unit-cell",
 }
 _CELL_TYPE_BY_REPRESENTATION: dict[str, type[UnitCell]] = {
     value: key for key, value in _REPRESENTATION_BY_TYPE.items()
@@ -39,15 +40,14 @@ class UnitCellJsonCodec:
     __slots__ = ()
 
     def dumps(self, unit_cell: UnitCell, *, structure_id: str) -> str:
-        """Return deterministic JSON for one conventional or primitive cell."""
+        """Return deterministic JSON for one exact supported unit-cell type."""
         if type(structure_id) is not str or not structure_id:
-            raise UnitCellSerializationError(
-                "structure_id must be a nonempty string"
-            )
+            raise UnitCellSerializationError("structure_id must be a nonempty string")
         representation = _REPRESENTATION_BY_TYPE.get(type(unit_cell))
         if representation is None:
             raise UnitCellSerializationError(
-                "unit_cell must be a ConventionalUnitCell or PrimitiveUnitCell"
+                "unit_cell must be exactly UnitCell, ConventionalUnitCell, "
+                "or PrimitiveUnitCell"
             )
         length_unit = unit_cell.lattice_parameter.unit
         if type(length_unit) is not PhysicalUnit:
@@ -81,7 +81,7 @@ class UnitCellJsonCodec:
         return json.dumps(payload, indent=2, sort_keys=True) + "\n"
 
     def loads(self, content: str, *, expected_structure_id: str) -> UnitCell:
-        """Return one validated conventional or primitive unit cell."""
+        """Return one validated unit cell of the explicitly encoded exact type."""
         if type(content) is not str:
             raise UnitCellSerializationError("content must be a string")
         if type(expected_structure_id) is not str or not expected_structure_id:
@@ -105,7 +105,7 @@ class UnitCellJsonCodec:
         cell_type = _CELL_TYPE_BY_REPRESENTATION.get(representation)
         if cell_type is None:
             raise UnitCellSerializationError(
-                "representation must be 'conventional' or 'primitive'"
+                "representation must be 'conventional', 'primitive', or 'unit-cell'"
             )
         lattice = _require_mapping(payload, "lattice")
         a_matrix = _require_mapping(lattice, "A", path="lattice")

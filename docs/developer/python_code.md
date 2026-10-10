@@ -7,6 +7,16 @@ visualizers belong under `src/python/projectkoios/physkit/`. Keep
 research-campaign orchestration, retained campaign records, manuscript workflows,
 and generated evidence outside the package.
 
+An optional legacy tree at `src/physkit/` may remain for workspace artifacts or
+transitional source placement. Its presence alone is not a layout violation.
+Every `.py` or `.pyi` file placed there must have a corresponding file at the
+same relative path under `src/python/projectkoios/physkit/`. The canonical tree
+remains the only packaging root and the owner of maintained code; path mirroring
+does not create a supported top-level `physkit` import, compatibility facade, or
+second implementation owner. Cache files and other non-source artifacts are not
+part of the mirror check. Notebook paths are excluded: computational laboratories
+follow their pedagogical organization and do not mirror package or test paths.
+
 Organize dimensional model families explicitly. The clean particle-in-a-box
 implementation uses:
 

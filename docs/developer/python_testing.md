@@ -25,6 +25,13 @@ or materially changed top-level test functions use
 `test__surface__facet__behavior`. Keep unrelated classes and methods in separate
 files. Shared fixtures may live in the mirrored module directory's `conftest.py`.
 
+All maintained PhysKit package tests, including their generated cache location,
+belong under `tests/projectkoios/physkit/`. Repository-level conformance tests
+remain under `tests/repository/`. Do not retain or recreate a parallel
+`tests/physkit/` tree. The repository-layout test rejects that legacy test root
+so test collection and bytecode caches cannot obscure the canonical mirrored
+namespace.
+
 ## Test scope
 
 Each test should state one observable requirement through its name and assertions.
