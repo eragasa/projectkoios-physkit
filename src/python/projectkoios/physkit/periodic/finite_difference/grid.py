@@ -184,6 +184,4 @@ class PeriodicFiniteDifferenceGrid(DataObject):
         """
         if isinstance(self.direct_basis_unit, Unitless):
             return Unitless()
-        return PhysicalUnit(
-            f"1 / ({self.direct_basis_unit.expression}) ** 2"
-        )
+        return PhysicalUnit(f"1 / ({self.direct_basis_unit.expression}) ** 2")

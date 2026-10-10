@@ -133,9 +133,7 @@ class BlochPeriodicLaplacian(ResultsObject):
     def __post_init__(self) -> None:
         """Validate request, quotient-seam metadata, matrix shape, and unit."""
         if type(self.request) is not BlochPeriodicLaplacianConstructionRequest:
-            raise TypeError(
-                "request must be BlochPeriodicLaplacianConstructionRequest"
-            )
+            raise TypeError("request must be BlochPeriodicLaplacianConstructionRequest")
         if type(self.twist_fiber) is not TwistFiber:
             raise TypeError("twist_fiber must be TwistFiber")
 
@@ -149,9 +147,7 @@ class BlochPeriodicLaplacian(ResultsObject):
             raise ValueError("twist_fiber must use quotient-seam gauge")
 
         if type(self.represented_laplacian) is not ComplexSparseMatrixQuantity:
-            raise TypeError(
-                "represented_laplacian must be ComplexSparseMatrixQuantity"
-            )
+            raise TypeError("represented_laplacian must be ComplexSparseMatrixQuantity")
         expected_shape = (
             self.request.grid.point_count,
             self.request.grid.point_count,
@@ -253,9 +249,7 @@ class BlochPeriodicLaplacianConstructor(
         omitted and duplicate COO entries are canonicalized.
         """
         if type(request) is not BlochPeriodicLaplacianConstructionRequest:
-            raise TypeError(
-                "request must be BlochPeriodicLaplacianConstructionRequest"
-            )
+            raise TypeError("request must be BlochPeriodicLaplacianConstructionRequest")
 
         grid = request.grid
         dimension = grid.dimension.value
@@ -304,8 +298,7 @@ class BlochPeriodicLaplacianConstructor(
                 # Summing all quotient components before exponentiation is
                 # equivalent to multiplying one seam phase per wrapped axis.
                 phase_turns = math.fsum(
-                    representative[axis] * quotients[axis]
-                    for axis in range(dimension)
+                    representative[axis] * quotients[axis] for axis in range(dimension)
                 )
                 phase = cmath.exp(2.0j * math.pi * phase_turns)
                 rows.append(row)
@@ -392,9 +385,7 @@ class BlochPeriodicLaplacianConstructor(
         # Pure second derivatives contribute one equal real coefficient to the
         # positive and negative neighbor on each fractional axis.
         for axis in range(dimension):
-            coefficient = (
-                float(inverse_metric[axis, axis]) / spacings[axis] ** 2
-            )
+            coefficient = float(inverse_metric[axis, axis]) / spacings[axis] ** 2
             for sign in (-1, 1):
                 displacement = [0] * dimension
                 displacement[axis] = sign

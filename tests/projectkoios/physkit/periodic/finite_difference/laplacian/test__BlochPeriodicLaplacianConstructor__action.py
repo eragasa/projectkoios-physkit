@@ -150,9 +150,7 @@ def test__action__uses_c_order_and_multi_axis_quotient_seam_phases() -> None:
 
     source_last_last = (shape[0] - 1) * shape[1] + shape[1] - 1
     target_zero_zero = 0
-    expected_positive_corner = mixed_scale * np.exp(
-        2.0j * np.pi * (0.25 + 0.8)
-    )
+    expected_positive_corner = mixed_scale * np.exp(2.0j * np.pi * (0.25 + 0.8))
     np.testing.assert_allclose(
         represented[source_last_last, target_zero_zero],
         expected_positive_corner,
@@ -200,19 +198,14 @@ def test__action__reduces_to_orthogonal_kronecker_sum() -> None:
     represented = result.represented_laplacian.to_csr()
     first = _axis_second_derivative(shape[0], twist[0])
     second = _axis_second_derivative(shape[1], twist[1])
-    expected = (
-        0.25
-        * sparse.kron(
-            first,
-            sparse.identity(shape[1], dtype=np.complex128, format="csr"),
-            format="csr",
-        )
-        + (1.0 / 9.0)
-        * sparse.kron(
-            sparse.identity(shape[0], dtype=np.complex128, format="csr"),
-            second,
-            format="csr",
-        )
+    expected = 0.25 * sparse.kron(
+        first,
+        sparse.identity(shape[1], dtype=np.complex128, format="csr"),
+        format="csr",
+    ) + (1.0 / 9.0) * sparse.kron(
+        sparse.identity(shape[0], dtype=np.complex128, format="csr"),
+        second,
+        format="csr",
     )
 
     np.testing.assert_allclose(
@@ -267,9 +260,7 @@ def test__action__matches_nonorthogonal_three_dimensional_plane_wave_symbol() ->
         twist,
     )
 
-    assert np.any(
-        np.triu(result.request.grid.metric.inverse_metric_tensor, k=1) != 0.0
-    )
+    assert np.any(np.triu(result.request.grid.metric.inverse_metric_tensor, k=1) != 0.0)
     np.testing.assert_allclose(
         represented @ eigenvector,
         expected * eigenvector,
@@ -282,9 +273,13 @@ def test__action__has_second_order_plane_wave_convergence() -> None:
     basis = np.array([[1.8, 0.7], [0.1, 1.4]])
     twist = (0.17, 0.29)
     mode_indices = (1, -1)
-    continuum_wave_vector = 2.0 * np.pi * (
-        np.asarray(mode_indices, dtype=np.float64)
-        + np.asarray(twist, dtype=np.float64)
+    continuum_wave_vector = (
+        2.0
+        * np.pi
+        * (
+            np.asarray(mode_indices, dtype=np.float64)
+            + np.asarray(twist, dtype=np.float64)
+        )
     )
     inverse_metric = np.linalg.inv(basis.T @ basis)
     continuum_symbol = -float(
@@ -325,9 +320,7 @@ def test__action__preserves_physical_scale_across_length_units() -> None:
         PhysicalUnit("1 / angstrom ** 2"),
     )
 
-    assert angstrom.represented_laplacian.unit == PhysicalUnit(
-        "1 / (angstrom) ** 2"
-    )
+    assert angstrom.represented_laplacian.unit == PhysicalUnit("1 / (angstrom) ** 2")
     np.testing.assert_allclose(
         converted.to_csr().toarray(),
         angstrom.represented_laplacian.to_csr().toarray(),
