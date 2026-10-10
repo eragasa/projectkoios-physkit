@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.1.1 - 2026-10-10
+
+- Extend `UnitCellJsonCodec` with the version-one `unit-cell` representation so
+  an exact base `UnitCell` round-trips without primitive or conventional
+  inference while preserving the existing representation bytes and decode types.
+- Document the canonical Project Koios source and test namespaces, permit a
+  path-mirrored transitional `src/physkit/` tree, and keep notebook organization
+  independent under pedagogical ownership.
 - Consolidate duplicate square-wave Fourier-series notebooks into one maintained
   computational laboratory and extract reusable odd-harmonic evaluation into
   `projectkoios.physkit.math.fourier_series`.
