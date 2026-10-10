@@ -3,20 +3,21 @@
 from __future__ import annotations
 
 import numpy as np
-from scipy.spatial import ConvexHull
-from scipy.spatial import HalfspaceIntersection
+from scipy.spatial import ConvexHull, HalfspaceIntersection
 
-from projectkoios.physkit.periodic.lattice.base import (
-    FloatArray,
-    IntArray,
+from projectkoios.physkit.numerics.linear_algebra.volume import (
+    columns_are_linearly_independent,
 )
-
 from projectkoios.physkit.periodic.lattice.base import (
     DirectLattice,
+    FirstBrillouinZone,
+    FloatArray,
+    IntArray,
     ReciprocalLattice,
     WignerSeitzCell,
-    FirstBrillouinZone,
 )
+
+_NORMALIZED_AREA_ABS_TOLERANCE: float = 1.0e-8
 
 
 class DirectLattice2D(DirectLattice):
@@ -174,7 +175,10 @@ class DirectLattice2D(DirectLattice):
         """
         A = np.column_stack((a1, a2))
 
-        if np.isclose(np.linalg.det(A), 0.0):
+        if not columns_are_linearly_independent(
+            A,
+            norm_vol_atol=_NORMALIZED_AREA_ABS_TOLERANCE,
+        ):
             raise ValueError(
                 "a1 and a2 must be linearly independent."
             )

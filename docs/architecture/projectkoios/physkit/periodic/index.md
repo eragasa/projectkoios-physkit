@@ -4,8 +4,9 @@
 
 The package owns reusable periodic-system representations, including physical
 direct and reciprocal lattices, reciprocal bases and modes, Brillouin-zone
-paths, finite periodic integer domains, boundary-twist mechanics, and immutable
-unit cells with deterministic serialization.
+paths, finite periodic integer domains, boundary-twist mechanics,
+nonorthogonal-cell periodic finite differences, and immutable unit cells with
+deterministic serialization.
 
 ## Public contract
 
@@ -17,6 +18,7 @@ units, or unit-cell ownership.
 ## Navigation
 
 - [Package `projectkoios.physkit.periodic.lattice`](lattice/index.md)
+- [Package `projectkoios.physkit.periodic.finite_difference`](finite_difference/index.md)
 - [Package `projectkoios.physkit.periodic.unit_cell`](unit_cell/index.md)
 - [Package `projectkoios.physkit.periodic.pbc1d`](pbc1d/index.md)
 - [Parent package](../index.md)

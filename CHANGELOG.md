@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add unit-aware, quotient-seam Bloch-periodic finite-difference Laplacians for
+  intrinsic nonorthogonal 2D and full nonorthogonal 3D primitive cells, including
+  inverse-metric mixed derivatives and scale-invariant 2D basis validation.
+
 ## 0.1.1 - 2026-10-10
 
 - Extend `UnitCellJsonCodec` with the version-one `unit-cell` representation so

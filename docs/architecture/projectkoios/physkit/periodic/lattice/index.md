@@ -17,6 +17,7 @@ Defining modules remain the preferred import routes.
 
 ## Navigation
 
+- [Module `lattice2d`](lattice2d/index.md)
 - [Module `lattice3d`](lattice3d/index.md)
 - [Module `metric`](metric/index.md)
 - [Module `gauge_bridges`](gauge_bridges/index.md)
