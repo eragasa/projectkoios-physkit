@@ -13,6 +13,7 @@ aggregate every implementation through its `__init__.py`.
 ## Navigation
 
 - [Module `continuum_stress`](continuum_stress/index.md)
+- [Module `stress`](stress/index.md)
 - [Parent package](../index.md)
 
 ## Local mapping
