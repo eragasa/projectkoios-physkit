@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.1.2 - 2026-10-11
+
+- Add immutable unit-aware stress tensors with explicit pressure-unit and sign-
+  convention conversion and derived hydrostatic pressure.
 - Add unit-aware, quotient-seam Bloch-periodic finite-difference Laplacians for
   intrinsic nonorthogonal 2D and full nonorthogonal 3D primitive cells, including
   inverse-metric mixed derivatives and scale-invariant 2D basis validation.
