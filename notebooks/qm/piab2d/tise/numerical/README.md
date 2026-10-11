@@ -1,23 +1,28 @@
-# PIAB2D numerical prototypes
+# PIAB2D numerical laboratories and prototypes
 
+- [`oblique-periodic-free-particle.ipynb`](oblique-periodic-free-particle.ipynb)
+  is the maintained package-backed laboratory for a nondimensional free
+  particle on an oblique periodic primitive cell. It demonstrates the complete
+  inverse-metric stencil, Bloch quotient seams, sparse eigensolving, exact
+  discrete plane-wave action, second-order refinement, Jacobian-aware
+  normalization, and physical-parallelogram density rendering.
 - [`oblique-periodic-boundary-prototype.ipynb`](oblique-periodic-boundary-prototype.ipynb)
   preserves the former `notebooks/solidstate/piab2d_pbc.ipynb` byte-for-byte.
 - [`generalized-oblique-coordinate-prototype.ipynb`](generalized-oblique-coordinate-prototype.ipynb)
   preserves the former `notebooks/scratch/generalized_piab2d.ipynb`
   byte-for-byte.
 
-The artifact is preserved for more than its current implementation. Its
-scientific and pedagogical intent is a PIAB2D treatment combining periodic
-boundaries, oblique lattice geometry, coordinate transformation, spectral
-solution, and physical-space probability-density plots. That intended model and
-its graph sequence remain valuable even though the executed solver path does not
-yet realize the complete periodic-boundary contract.
+The oblique periodic prototype remains present pending final disposition, but
+its scientific and pedagogical intent now has a maintained successor. The
+stored prototype does not execute cleanly because one constructor annotation is
+syntactically invalid. Its saved outputs are therefore not reproducible from
+the stored source.
 
-The current code constructs centered finite-difference operators without active
-seam couplings and maps a parameter-space grid through an oblique direct basis.
-The unused periodic helper does not by itself establish periodic boundary
-behavior. This implementation finding qualifies the artifact; it does not erase
-its intended content.
+The prototype's active code constructs centered Dirichlet-style operators
+without seam couplings and maps an endpoint-included parameter grid through an
+oblique direct basis. Its unused periodic helper does not establish periodic
+boundary behavior. The maintained successor instead consumes the package-owned
+endpoint-excluded Bloch-periodic metric Laplacian.
 
 The preserved goals include:
 

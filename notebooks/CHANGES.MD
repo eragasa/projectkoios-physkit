@@ -1012,3 +1012,28 @@ $u_k=e^{-ikx}\psi_k$ after removing the Bloch carrier rather than directly to a
 twisted nonzero-$k$ state. Exact source identity, execution evidence, destination
 mapping, and remaining disposition are recorded in
 `docs/provenance/free-electron-bloch-prototype-review.md`.
+
+## Fifty-fourth extraction: oblique periodic free particle
+
+The intended periodic-boundary PIAB2D prototype was reviewed individually. Its
+stored source fails with a syntax error before constructing its solver, and its
+active experimental route uses Dirichlet-style stencils, a duplicated periodic
+endpoint, hard-coded spacing, and no primitive-cell Jacobian normalization.
+Saved figures were not treated as evidence that the stored code implements
+periodic boundaries.
+
+`notebooks/qm/piab2d/tise/numerical/oblique-periodic-free-particle.ipynb` is the
+maintained successor. It consumes `periodic.finite_difference` rather than
+reimplementing the stencil and composes the explicit nondimensional Hamiltonian
+$H=-\Delta_h/2$. The laboratory checks sparse Hermiticity, the zero-twist
+constant mode, a nonzero-twist discrete plane-wave identity, second-order
+refinement, area-weighted state normalization, and probability density on the
+physical parallelogram.
+
+The model is named a periodic free particle rather than a particle in a box.
+Its lecture note distinguishes quotient-seam periodicity from hard walls and
+records the inverse-metric mixed derivative. Exact source identity, rejected
+behavior, destination mapping, and recovery information are recorded in
+`docs/provenance/oblique-periodic-boundary-prototype-review.md`. The exploratory
+artifact remains present pending final disposition; the generalized oblique-
+coordinate prototype requires a separate review.

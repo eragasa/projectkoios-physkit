@@ -90,9 +90,10 @@ second-order convergence.
 
 ### Scientific validation
 
-Not established. No comparison with material-specific experiments,
-higher-fidelity electronic-structure calculations, or an independently
-validated effective-mass model is included.
+Not established. The maintained nondimensional oblique-cell laboratory is a
+software and numerical demonstration, not comparison with material-specific
+experiments, higher-fidelity electronic-structure calculations, or an
+independently validated effective-mass model.
 
 ### Uncertainty quantification
 

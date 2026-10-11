@@ -41,6 +41,7 @@ Hamiltonian scaling.
 
 - Code: `src/python/projectkoios/physkit/periodic/finite_difference/`
 - Tests: `tests/projectkoios/physkit/periodic/finite_difference/`
+- Laboratory: `notebooks/qm/piab2d/tise/numerical/oblique-periodic-free-particle.ipynb`
 
 ## Evidence boundary
 

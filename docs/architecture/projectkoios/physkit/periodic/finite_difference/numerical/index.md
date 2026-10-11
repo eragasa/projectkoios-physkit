@@ -147,6 +147,11 @@ Mapped tests verify:
 - physical-unit conversion equivalence; and
 - canonical, immutable CSR storage.
 
+The maintained oblique periodic free-particle laboratory independently composes
+$H=-\Delta_h/2$, verifies the zero-twist constant mode, evaluates a nonzero-
+twist discrete plane-wave identity, and displays second-order refinement and
+Jacobian-aware state normalization.
+
 These are bounded binary64 checks. They do not prove stability or error bounds
 for every cell conditioning, resolution, function class, or downstream solver.
 
