@@ -1107,3 +1107,26 @@ recovery information are recorded in
 bytes remain recoverable from preservation commit
 `fbf7e9968671cffc18760e9a4aadaf165843d4cc` and Git blob
 `2cf7a63a6722724537758c0e12cad60a3ca24445`.
+
+## Fifty-eighth disposition: oblique periodic-boundary prototype
+
+`notebooks/qm/piab2d/tise/numerical/oblique-periodic-boundary-prototype.ipynb`
+was removed after individual review. All four saved density figures were
+inspected. They reflect the active Dirichlet-style stencil rather than the
+notebook's stated periodic intent.
+
+The periodic model, Bloch seam phases, endpoint-excluded grid, plane-wave
+checks, refinement, normalization, and physical-cell rendering are maintained
+by `oblique-periodic-free-particle.ipynb` and
+`projectkoios.physkit.periodic.finite_difference`. The bounded density sequence
+is maintained by `oblique-dirichlet-free-particle.ipynb` and the `ObliquePiab2D`
+finite-difference solver.
+
+Invalid syntax, absent seam couplings, duplicated endpoints, hard-coded inputs,
+and missing Jacobian normalization were not migrated. Exact identity, execution
+evidence, saved-figure findings, destination mapping, and recovery information
+are recorded in
+`docs/provenance/oblique-periodic-boundary-prototype-review.md`. The exact bytes
+remain recoverable from preservation commit
+`fbf7e9968671cffc18760e9a4aadaf165843d4cc` and Git blob
+`5cbc204ca336a3601ecd7fbfa935c0ff521cab3c`.

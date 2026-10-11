@@ -39,6 +39,8 @@
   and maintained hard-wall parallelogram laboratory.
 - Remove the superseded generalized oblique-coordinate prototype after its
   bounded and periodic routes received separate maintained destinations.
+- Remove the superseded oblique periodic-boundary prototype after separating
+  its periodic intent from its bounded saved-output behavior.
 
 ## 0.1.1 - 2026-10-10
 

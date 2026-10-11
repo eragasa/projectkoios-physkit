@@ -11,7 +11,9 @@ relocated byte-for-byte from `notebooks/solidstate/piab2d_pbc.ipynb`.
 - Preservation commit: `fbf7e9968671cffc18760e9a4aadaf165843d4cc`
 - Review baseline: `4a70159`
 
-The artifact remains present. Its maintained replacement is complete.
+The artifact was removed after individual review and maintained replacement.
+Its exact bytes remain recoverable from the preservation commit and Git blob
+listed above.
 
 ## Review evidence
 
@@ -20,6 +22,13 @@ outputs, including four PNG displays and no saved error output. A clean
 execution stops in the second code cell with a `SyntaxError` at `N: int 50`.
 Consequently, its saved eigenspectrum and probability-density displays are not
 reproducible from the stored source.
+
+All four saved PNG displays were extracted and inspected before disposition.
+They show localized and nodal densities that vanish at the cell edges, matching
+the active Dirichlet-style stencil rather than periodic free-particle plane
+waves. The maintained oblique Dirichlet laboratory owns that bounded
+presentation; the maintained oblique periodic laboratory owns the stated
+periodic intent.
 
 ## Maintained destinations
 
@@ -58,8 +67,9 @@ pure and simultaneous mixed wraps, C-order state indexing, sparse Hermitian
 storage, area weight $|\det A|/(N_1N_2)$, exact discrete plane-wave identities,
 and an observed second-order refinement check.
 
-## Current disposition
+## Final disposition
 
-**Retained.** The intended periodic free-particle pedagogy has a maintained
-destination. Removal is a separate authorized operation. The generalized
-oblique-coordinate prototype was reviewed and removed after replacement.
+**Removed after replacement.** The periodic intent and bounded saved-output
+behavior now have separate maintained package, laboratory, and lecture-note
+destinations. Invalid syntax, missing seam couplings, duplicated endpoints,
+hard-coded inputs, and missing Jacobian normalization were not migrated.
