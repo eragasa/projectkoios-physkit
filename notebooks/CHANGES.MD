@@ -937,5 +937,18 @@ state degeneracy and Gaussian broadening remain declared inputs. The former 1D
 prototype's duplicated endpoint and arbitrary-unit label were not retained.
 
 Exact source identities and adaptations are recorded in
-`docs/provenance/full-zone-density-of-states-library.md`. The exploratory
-notebooks remain present pending their individual final dispositions.
+`docs/provenance/full-zone-density-of-states-library.md`.
+
+## Fiftieth disposition: exploratory cosine band-gap prototype
+
+`notebooks/solidstate/bloch1d/cosinepotential/exploratory-band-gap-prototype.ipynb`
+was removed after individual review. All 12 nonempty code cells executed without
+error, and its saved figures were inspected. Its cosine potential, Bloch bands,
+first-gap checks, full-zone DOS, visualizers, and explanatory material now have
+named maintained package, notebook, and lecture-note destinations.
+
+The prototype's duplicated Brillouin-zone endpoint weighting and arbitrary-unit
+DOS label were not retained. Exact source identity, evidence, destination
+mapping, rejected behavior, and recovery information are recorded in
+`docs/provenance/exploratory-band-gap-prototype-disposition.md`. The separate
+extended thermal prototype remains present and requires its own review.
