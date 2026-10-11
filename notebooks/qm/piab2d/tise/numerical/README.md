@@ -6,6 +6,11 @@
   inverse-metric stencil, Bloch quotient seams, sparse eigensolving, exact
   discrete plane-wave action, second-order refinement, Jacobian-aware
   normalization, and physical-parallelogram density rendering.
+- [`oblique-dirichlet-free-particle.ipynb`](oblique-dirichlet-free-particle.ipynb)
+  is the maintained package-backed laboratory for a free particle bounded by
+  four hard-wall parallelogram edges. It demonstrates interior-only Dirichlet
+  unknowns, sparse inverse-metric finite differences, area normalization,
+  physical-space states, and rectangular-limit refinement.
 - [`oblique-periodic-boundary-prototype.ipynb`](oblique-periodic-boundary-prototype.ipynb)
   preserves the former `notebooks/solidstate/piab2d_pbc.ipynb` byte-for-byte.
 - [`generalized-oblique-coordinate-prototype.ipynb`](generalized-oblique-coordinate-prototype.ipynb)
@@ -31,21 +36,23 @@ The preserved goals include:
 - physical-coordinate mapping of represented states; and
 - probability-density visualization on a parallelogram.
 
-The generalized prototype adds derivation of the metric tensor, a mixed-
-derivative curvilinear Laplacian, reciprocal-basis construction, plane-wave
-energies, real-space reconstruction, and both physical-space and reciprocal-
-space plots. It also contains repeated experimental routes and a saved error.
-Those layers are preserved because they document distinct numerical ideas and
-presentation attempts, not because every route is correct.
+The generalized prototype was also reviewed individually. Clean sequential
+execution stops before its first reciprocal-space calculation because `B` is
+undefined, and a later prose cell stores a `SyntaxError`. Its first route is a
+bounded homogeneous-Dirichlet curvilinear problem, but it uses unit spacing for
+50 points on a declared unit interval and omits cell-Jacobian state
+normalization. Its second route explores periodic reciprocal plane waves, with
+later cells mixing incompatible array lengths and direct bases.
 
-The two prototypes are related but not interchangeable. One expresses an
-intended periodic-boundary PIAB2D path; the other explores both bounded
-curvilinear finite differences and periodic reciprocal-space plane waves. A
-future consolidation must first identify each route's state space, boundary
-condition, endpoint convention, basis normalization, and error source.
+The generalized prototype's periodic reciprocal-space content is superseded by
+the maintained `PeriodicFreeParticle2D` methodological review and the
+nondimensional oblique periodic laboratory. Its scientifically distinct bounded
+route is now represented by `ObliquePiab2D`, its sparse finite-difference solver,
+and the maintained oblique Dirichlet laboratory. The prototype remains present
+pending a separate final-disposition decision. The full review and destination
+mapping are recorded in
+`docs/provenance/generalized-oblique-coordinate-prototype-review.md`.
 
-These are preserved exploratory prototypes, not maintained or validated
-laboratories. They must not be cited as evidence of a periodic or generalized
-PIAB2D solver until the boundary conditions, endpoint treatment, spacing, mixed
-derivative, state normalization, and independent numerical checks are corrected
-explicitly.
+These retained exploratory prototypes are not maintained or validated
+laboratories. They must not be cited as evidence for periodic or bounded
+oblique-cell spectra.

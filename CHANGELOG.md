@@ -34,6 +34,9 @@
   using the package-owned endpoint-excluded inverse-metric Laplacian, Bloch
   quotient seams, sparse eigensolving, plane-wave verification, and
   Jacobian-aware state normalization.
+- Add a unit-aware bounded `ObliquePiab2D` model, sparse homogeneous-Dirichlet
+  inverse-metric finite-difference solver, physical-area state normalization,
+  and maintained hard-wall parallelogram laboratory.
 
 ## 0.1.1 - 2026-10-10
 

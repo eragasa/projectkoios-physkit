@@ -1037,3 +1037,54 @@ behavior, destination mapping, and recovery information are recorded in
 `docs/provenance/oblique-periodic-boundary-prototype-review.md`. The exploratory
 artifact remains present pending final disposition; the generalized oblique-
 coordinate prototype requires a separate review.
+
+## Fifty-fifth review: generalized oblique-coordinate prototype
+
+The generalized oblique-coordinate prototype was reviewed route by route. A
+clean sequential execution reaches ten nonempty code cells and then stops at
+the first reciprocal-space calculation because `B` is undefined. Its final
+nonempty cell contains prose as code and stores a `SyntaxError`.
+
+The bounded route has the structural inverse-metric pure and mixed derivatives,
+but it combines unit finite-difference spacing with 50 plotted points on the
+unit interval, does not consistently distinguish interior unknowns from
+boundary samples, and omits cell-Jacobian state normalization. It is a
+homogeneous-Dirichlet parallelogram problem, not a periodic primitive-cell
+problem.
+
+The reciprocal plane-wave route is conceptually superseded by the maintained
+`PeriodicFreeParticle2D` methodological-review notebook and the nondimensional
+oblique periodic laboratory. Historical reciprocal plots that mix incompatible
+basis assignments or array lengths, and the unnormalized “Fermi surface” sketch,
+were not accepted as maintained evidence.
+
+The prototype remains present because its bounded oblique homogeneous-
+Dirichlet route has no maintained package-backed destination. Repair in place
+is not recommended: the bounded and periodic routes own different state spaces
+and boundary conditions. Exact identity, execution evidence, destination
+mapping, and the retention recommendation are recorded in
+`docs/provenance/generalized-oblique-coordinate-prototype-review.md`.
+
+## Fifty-sixth extraction: bounded oblique Dirichlet free particle
+
+The scientifically distinct bounded route from the generalized prototype now
+has a maintained package-backed destination. `ObliquePiab2D` owns a unit-aware
+direct-basis parallelogram, positive isotropic particle mass, and explicit
+homogeneous-Dirichlet interpretation. The rectangular `Piab2D` contract remains
+separate and unchanged.
+
+`qm.piab2d.tise.finite_difference` owns full-grid extents including boundaries,
+interior-only unknowns, the inverse-metric pure and mixed centered stencil,
+sparse real Hamiltonian storage, partial low-spectrum solving, and constant
+cell-Jacobian quadrature weights. Returned eigenfunction columns are normalized
+in physical area.
+
+`oblique-dirichlet-free-particle.ipynb` demonstrates sparse Hermiticity,
+positive bounded energies, physical-parallelogram state plots with restored
+zero edges, and second-order rectangular-limit refinement. Its lecture note
+contrasts hard-wall and quotient-periodic topologies explicitly.
+
+The generalized exploratory prototype remains present pending a separate final-
+disposition authorization. Its invalid execution sequence, incorrect spacing,
+cross-route array mismatches, and unsupported Fermi-surface label were not
+migrated as maintained behavior.
