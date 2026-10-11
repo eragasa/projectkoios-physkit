@@ -43,9 +43,7 @@ Hamiltonian scaling.
 - Tests: `tests/projectkoios/physkit/periodic/finite_difference/`
 - Laboratory: `notebooks/qm/piab2d/tise/numerical/oblique-periodic-free-particle.ipynb`
 
-## Evidence boundary
+## Evidence
 
-Mapped tests establish the declared data invariants, sparse representation,
-finite plane-wave identities, and second-order numerical convergence. They do
-not establish material-specific scientific validity, uncertainty
-quantification, or human acceptance.
+Mapped tests cover the declared data invariants, sparse representation, finite
+plane-wave identities, and second-order numerical convergence.

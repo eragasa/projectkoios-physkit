@@ -11,7 +11,7 @@ relocated byte-for-byte from `notebooks/solidstate/piab2d_pbc.ipynb`.
 - Preservation commit: `fbf7e9968671cffc18760e9a4aadaf165843d4cc`
 - Review baseline: `4a70159`
 
-The artifact remains present pending final disposition.
+The artifact remains present. Its maintained replacement is complete.
 
 ## Review evidence
 
@@ -60,7 +60,6 @@ and an observed second-order refinement check.
 
 ## Current disposition
 
-**Retain pending operator disposition.** The intended periodic free-particle
-pedagogy now has a maintained destination, but the exploratory artifact has not
-been removed. The separate generalized oblique-coordinate prototype still
-requires its own individual review.
+**Retained.** The intended periodic free-particle pedagogy has a maintained
+destination. Removal is a separate authorized operation. The generalized
+oblique-coordinate prototype was reviewed and removed after replacement.

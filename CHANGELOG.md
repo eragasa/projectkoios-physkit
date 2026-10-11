@@ -37,6 +37,8 @@
 - Add a unit-aware bounded `ObliquePiab2D` model, sparse homogeneous-Dirichlet
   inverse-metric finite-difference solver, physical-area state normalization,
   and maintained hard-wall parallelogram laboratory.
+- Remove the superseded generalized oblique-coordinate prototype after its
+  bounded and periodic routes received separate maintained destinations.
 
 ## 0.1.1 - 2026-10-10
 

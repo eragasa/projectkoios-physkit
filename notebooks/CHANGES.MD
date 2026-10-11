@@ -1088,3 +1088,22 @@ The generalized exploratory prototype remains present pending a separate final-
 disposition authorization. Its invalid execution sequence, incorrect spacing,
 cross-route array mismatches, and unsupported Fermi-surface label were not
 migrated as maintained behavior.
+
+## Fifty-seventh disposition: generalized oblique-coordinate prototype
+
+`notebooks/qm/piab2d/tise/numerical/generalized-oblique-coordinate-prototype.ipynb`
+was removed after individual route review and maintained replacement. All ten
+saved graphical outputs were inspected before disposition. Their valuable
+bounded-state, reciprocal-lattice, plane-wave, and physical-parallelogram
+presentation layers now have maintained package, notebook, and lecture-note
+destinations.
+
+The removal does not promote the prototype's incorrect finite-difference
+spacing, broken clean execution, incompatible direct-basis reassignments,
+array-length mismatches, or unsupported Fermi-surface label. Exact source
+identity, execution evidence, saved-figure inventory, destination mapping, and
+recovery information are recorded in
+`docs/provenance/generalized-oblique-coordinate-prototype-review.md`. The exact
+bytes remain recoverable from preservation commit
+`fbf7e9968671cffc18760e9a4aadaf165843d4cc` and Git blob
+`2cf7a63a6722724537758c0e12cad60a3ca24445`.

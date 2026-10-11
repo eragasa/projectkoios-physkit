@@ -58,5 +58,5 @@ spectrum for an orthogonal rectangle, and second-order ground-energy refinement
 against the rectangular continuum result. The maintained laboratory separately
 demonstrates the mixed stencil and physical-parallelogram visualization.
 
-These bounded tests do not prove accuracy for every skew angle, conditioning,
-resolution, eigensolver configuration, or high-energy state.
+Verification coverage: the tested rectangular and skew cells, binary64
+arithmetic, selected low states, and declared grid-refinement sequence.

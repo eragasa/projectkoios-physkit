@@ -11,7 +11,9 @@ relocated byte-for-byte from `notebooks/scratch/generalized_piab2d.ipynb`.
 - Preservation commit: `fbf7e9968671cffc18760e9a4aadaf165843d4cc`
 - Review baseline: `bf54f7d`
 
-The artifact remains present pending final disposition.
+The artifact was removed after individual review and maintained replacement.
+Its exact bytes remain recoverable from the preservation commit and Git blob
+listed above.
 
 ## Inventory and execution evidence
 
@@ -25,6 +27,15 @@ but their eigenvalues use unit grid spacing rather than the declared fractional
 interval spacing. Therefore the saved reciprocal-space results do not reproduce
 from the stored execution sequence, and the preceding bounded-spectrum values
 do not represent the stated unit cell.
+
+All ten saved PNG displays were extracted and inspected before disposition.
+They comprise four low-state bounded density plots, one four-panel reconstructed
+plane-wave display, four reciprocal-point or claimed isoenergy displays, and
+one six-state reconstructed display. The bounded presentation sequence is
+represented by the maintained oblique Dirichlet laboratory. The valid
+reciprocal-lattice and plane-wave presentation is represented by the maintained
+periodic laboratories. The claimed Fermi-surface plot and cross-basis
+reconstructions were not accepted as scientific evidence.
 
 ## Route-by-route assessment
 
@@ -80,11 +91,15 @@ isoenergy-point sketch and was not migrated as a Fermi-surface claim.
 | Bounded physical-space state plots and refinement | `oblique-dirichlet-free-particle.ipynb` |
 | Historical invalid or cross-route plots | Retain only in this recoverable prototype; do not migrate as evidence |
 
-## Current disposition
+## Final disposition
 
-**Retain pending final disposition.** The periodic, reciprocal, and bounded
-homogeneous-Dirichlet layers now have separate maintained package and laboratory
-destinations. The exploratory notebook has not been removed; deletion requires
-an explicit authorization after the maintained replacement is validated.
-Repairing the mixed notebook in place remains inappropriate because its two
-routes use different state spaces and boundary conditions.
+**Removed after replacement.** The periodic, reciprocal, and bounded
+homogeneous-Dirichlet layers have separate maintained package, laboratory, and
+lecture-note destinations. The exploratory notebook's invalid execution,
+incorrect spacing, incompatible cross-route state, and unsupported Fermi-
+surface claim were not migrated. Repairing the mixed notebook in place was
+inappropriate because its two routes use different state spaces and boundary
+conditions.
+
+Every reviewed valuable layer has a maintained destination, and the exact donor
+artifact remains recoverable.

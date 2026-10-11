@@ -20,11 +20,9 @@ an admissible state.
 - The direct basis has two finite linearly independent Cartesian columns.
 - The coordinate map is affine, so the metric and Jacobian are constant.
 - Centered second-order differences are appropriate for the represented states.
-- `UnitSystem` values declare one coherent numerical scale; they do not prove
-  external parameter provenance.
-- The contract does not represent curved boundaries, spatially varying metrics,
-  nonzero boundary data, magnetic fields, interactions, anisotropic effective
-  mass, or a material-specific confinement model.
+- `UnitSystem` values declare one coherent numerical scale.
+- The contract covers a constant affine metric, zero boundary data, a scalar
+  free particle, and isotropic mass.
 
 ## Evidence classification
 
@@ -42,17 +40,14 @@ for a skew cell.
 
 ### Scientific validation
 
-Not established. The model has not been compared with experimental data, a
-material-specific confinement potential, or an independently validated
-high-fidelity solver for general parallelograms.
+Scope: mathematical free-particle boundary-value problem. Experimental and
+material-specific comparison is outside this package.
 
 ### Uncertainty quantification
 
-Not established. The result reports neither discretization error bars nor
-uncertainty from geometry, mass, floating-point conditioning, or model form.
+Output: represented eigenpairs without error bars. Grid refinement supplies the
+maintained discretization-error evidence.
 
-### Human acceptance
+### Acceptance
 
-Not established by implementation, tests, documentation, or notebook
-execution. A consuming project retains responsibility for its own declared-use
-review.
+Owner: the consuming project for its declared use.

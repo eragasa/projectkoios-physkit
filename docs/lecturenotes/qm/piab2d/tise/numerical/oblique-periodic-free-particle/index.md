@@ -110,8 +110,8 @@ is basis-dependent.
 ## Evidence boundary
 
 Hermiticity, the zero-twist constant mode, exact discrete plane-wave action, and
-observed second-order refinement verify the declared represented operator. They
-do not establish validity for a named material, an interacting particle, a
-hard-wall box, every cell conditioning, or every eigensolver configuration.
+observed second-order refinement verify the represented operator. The model
+scope is a noninteracting scalar free particle on a constant-metric periodic
+cell.
 
 See the [computational laboratory](../../../../../../notebooks/qm/piab2d/tise/numerical/oblique-periodic-free-particle.ipynb).

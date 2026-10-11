@@ -13,15 +13,10 @@
   physical-space states, and rectangular-limit refinement.
 - [`oblique-periodic-boundary-prototype.ipynb`](oblique-periodic-boundary-prototype.ipynb)
   preserves the former `notebooks/solidstate/piab2d_pbc.ipynb` byte-for-byte.
-- [`generalized-oblique-coordinate-prototype.ipynb`](generalized-oblique-coordinate-prototype.ipynb)
-  preserves the former `notebooks/scratch/generalized_piab2d.ipynb`
-  byte-for-byte.
-
-The oblique periodic prototype remains present pending final disposition, but
-its scientific and pedagogical intent now has a maintained successor. The
-stored prototype does not execute cleanly because one constructor annotation is
-syntactically invalid. Its saved outputs are therefore not reproducible from
-the stored source.
+The historical oblique periodic prototype remains present. Its maintained
+successor is `oblique-periodic-free-particle.ipynb`. The stored prototype stops
+at a syntactically invalid constructor annotation, so its saved outputs cannot
+be reproduced from the stored source.
 
 The prototype's active code constructs centered Dirichlet-style operators
 without seam couplings and maps an endpoint-included parameter grid through an
@@ -47,12 +42,11 @@ later cells mixing incompatible array lengths and direct bases.
 The generalized prototype's periodic reciprocal-space content is superseded by
 the maintained `PeriodicFreeParticle2D` methodological review and the
 nondimensional oblique periodic laboratory. Its scientifically distinct bounded
-route is now represented by `ObliquePiab2D`, its sparse finite-difference solver,
-and the maintained oblique Dirichlet laboratory. The prototype remains present
-pending a separate final-disposition decision. The full review and destination
-mapping are recorded in
+route is represented by `ObliquePiab2D`, its sparse finite-difference solver,
+and the maintained oblique Dirichlet laboratory. The prototype was removed
+after final disposition; exact identity, recovery data, saved-figure review, and
+destination mapping are recorded in
 `docs/provenance/generalized-oblique-coordinate-prototype-review.md`.
 
-These retained exploratory prototypes are not maintained or validated
-laboratories. They must not be cited as evidence for periodic or bounded
-oblique-cell spectra.
+The remaining oblique periodic prototype is historical. Use
+`oblique-periodic-free-particle.ipynb` for the maintained calculation.

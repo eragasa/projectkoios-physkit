@@ -71,11 +71,9 @@ Cartesian rectangle.
 ## Numerical checks and limitations
 
 Sparse symmetry checks establish Hermiticity of the represented Hamiltonian.
-The orthogonal limit can be compared with both the exact discrete sine spectrum
-and the continuum rectangular-box energies. Grid refinement measures numerical
-convergence but does not supply an error bar for an arbitrary skew cell.
-
-This model is not a material-specific quantum dot, a periodic band calculation,
-an interacting system, or scientific validation against experiment.
+The orthogonal limit is compared with the exact discrete sine spectrum and the
+continuum rectangular-box energies. Grid refinement measures second-order
+convergence. The model scope is a noninteracting scalar free particle with
+hard-wall parallelogram boundaries.
 
 See the [computational laboratory](../../../../../../notebooks/qm/piab2d/tise/numerical/oblique-dirichlet-free-particle.ipynb).
