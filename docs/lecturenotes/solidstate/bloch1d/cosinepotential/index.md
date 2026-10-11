@@ -73,13 +73,46 @@ so each complete represented band integrates to $g/a$ states per length.
 Gaussian broadening or energy bins introduce numerical resolution scales; they
 do not redefine exact band edges.
 
+## Fixed-density chemical potential
+
+For unique sampled energies $E_i$ with explicit state-density weights $w_i$,
+the finite-temperature chemical potential satisfies
+
+$$
+n_{\mathrm{target}}=\sum_i w_i
+\left[\exp\left(\frac{E_i-\mu}{k_BT}\right)+1\right]^{-1}.
+$$
+
+The inversion should use the original sampled energies and weights. Solving on
+histogram centers or a broadened plotting grid adds a separate representation
+error. Spin, valley, and other degeneracies belong in the declared weights; they
+are not inferred from the band array.
+
+Once $\mu$ is known, a rendered DOS $g(E)$ can be partitioned into occupied and
+unoccupied parts, $g(E)f(E)$ and $g(E)[1-f(E)]$. The thermal window is
+
+$$
+-\frac{\partial f}{\partial E}
+=\frac{f(E)[1-f(E)]}{k_BT},
+$$
+
+and $g(E)(-\partial f/\partial E)$ identifies states active in linearized
+finite-temperature responses. These plotted transforms inherit the DOS grid and
+broadening; their quadrature is not the exact sampled-state inversion.
+
+At strictly zero temperature, a completely filled band followed by a gap does
+not determine a unique chemical potential within that gap. Any reported
+``Fermi energy'' convention, such as the midgap value, must therefore be stated
+separately. The maintained weighted solver intentionally requires positive
+thermal energy.
+
 ## Evidence boundary
 
 The maintained tests verify the represented free-electron limit, Brillouin-zone
 endpoint agreement, weak-potential first-gap behavior, amplitude-sign
-invariance, and DOS state-count normalization. These checks establish the
-idealized software and numerical model, not a material-specific semiconductor
-gap. Finite-temperature analyses retained in exploratory notebooks still
-require separate occupation and chemical-potential contracts.
+invariance, DOS state-count normalization, and a weighted finite-temperature
+occupation target. These checks establish the idealized software and numerical
+model, not a material-specific semiconductor gap or a zero-temperature
+Fermi-energy convention.
 
 See the [computational laboratory](../../../../../notebooks/solidstate/bloch1d/cosinepotential/cosine-potential-bands.ipynb).

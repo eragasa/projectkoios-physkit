@@ -2,8 +2,10 @@ r"""Finite-level canonical and Fermi--Dirac statistical analysis.
 
 The actions in this module operate on explicit energy quantities. Thermal
 energy, chemical potential, and represented level energies must use the same
-unit. A Fermi--Dirac occupation refers to one represented single-particle state;
-spin or other degeneracy is not applied implicitly.
+unit. Weighted inversion additionally requires one explicit positive state
+weight per level and a target in that weight unit. A Fermi--Dirac occupation
+refers to one represented single-particle state; spin or other degeneracy is not
+applied implicitly.
 """
 
 from __future__ import annotations
@@ -284,6 +286,185 @@ class FermiDiracChemicalPotentialResult(ResultsObject):
         return self.request.target_occupation
 
 
+@dataclass(frozen=True, slots=True, kw_only=True)
+class WeightedFermiDiracChemicalPotentialSolveRequest(DataObject):
+    """Request a chemical potential for explicitly weighted states.
+
+    Parameters
+    ----------
+    solver
+        Existing deterministic Fermi--Dirac chemical-potential solver whose
+        tolerances and iteration limit control the weighted solve.
+    energies
+        One represented single-particle energy per state.
+    state_weights
+        Positive physical or unitless integration weight for every energy.
+        Spin, valley, quadrature, and density normalization must already be
+        represented here.
+    thermal_energy
+        Positive :math:`k_B T` in the exact energy unit.
+    target_state_weight
+        Requested occupied state weight in the state-weight unit.
+    """
+
+    solver: FermiDiracChemicalPotentialSolver
+    energies: VectorQuantity
+    state_weights: VectorQuantity
+    thermal_energy: ScalarQuantity
+    target_state_weight: ScalarQuantity
+
+    def __post_init__(self) -> None:
+        """Check the weighted state inventory and target."""
+        if not isinstance(self.solver, FermiDiracChemicalPotentialSolver):
+            raise TypeError("solver must be FermiDiracChemicalPotentialSolver")
+        if not isinstance(self.energies, VectorQuantity):
+            raise TypeError("energies must be VectorQuantity")
+        if self.energies.magnitude.size == 0:
+            raise ValueError("energies must be nonempty")
+        if not isinstance(self.state_weights, VectorQuantity):
+            raise TypeError("state_weights must be VectorQuantity")
+        if self.state_weights.magnitude.shape != self.energies.magnitude.shape:
+            raise ValueError("state_weights must match energies")
+        if not isinstance(self.state_weights.unit, (PhysicalUnit, Unitless)):
+            raise TypeError("state_weights must use PhysicalUnit or Unitless")
+        if np.any(self.state_weights.magnitude <= 0.0):
+            raise ValueError("state_weights must be positive")
+        if not isinstance(self.thermal_energy, ScalarQuantity):
+            raise TypeError("thermal_energy must be ScalarQuantity")
+        if self.thermal_energy.unit != self.energies.unit:
+            raise ValueError("thermal_energy and energies must use the same unit")
+        if self.thermal_energy.magnitude <= 0.0:
+            raise ValueError("thermal_energy must be positive")
+        if not isinstance(self.target_state_weight, ScalarQuantity):
+            raise TypeError("target_state_weight must be ScalarQuantity")
+        if self.target_state_weight.unit != self.state_weights.unit:
+            raise ValueError("target_state_weight must use the state-weight unit")
+        total_state_weight = float(np.sum(self.state_weights.magnitude))
+        if not 0.0 < self.target_state_weight.magnitude < total_state_weight:
+            raise ValueError(
+                "target_state_weight must lie strictly between zero and total "
+                "state weight"
+            )
+
+    @property
+    def total_state_weight(self) -> ScalarQuantity:
+        """Return the available weight represented by all states."""
+        return ScalarQuantity(
+            magnitude=float(np.sum(self.state_weights.magnitude)),
+            unit=self.state_weights.unit,
+        )
+
+
+@dataclass(frozen=True, slots=True, eq=False, kw_only=True)
+class WeightedFermiDiracChemicalPotentialResult(ResultsObject):
+    """Correlate a weighted solve with occupations and its residual.
+
+    Parameters
+    ----------
+    request
+        Complete weighted inversion request.
+    chemical_potential
+        Solved chemical potential in the represented energy unit.
+    occupations
+        Unitless Fermi--Dirac occupation for every represented state.
+    occupied_state_weight
+        Direct weighted sum of the returned occupations.
+    state_weight_residual
+        Numerically stable occupied-target residual in the state-weight unit.
+    """
+
+    request: WeightedFermiDiracChemicalPotentialSolveRequest
+    chemical_potential: ScalarQuantity
+    occupations: VectorQuantity
+    occupied_state_weight: ScalarQuantity
+    state_weight_residual: ScalarQuantity
+
+    def __post_init__(self) -> None:
+        """Check weighted chemical-potential result invariants."""
+        if not isinstance(
+            self.request,
+            WeightedFermiDiracChemicalPotentialSolveRequest,
+        ):
+            raise TypeError(
+                "request must be WeightedFermiDiracChemicalPotentialSolveRequest"
+            )
+        if not isinstance(self.chemical_potential, ScalarQuantity):
+            raise TypeError("chemical_potential must be ScalarQuantity")
+        if self.chemical_potential.unit != self.request.energies.unit:
+            raise ValueError("chemical_potential must use the represented energy unit")
+        if not isinstance(self.occupations, VectorQuantity):
+            raise TypeError("occupations must be VectorQuantity")
+        if not isinstance(self.occupations.unit, Unitless):
+            raise ValueError("occupations must be unitless")
+        if self.occupations.magnitude.shape != self.request.energies.magnitude.shape:
+            raise ValueError("occupations must match energies")
+        if np.any(self.occupations.magnitude < 0.0) or np.any(
+            self.occupations.magnitude > 1.0
+        ):
+            raise ValueError("occupations must lie in the closed interval [0, 1]")
+        expected_occupied = float(
+            np.dot(
+                self.request.state_weights.magnitude,
+                self.occupations.magnitude,
+            )
+        )
+        self._check_weight_scalar(
+            value=self.occupied_state_weight,
+            name="occupied_state_weight",
+            expected_magnitude=expected_occupied,
+        )
+        total_weight = self.request.total_state_weight.magnitude
+        target_weight = self.request.target_state_weight.magnitude
+        # Near full filling, form the residual from holes rather than
+        # subtracting two nearly equal extensive occupied-state densities.
+        if target_weight <= 0.5 * total_weight:
+            expected_residual = expected_occupied - target_weight
+        else:
+            expected_unoccupied = float(
+                np.dot(
+                    self.request.state_weights.magnitude,
+                    1.0 - self.occupations.magnitude,
+                )
+            )
+            expected_residual = (
+                total_weight - target_weight - expected_unoccupied
+            )
+        self._check_weight_scalar(
+            value=self.state_weight_residual,
+            name="state_weight_residual",
+            expected_magnitude=expected_residual,
+        )
+
+    def _check_weight_scalar(
+        self,
+        *,
+        value: ScalarQuantity,
+        name: str,
+        expected_magnitude: float,
+    ) -> None:
+        """Check one state-weight result against the represented sum."""
+        if not isinstance(value, ScalarQuantity):
+            raise TypeError(f"{name} must be ScalarQuantity")
+        if value.unit != self.request.state_weights.unit:
+            raise ValueError(f"{name} must use the state-weight unit")
+        tolerance = 32.0 * np.finfo(np.float64).eps * max(
+            1.0,
+            abs(expected_magnitude),
+        )
+        if not np.isclose(
+            value.magnitude,
+            expected_magnitude,
+            rtol=0.0,
+            atol=tolerance,
+        ):
+            raise ValueError(f"{name} must match the weighted occupations")
+
+    @property
+    def target_state_weight(self) -> ScalarQuantity:
+        """Return the requested occupied state weight."""
+        return self.request.target_state_weight
+
+
 @dataclass(frozen=True, slots=True)
 class FermiDiracChemicalPotentialBisection:
     """Solve the finite-level particle-number equation by bisection."""
@@ -355,6 +536,147 @@ class FermiDiracChemicalPotentialBisection:
         )
 
 
+@dataclass(frozen=True, slots=True)
+class WeightedFermiDiracChemicalPotentialBisection:
+    """Solve a weighted Fermi--Dirac state inventory by bisection.
+
+    Notes
+    -----
+    This action reuses :class:`FermiDiracState` for stable occupation
+    evaluation. It expands the initial energy bracket when a target is very
+    close to empty or full filling and evaluates residuals through the smaller
+    particle or hole population to reduce cancellation.
+    """
+
+    BRACKET_THERMAL_ENERGY_MULTIPLIER = 64.0
+    MAXIMUM_BRACKET_EXPANSIONS = 16
+
+    def action(
+        self,
+        *,
+        request: WeightedFermiDiracChemicalPotentialSolveRequest,
+    ) -> WeightedFermiDiracChemicalPotentialResult:
+        """Return the chemical potential matching a weighted target.
+
+        Parameters
+        ----------
+        request
+            Checked energy inventory, state weights, thermal energy, target,
+            and deterministic solver controls.
+
+        Returns
+        -------
+        WeightedFermiDiracChemicalPotentialResult
+            Solved potential, occupations, occupied weight, and residual.
+        """
+        if not isinstance(
+            request,
+            WeightedFermiDiracChemicalPotentialSolveRequest,
+        ):
+            raise TypeError(
+                "request must be WeightedFermiDiracChemicalPotentialSolveRequest"
+            )
+        energy_unit = request.energies.unit
+        thermal_scale = request.thermal_energy.magnitude
+        span = self.BRACKET_THERMAL_ENERGY_MULTIPLIER * thermal_scale
+        minimum_energy = float(np.min(request.energies.magnitude))
+        maximum_energy = float(np.max(request.energies.magnitude))
+        total_weight = request.total_state_weight.magnitude
+        target_weight = request.target_state_weight.magnitude
+
+        def evaluate(mu: float) -> tuple[VectorQuantity, float, float]:
+            state = FermiDiracState(
+                thermal_energy=request.thermal_energy,
+                chemical_potential=ScalarQuantity(
+                    magnitude=mu,
+                    unit=energy_unit,
+                ),
+            )
+            occupations = state.evaluate_occupations(
+                energies=request.energies
+            ).occupations
+            occupied = float(
+                np.dot(
+                    request.state_weights.magnitude,
+                    occupations.magnitude,
+                )
+            )
+            # Use particles below half filling and holes above half filling.
+            # This avoids cancellation between total and occupied weights near
+            # a nearly full inventory while preserving the residual sign.
+            if target_weight <= 0.5 * total_weight:
+                residual = occupied - target_weight
+            else:
+                unoccupied = float(
+                    np.dot(
+                        request.state_weights.magnitude,
+                        1.0 - occupations.magnitude,
+                    )
+                )
+                residual = total_weight - target_weight - unoccupied
+            return occupations, occupied, residual
+
+        # Sixty-four thermal energies normally saturate both bracket ends.
+        # Expansion keeps extreme but attainable filling targets supported.
+        lower = minimum_energy - span
+        upper = maximum_energy + span
+        _, _, lower_residual = evaluate(lower)
+        _, _, upper_residual = evaluate(upper)
+        for _ in range(self.MAXIMUM_BRACKET_EXPANSIONS):
+            if lower_residual < 0.0 and upper_residual > 0.0:
+                break
+            span *= 2.0
+            if lower_residual >= 0.0:
+                lower = minimum_energy - span
+                _, _, lower_residual = evaluate(lower)
+            if upper_residual <= 0.0:
+                upper = maximum_energy + span
+                _, _, upper_residual = evaluate(upper)
+        if lower_residual >= 0.0 or upper_residual <= 0.0:
+            raise RuntimeError("weighted chemical-potential root was not bracketed")
+
+        # Scale convergence by the smaller particle/hole population. A
+        # binary64 floor prevents demanding resolution below roundoff.
+        limiting_population = min(target_weight, total_weight - target_weight)
+        residual_tolerance = max(
+            request.solver.occupation_tolerance,
+            64.0 * np.finfo(np.float64).eps,
+        ) * limiting_population
+        midpoint = 0.5 * (lower + upper)
+        occupations, occupied, residual = evaluate(midpoint)
+        for _ in range(request.solver.maximum_iterations):
+            midpoint = 0.5 * (lower + upper)
+            occupations, occupied, residual = evaluate(midpoint)
+            if abs(residual) <= residual_tolerance:
+                break
+            if residual < 0.0:
+                lower = midpoint
+            else:
+                upper = midpoint
+        else:
+            raise RuntimeError(
+                "weighted chemical-potential bisection did not reach the relative "
+                "state-weight tolerance"
+            )
+
+        return WeightedFermiDiracChemicalPotentialResult(
+            request=request,
+            chemical_potential=ScalarQuantity(
+                magnitude=midpoint,
+                unit=energy_unit,
+            ),
+            occupations=occupations,
+            occupied_state_weight=ScalarQuantity(
+                magnitude=occupied,
+                unit=request.state_weights.unit,
+            ),
+            state_weight_residual=ScalarQuantity(
+                magnitude=residual,
+                unit=request.state_weights.unit,
+            ),
+        )
+
+
 @dataclass(frozen=True, slots=True, kw_only=True)
 class FermiDiracChemicalPotentialSolver(
     ActionizedDataObject[
@@ -408,6 +730,47 @@ class FermiDiracChemicalPotentialSolver(
                 energies=energies,
                 thermal_energy=thermal_energy,
                 target_occupation=target_occupation,
+            )
+        )
+
+    def solve_weighted(
+        self,
+        *,
+        energies: VectorQuantity,
+        state_weights: VectorQuantity,
+        thermal_energy: ScalarQuantity,
+        target_state_weight: ScalarQuantity,
+    ) -> WeightedFermiDiracChemicalPotentialResult:
+        """Solve for a chemical potential using explicit state weights.
+
+        Parameters
+        ----------
+        energies
+            One energy per represented single-particle state.
+        state_weights
+            Positive integration or density weight for each energy.
+        thermal_energy
+            Positive :math:`k_B T` in the energy unit.
+        target_state_weight
+            Requested occupied weight in the state-weight unit.
+
+        Returns
+        -------
+        WeightedFermiDiracChemicalPotentialResult
+            Unit-aware weighted inversion result.
+
+        Notes
+        -----
+        Degeneracy is not introduced implicitly. Callers include spin, valley,
+        or other multiplicities in ``state_weights``.
+        """
+        return WeightedFermiDiracChemicalPotentialBisection().action(
+            request=WeightedFermiDiracChemicalPotentialSolveRequest(
+                solver=self,
+                energies=energies,
+                state_weights=state_weights,
+                thermal_energy=thermal_energy,
+                target_state_weight=target_state_weight,
             )
         )
 

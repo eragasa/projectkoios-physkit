@@ -23,6 +23,10 @@
   three-dimensional normalization, Gaussian and histogram representations,
   state-count results, and dimension-independent visualization; migrate the
   maintained 1D, 2D, and 3D laboratories to these APIs.
+- Extend the Fermi--Dirac chemical-potential solver with explicit unit-aware
+  state weights, add occupied, unoccupied, thermal-window, and thermally active
+  DOS results, and migrate the maintained 1D laboratory to exact sampled-state
+  inversion rather than histogram-bin inversion.
 
 ## 0.1.1 - 2026-10-10
 

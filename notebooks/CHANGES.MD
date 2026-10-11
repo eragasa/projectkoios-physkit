@@ -952,3 +952,29 @@ DOS label were not retained. Exact source identity, evidence, destination
 mapping, rejected behavior, and recovery information are recorded in
 `docs/provenance/exploratory-band-gap-prototype-disposition.md`. The separate
 extended thermal prototype remains present and requires its own review.
+
+## Fifty-first extraction: weighted chemical potential and thermal DOS
+
+The extended cosine-potential prototype was reviewed individually. Its
+self-contained final calculation executes, but the notebook does not execute
+linearly from a clean namespace. More importantly, it duplicates a periodic
+Brillouin-zone endpoint, normalizes six one-spin bands to one abstract state,
+and solves its particle-number equation on histogram-bin centers.
+
+The existing `FermiDiracChemicalPotentialSolver` now supports explicit positive
+state weights and a target in the same physical or unitless state-weight unit.
+The full-zone DOS models map every original sampled eigenvalue to its exact
+state-density weight before solving; neither a histogram nor Gaussian display
+grid participates in the inversion.
+
+`projectkoios.physkit.dos.thermal` owns occupied and unoccupied DOS, the
+Fermi--Dirac thermal window, thermally active DOS, and numerical rendered-DOS
+integrals. The maintained 1D cosine-potential laboratory demonstrates a
+spin-degenerate fixed state density over temperature. It explicitly separates
+the exact sampled-state solve from broadened thermal visualization.
+
+Exact donor identity, execution evidence, the observed histogram-bin shift, and
+adaptation decisions are recorded in
+`docs/provenance/weighted-fermi-dirac-thermal-dos-library.md`. The exploratory
+artifact remains present pending final disposition. No zero-temperature
+Fermi-energy convention was inferred or added.

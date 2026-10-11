@@ -14,9 +14,15 @@ from projectkoios.physkit.dos.base import (
     GaussianBandDensityOfStates,
     HistogramBandDensityOfStates,
 )
+from projectkoios.physkit.dos.thermal import FermiDiracThermalDensityOfStates
 from projectkoios.physkit.units import VectorQuantity
 
 type DensityOfStatesOrientation = Literal["energy_horizontal", "energy_vertical"]
+type ThermalDensityOfStatesComponent = Literal[
+    "occupied",
+    "unoccupied",
+    "thermally_active",
+]
 
 
 @dataclass(frozen=True, slots=True, eq=False, kw_only=True)
@@ -63,6 +69,42 @@ class DensityOfStatesPlotData(DataObject):
         return cls(
             energies=result.energy_bin_centers,
             density_of_states=result.density_of_states,
+        )
+
+    @classmethod
+    def from_thermal(
+        cls,
+        result: FermiDiracThermalDensityOfStates,
+        *,
+        component: ThermalDensityOfStatesComponent,
+    ) -> DensityOfStatesPlotData:
+        """Adapt one occupation-resolved thermal DOS component.
+
+        Parameters
+        ----------
+        result
+            Correlated thermal-DOS result.
+        component
+            Occupied, unoccupied, or thermally active density to render.
+
+        Returns
+        -------
+        DensityOfStatesPlotData
+            Energy coordinates paired with the selected density vector.
+        """
+        if not isinstance(result, FermiDiracThermalDensityOfStates):
+            raise TypeError("result must be FermiDiracThermalDensityOfStates")
+        if component == "occupied":
+            density = result.occupied_density_of_states
+        elif component == "unoccupied":
+            density = result.unoccupied_density_of_states
+        elif component == "thermally_active":
+            density = result.thermally_active_density_of_states
+        else:
+            raise ValueError("component must identify a supported thermal DOS")
+        return cls(
+            energies=result.request.energies,
+            density_of_states=density,
         )
 
 

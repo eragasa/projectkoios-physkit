@@ -10,10 +10,19 @@ facades consume a `(sample_count, band_count)` energy matrix and return
 unit-aware density-of-states results together with represented and numerically
 included state densities.
 
-`DensityOfStatesPlotData` adapts either result representation to correlated
+`BaseUniformBandDensityOfStates.solve_chemical_potential(...)` maps every
+sampled eigenvalue to its exact full-zone state-density weight and delegates the
+finite-temperature inversion to the weighted Fermi--Dirac solver. It does not
+solve on histogram centers or a broadened display grid.
+
+The [`thermal`](thermal/index.md) module transforms a normalized DOS with one
+`FermiDiracState` into occupation factors, occupied and unoccupied DOS, the
+thermal window, and thermally active DOS.
+
+`DensityOfStatesPlotData` adapts ordinary or thermal results to correlated
 energy and density vectors. `DensityOfStatesVisualizer` renders energy on the
 horizontal or vertical axis without assuming reciprocal-space dimension and
-without choosing normalization, bins, or broadening.
+without choosing normalization, bins, broadening, or occupations.
 
 Concrete normalization models live in:
 

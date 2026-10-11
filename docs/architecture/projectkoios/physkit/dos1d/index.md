@@ -4,7 +4,9 @@
 a complete one-dimensional Brillouin zone. A physical
 `brillouin_zone_measure` must have reciprocal-length units. With degeneracy
 $g$, every complete band integrates to $g/a$ states per length for a primitive
-cell of length $a$.
+cell of length $a$. Its shared `solve_chemical_potential(...)` façade assigns
+that same per-sample reciprocal-length weight to every exact sampled band
+energy.
 
 - Code: `src/python/projectkoios/physkit/dos1d/model.py`
 - Tests: `tests/projectkoios/physkit/dos1d/model/`

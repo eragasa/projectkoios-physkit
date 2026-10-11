@@ -9,6 +9,10 @@ import numpy as np
 
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
+from projectkoios.physkit.thermal.statmech.qm import (
+    FermiDiracChemicalPotentialSolver,
+    WeightedFermiDiracChemicalPotentialResult,
+)
 from projectkoios.physkit.units import (
     MODEL_SYSTEM_UNIT_CONVERTER,
     MatrixQuantity,
@@ -98,6 +102,72 @@ class BaseUniformBandDensityOfStates(DataObject, ABC):
                 band_energies=band_energies,
                 energy_bin_edges=energy_bin_edges,
             )
+        )
+
+    def solve_chemical_potential(
+        self,
+        *,
+        band_energies: MatrixQuantity,
+        thermal_energy: ScalarQuantity,
+        target_state_density: ScalarQuantity,
+        solver: FermiDiracChemicalPotentialSolver | None = None,
+    ) -> WeightedFermiDiracChemicalPotentialResult:
+        """Solve a full-zone chemical potential from exact sampled energies.
+
+        Parameters
+        ----------
+        band_energies
+            Unique equal-weight full-zone energies with sample rows and band
+            columns.
+        thermal_energy
+            Positive :math:`k_B T` in the band-energy unit.
+        target_state_density
+            Occupied state density in the Brillouin-zone measure unit.
+        solver
+            Optional configured Fermi--Dirac solver. The default uses the
+            maintained deterministic tolerances.
+
+        Returns
+        -------
+        WeightedFermiDiracChemicalPotentialResult
+            Chemical potential, exact sampled-state occupations, occupied
+            density, and density residual.
+
+        Notes
+        -----
+        The solve deliberately bypasses Gaussian grids and histogram centers;
+        those representations remain visualization or quadrature choices.
+        """
+        request = BaseBandDensityOfStatesRequest(
+            model=self,
+            band_energies=band_energies,
+        )
+        if solver is None:
+            solver = FermiDiracChemicalPotentialSolver()
+        if not isinstance(solver, FermiDiracChemicalPotentialSolver):
+            raise TypeError("solver must be FermiDiracChemicalPotentialSolver or None")
+        # Each unique full-zone wave-vector sample carries the same reciprocal-
+        # measure weight. The model's explicit degeneracy is already included.
+        sample_weight = request.sample_state_density
+        flattened_energies = VectorQuantity(
+            magnitude=band_energies.magnitude.reshape(-1),
+            unit=band_energies.unit,
+        )
+        # Repeat the exact sample weight for every represented band without
+        # passing through a broadened or binned energy representation.
+        state_weights = VectorQuantity(
+            magnitude=np.full(
+                flattened_energies.magnitude.shape,
+                sample_weight.magnitude,
+                dtype=np.float64,
+            ),
+            unit=sample_weight.unit,
+        )
+        return solver.solve_weighted(
+            energies=flattened_energies,
+            state_weights=state_weights,
+            thermal_energy=thermal_energy,
+            target_state_weight=target_state_density,
         )
 
 

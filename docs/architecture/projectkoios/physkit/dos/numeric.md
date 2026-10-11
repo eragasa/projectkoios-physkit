@@ -43,6 +43,30 @@ divided by each bin width. The result distinguishes all represented states from
 states included inside the requested edge range; energies outside that range
 are intentionally excluded.
 
+## Weighted chemical-potential inversion
+
+The full-zone façade flattens the sampled energy matrix while assigning every
+eigenvalue the same exact state-density weight $w$. The weighted Fermi--Dirac
+solver finds positive-temperature $\mu$ from
+
+$$
+n_{\mathrm{target}}=\sum_i w_i f(E_i;\mu,k_BT).
+$$
+
+Bisection uses the existing stable `FermiDiracState` occupation evaluator. Its
+residual is formed from particles below half filling and holes above half
+filling to avoid cancellation near a full inventory. The convergence threshold
+scales the larger of the configured relative tolerance and a binary64 roundoff
+floor by the smaller target particle/hole weight. The solve never uses Gaussian
+or histogram coordinates.
+
+## Thermal DOS transforms
+
+On a requested DOS energy coordinate, the thermal evaluator returns $g f$,
+$g(1-f)$, $f(1-f)/(k_BT)$, and $g f(1-f)/(k_BT)$. Gaussian-grid integrals use
+the trapezoidal rule. Histogram transforms use midpoint occupations and exact
+bin widths, so they retain a declared binning approximation.
+
 ## Units
 
 Physical energy matrices require a physical Brillouin-zone measure with
@@ -54,8 +78,10 @@ physical and unitless conventions cannot be mixed.
 ## Verification boundary
 
 Tests verify dimensional unit rejection, state-count normalization, Gaussian
-integration, histogram bin widths, and visualization data. They do not establish
-mesh convergence, broadening convergence, or validity for a named material.
+integration, histogram bin widths, weighted chemical-potential recovery,
+thermal particle--hole partitioning, derived units, and visualization data. They
+do not establish mesh convergence, broadening convergence, or validity for a
+named material.
 
 ## Navigation
 

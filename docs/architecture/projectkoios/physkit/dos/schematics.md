@@ -11,6 +11,8 @@ flowchart LR
     GAUSS[Gaussian evaluator]
     HIST[Histogram evaluator]
     RESULT[Unit-aware DOS result<br/>represented and integrated states]
+    WEIGHTED[Weighted Fermi-Dirac<br/>chemical-potential solve]
+    THERMAL[Occupied, unoccupied,<br/>windowed thermal DOS]
     VIEW[Dimension-independent<br/>DOS visualizer]
 
     MESH --> BANDS
@@ -22,7 +24,12 @@ flowchart LR
     GRID --> HIST
     GAUSS --> RESULT
     HIST --> RESULT
+    BANDS --> WEIGHTED
+    MODEL --> WEIGHTED
+    RESULT --> THERMAL
+    WEIGHTED --> THERMAL
     RESULT --> VIEW
+    THERMAL --> VIEW
 ```
 
 Mesh generation and band solving remain with the dimensional physical model.

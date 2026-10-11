@@ -32,8 +32,20 @@ alone to redefine band edges. A histogram depends on bin boundaries and does
 not resolve singularities below its energy-bin scale.
 
 State degeneracy is explicit. The estimator does not infer spin, valley,
-orbital, or other multiplicities. It also does not infer occupations or carrier
-densities; those require a separately stated statistical model.
+orbital, or other multiplicities. The weighted chemical-potential façade uses
+that declared degeneracy through the sampled-state weights and requires an
+explicit target state density and positive thermal energy.
+
+Occupied and unoccupied DOS are $g(E)f(E)$ and $g(E)[1-f(E)]$. The thermal
+window $-\partial f/\partial E=f(1-f)/(k_BT)$ is not itself a DOS; multiplying it
+by the DOS gives states weighted by their linearized thermal sensitivity.
+Broadened and histogram thermal integrals remain representation-dependent even
+when the chemical potential was solved from exact sampled energies.
+
+No strictly zero-temperature Fermi-energy convention is imposed. For an
+integer-filled insulator, every chemical potential inside the gap produces the
+same zero-temperature occupation, so a midgap or other reported convention must
+be named separately.
 
 A normalized numerical DOS is not experimental validation. Mesh density,
 energy resolution, basis convergence, model fidelity, and uncertainty remain
