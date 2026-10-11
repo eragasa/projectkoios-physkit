@@ -8,6 +8,10 @@
 - Add an explicit ambient-3D/intrinsic-2D adapter for full-rank `3×2` direct
   bases, preserving frame, projector, dual-basis, and coordinate maps, together
   with a strict deterministic domain JSON codec for the defining basis and unit.
+- Add a scale-invariant `BlochCell2D` contract for metal and explicitly
+  nondimensional checkerboard models, canonical sparse plane-wave Hamiltonians,
+  automatic sparse partial-spectrum solving, and explicit dense fallback for
+  complete spectra.
 
 ## 0.1.1 - 2026-10-10
 

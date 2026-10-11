@@ -5,24 +5,27 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 import numpy as np
+from scipy import sparse
+from scipy.sparse import linalg as sparse_linalg
 
 from projectkoios.physkit.constants import SI
 from projectkoios.physkit.core.actions import ActionizedDataObject, DataObjectActionizer
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
-from projectkoios.physkit.solidstate.semiconductors.effmass_2d.cell import (
-    PeriodicPrimitiveCell2D,
-)
+from projectkoios.physkit.solidstate.bloch2d.cell import BlochCell2D
 from projectkoios.physkit.units import (
     MODEL_SYSTEM_UNIT_CONVERTER,
-    ComplexMatrixQuantity,
+    ComplexSparseMatrixQuantity,
     MatrixQuantity,
     PhysicalUnit,
     ScalarQuantity,
+    Unitless,
+    UnitSystem,
     VectorQuantity,
 )
 
 ModeIndex2D = tuple[int, int]
+_SQUARE_SHAPE_ABS_TOLERANCE = 2.0e-13
 
 
 @dataclass(frozen=True, slots=True, eq=False, kw_only=True)
@@ -66,7 +69,7 @@ class CheckerboardPotentialBloch2DHamiltonian(ResultsObject):
 
     request: CheckerboardPotentialBloch2DHamiltonianRequest
     mode_indices: tuple[ModeIndex2D, ...]
-    represented_hamiltonian: ComplexMatrixQuantity
+    represented_hamiltonian: ComplexSparseMatrixQuantity
 
     def __post_init__(self) -> None:
         """Check every represented-Hamiltonian result."""
@@ -80,13 +83,16 @@ class CheckerboardPotentialBloch2DHamiltonian(ResultsObject):
         expected_size = (2 * self.request.reciprocal_mode_limit + 1) ** 2
         if len(self.mode_indices) != expected_size:
             raise ValueError("mode_indices size must match reciprocal_mode_limit")
-        if self.mode_indices != _reciprocal_modes(
-            self.request.reciprocal_mode_limit
-        ):
+        if self.mode_indices != _reciprocal_modes(self.request.reciprocal_mode_limit):
             raise ValueError("mode_indices must use canonical lexicographic order")
-        if not isinstance(self.represented_hamiltonian, ComplexMatrixQuantity):
-            raise TypeError("represented_hamiltonian must be ComplexMatrixQuantity")
-        if self.represented_hamiltonian.magnitude.shape != (
+        if not isinstance(
+            self.represented_hamiltonian,
+            ComplexSparseMatrixQuantity,
+        ):
+            raise TypeError(
+                "represented_hamiltonian must be ComplexSparseMatrixQuantity"
+            )
+        if self.represented_hamiltonian.shape != (
             expected_size,
             expected_size,
         ):
@@ -131,15 +137,18 @@ class CheckerboardPotentialBloch2DHamiltonianConstructor(
         )
         hbar = model.cell.unit_system.hbar
         mass = model.electron_mass
-        represented_energy_unit = PhysicalUnit(
-            f"({hbar.unit.expression}) ** 2 / "
-            f"(({mass.unit.expression}) * "
-            f"({model.cell.primitive_basis.unit.expression}) ** 2)"
-        )
-        conversion_factor = MODEL_SYSTEM_UNIT_CONVERTER.conversion_factor(
-            represented_energy_unit,
-            model.cell.unit_system.energy_unit,
-        )
+        if model.cell.unit_system is UnitSystem.NONDIMENSIONAL:
+            conversion_factor = 1.0
+        else:
+            represented_energy_unit = PhysicalUnit(
+                f"({hbar.unit.expression}) ** 2 / "
+                f"(({mass.unit.expression}) * "
+                f"({model.cell.direct_basis.unit.expression}) ** 2)"
+            )
+            conversion_factor = MODEL_SYSTEM_UNIT_CONVERTER.conversion_factor(
+                represented_energy_unit,
+                model.cell.unit_system.energy_unit,
+            )
         kinetic_energies = (
             0.5
             * hbar.magnitude**2
@@ -147,23 +156,48 @@ class CheckerboardPotentialBloch2DHamiltonianConstructor(
             / mass.magnitude
             * conversion_factor
         )
-        mode_transfers = (
-            mode_matrix[:, np.newaxis, :] - mode_matrix[np.newaxis, :, :]
-        )
-        coupled = np.all(np.abs(mode_transfers) == 1.0, axis=2)
-        represented = np.zeros(
-            (mode_matrix.shape[0], mode_matrix.shape[0]),
+        mode_lookup = {mode: index for index, mode in enumerate(mode_indices)}
+        coupling_rows: list[int] = []
+        coupling_columns: list[int] = []
+        coupling_values: list[complex] = []
+        coupling = 0.25 * model.amplitude.magnitude
+        for row, mode in enumerate(mode_indices):
+            for first_shift in (-1, 1):
+                for second_shift in (-1, 1):
+                    target = (
+                        mode[0] + first_shift,
+                        mode[1] + second_shift,
+                    )
+                    column = mode_lookup.get(target)
+                    if column is not None:
+                        coupling_rows.append(row)
+                        coupling_columns.append(column)
+                        coupling_values.append(complex(coupling))
+        basis_size = mode_matrix.shape[0]
+        represented = sparse.diags(
+            kinetic_energies,
+            offsets=0,
+            shape=(basis_size, basis_size),
+            format="csr",
             dtype=np.complex128,
         )
-        represented[coupled] = 0.25 * model.amplitude.magnitude
-        diagonal = np.diag_indices(mode_matrix.shape[0])
-        represented[diagonal] += kinetic_energies
+        represented += sparse.coo_array(
+            (
+                np.asarray(coupling_values, dtype=np.complex128),
+                (
+                    np.asarray(coupling_rows, dtype=np.int64),
+                    np.asarray(coupling_columns, dtype=np.int64),
+                ),
+            ),
+            shape=(basis_size, basis_size),
+            dtype=np.complex128,
+        ).tocsr()
         return CheckerboardPotentialBloch2DHamiltonian(
             request=request,
             mode_indices=mode_indices,
-            represented_hamiltonian=ComplexMatrixQuantity(
-                magnitude=represented,
-                unit=model.cell.unit_system.energy_unit,
+            represented_hamiltonian=ComplexSparseMatrixQuantity.from_csr(
+                represented,
+                model.cell.unit_system.energy_unit,
             ),
         )
 
@@ -206,7 +240,7 @@ class CheckerboardPotentialBloch2DBandSolveRequest(DataObject):
 
 @dataclass(frozen=True, slots=True, eq=False, kw_only=True)
 class CheckerboardPotentialBloch2DBandStructure(ResultsObject):
-    """Return ordered checkerboard band energies in electron-volts."""
+    """Return ordered checkerboard band energies in the selected energy unit."""
 
     request: CheckerboardPotentialBloch2DBandSolveRequest
     energies: MatrixQuantity
@@ -256,24 +290,35 @@ class CheckerboardPotentialBloch2DBandSolver(
         energy_rows: list[np.ndarray] = []
         reciprocal_unit = request.bloch_wave_vectors.unit
         for wave_vector in request.bloch_wave_vectors.magnitude:
-            represented = (
-                CheckerboardPotentialBloch2DHamiltonianConstructor().action(
-                    request=CheckerboardPotentialBloch2DHamiltonianRequest(
-                        model=request.model,
-                        bloch_wave_vector=VectorQuantity(
-                            magnitude=np.asarray(wave_vector, dtype=np.float64),
-                            unit=reciprocal_unit,
-                        ),
-                        reciprocal_mode_limit=request.reciprocal_mode_limit,
-                    )
+            represented = CheckerboardPotentialBloch2DHamiltonianConstructor().action(
+                request=CheckerboardPotentialBloch2DHamiltonianRequest(
+                    model=request.model,
+                    bloch_wave_vector=VectorQuantity(
+                        magnitude=np.asarray(wave_vector, dtype=np.float64),
+                        unit=reciprocal_unit,
+                    ),
+                    reciprocal_mode_limit=request.reciprocal_mode_limit,
                 )
             )
-            eigenvalues = np.linalg.eigvalsh(
-                represented.represented_hamiltonian.magnitude
-            )
-            energy_rows.append(
-                np.asarray(eigenvalues[: request.band_count], dtype=np.float64)
-            )
+            operator = represented.represented_hamiltonian.to_csr()
+            basis_size = operator.shape[0]
+            if sparse.issparse(operator) and request.band_count < basis_size - 1:
+                real_operator = sparse.csr_array(operator.real, dtype=np.float64)
+                eigenvalues = sparse_linalg.eigsh(
+                    real_operator,
+                    k=request.band_count,
+                    which="SA",
+                    return_eigenvectors=False,
+                    v0=np.ones(basis_size, dtype=np.float64),
+                )
+                selected = np.sort(np.asarray(eigenvalues.real, dtype=np.float64))
+            else:
+                eigenvalues = np.linalg.eigvalsh(operator.toarray())
+                selected = np.asarray(
+                    eigenvalues[: request.band_count],
+                    dtype=np.float64,
+                )
+            energy_rows.append(selected)
         return CheckerboardPotentialBloch2DBandStructure(
             request=request,
             energies=MatrixQuantity(
@@ -292,7 +337,7 @@ class CheckerboardPotentialBloch2D(
 ):
     r"""Define a bare electron in $V_0\cos(b_1r)\cos(b_2r)$."""
 
-    cell: PeriodicPrimitiveCell2D
+    cell: BlochCell2D
     amplitude: ScalarQuantity
     actionizer: DataObjectActionizer[
         CheckerboardPotentialBloch2DBandSolveRequest,
@@ -306,12 +351,20 @@ class CheckerboardPotentialBloch2D(
 
     def __post_init__(self) -> None:
         """Check every checkerboard model argument."""
-        if not isinstance(self.cell, PeriodicPrimitiveCell2D):
-            raise TypeError("cell must be PeriodicPrimitiveCell2D")
-        metric = self.cell.metric_tensor.magnitude
-        length_squared = float(metric[0, 0])
-        expected_metric = length_squared * np.eye(2)
-        if not np.allclose(metric, expected_metric, rtol=2e-13, atol=2e-13):
+        if not isinstance(self.cell, BlochCell2D):
+            raise TypeError("cell must be BlochCell2D")
+        basis = self.cell.direct_basis.magnitude
+        basis_scale = float(np.max(np.abs(basis)))
+        scaled_basis = basis / basis_scale
+        scaled_metric = scaled_basis.T @ scaled_basis
+        metric_scale = float(np.max(np.diag(scaled_metric)))
+        normalized_metric = scaled_metric / metric_scale
+        if not np.allclose(
+            normalized_metric,
+            np.eye(2),
+            rtol=0.0,
+            atol=_SQUARE_SHAPE_ABS_TOLERANCE,
+        ):
             raise ValueError("cell must be square with orthogonal equal-length vectors")
         if not isinstance(self.amplitude, ScalarQuantity):
             raise TypeError("amplitude must be ScalarQuantity")
@@ -320,7 +373,9 @@ class CheckerboardPotentialBloch2D(
 
     @property
     def electron_mass(self) -> ScalarQuantity:
-        """Return the bare electron mass in the selected unit system."""
+        """Return bare-electron mass, or one in the nondimensional convention."""
+        if self.cell.unit_system is UnitSystem.NONDIMENSIONAL:
+            return ScalarQuantity(1.0, Unitless())
         return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
             ScalarQuantity(SI.me0, PhysicalUnit("kilogram")),
             self.cell.unit_system.mass_unit,
