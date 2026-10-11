@@ -26,3 +26,15 @@ def test_rejects_linearly_dependent_vectors() -> None:
             a1=np.array([1.0, 0.0]),
             a2=np.array([2.0, 0.0]),
         )
+
+
+def test__init__uses_scale_invariant_independence_check() -> None:
+    lattice = DirectLattice2D(
+        a1=np.array([3.0e-10, 0.0]),
+        a2=np.array([1.0e-10, 2.0e-10]),
+    )
+
+    np.testing.assert_array_equal(
+        lattice.A,
+        np.array([[3.0e-10, 1.0e-10], [0.0, 2.0e-10]]),
+    )

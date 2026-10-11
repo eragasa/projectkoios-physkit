@@ -3,20 +3,21 @@
 from __future__ import annotations
 
 import numpy as np
-from scipy.spatial import ConvexHull
-from scipy.spatial import HalfspaceIntersection
+from scipy.spatial import ConvexHull, HalfspaceIntersection
 
-from projectkoios.physkit.periodic.lattice.base import (
-    FloatArray,
-    IntArray,
+from projectkoios.physkit.numerics.linear_algebra.volume import (
+    columns_are_linearly_independent,
 )
-
 from projectkoios.physkit.periodic.lattice.base import (
     DirectLattice,
+    FirstBrillouinZone,
+    FloatArray,
+    IntArray,
     ReciprocalLattice,
     WignerSeitzCell,
-    FirstBrillouinZone,
 )
+
+_NORMALIZED_AREA_ABS_TOLERANCE: float = 1.0e-8
 
 
 class DirectLattice2D(DirectLattice):
@@ -153,31 +154,51 @@ class DirectLattice2D(DirectLattice):
                 "primitive vectors must contain only finite values."
             )
 
-    def check_primitive_vectors_linearly_independent(self,
-            a1: FloatArray,
-            a2: FloatArray
-        ) -> None:
-        """
-        Validate that the primitive vectors are linearly independent.
+    def check_primitive_vectors_linearly_independent(
+        self,
+        a1: FloatArray,
+        a2: FloatArray,
+    ) -> None:
+        r"""Validate scale-invariant independence of the primitive vectors.
 
         Parameters
         ----------
-        a1:
-            First primitive vector.
-        a2:
-            Second primitive vector.
+        a1
+            First finite primitive vector with shape ``(2,)``.
+        a2
+            Second finite primitive vector with shape ``(2,)``.
 
         Raises
         ------
         ValueError
-            If the primitive vectors are linearly dependent.
+            If the normalized column area is at or below the maintained
+            numerical-independence tolerance.
+
+        Notes
+        -----
+        For :math:`A=[\mathbf a_1\;\mathbf a_2]`, the decision uses
+
+        .. math::
+
+            \left|\det\left[
+            \frac{\mathbf a_1}{\lVert\mathbf a_1\rVert_2}\;
+            \frac{\mathbf a_2}{\lVert\mathbf a_2\rVert_2}
+            \right]\right| > 10^{-8}.
+
+        Normalizing each column makes the test independent of the physical
+        length scale used to represent either primitive vector.
         """
+        # Stack vectors as columns to preserve the direct-basis convention used
+        # by metric geometry and fractional-coordinate transformations.
         A = np.column_stack((a1, a2))
 
-        if np.isclose(np.linalg.det(A), 0.0):
-            raise ValueError(
-                "a1 and a2 must be linearly independent."
-            )
+        # Use normalized area instead of an absolute determinant threshold;
+        # meter-scale crystal vectors can have a valid determinant near 1e-20.
+        if not columns_are_linearly_independent(
+            A,
+            norm_vol_atol=_NORMALIZED_AREA_ABS_TOLERANCE,
+        ):
+            raise ValueError("a1 and a2 must be linearly independent.")
 
     @property
     def measure(self) -> float:
