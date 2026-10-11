@@ -71,9 +71,8 @@ metadata. `PeriodicFiniteDifferenceGrid.direct_basis_unit` declares how those
 basis magnitudes are interpreted. A physical basis produces an inverse-length-
 squared matrix unit; a nondimensional basis produces `Unitless`.
 
-The unit declaration does not independently prove that caller-supplied
-magnitudes use that unit. It is an explicit package-boundary assertion checked
-for dimensional compatibility, not provenance validation.
+The unit declaration is the caller's explicit package-boundary assertion and is
+checked for dimensional compatibility.
 
 ## Evidence classification
 
@@ -90,21 +89,17 @@ second-order convergence.
 
 ### Scientific validation
 
-Not established. No comparison with material-specific experiments,
-higher-fidelity electronic-structure calculations, or an independently
-validated effective-mass model is included.
+Scope: the scalar geometric Laplacian on a constant-metric periodic cell.
+Material-specific comparison belongs to the consuming model.
 
 ### Uncertainty quantification
 
-Not established. The capability does not estimate discretization uncertainty,
-cell-parameter uncertainty, floating-point conditioning error, or model-form
-uncertainty for a consuming calculation.
+Output: the represented operator without error bars. Plane-wave identities and
+grid refinement supply the maintained discretization-error evidence.
 
-### Human acceptance
+### Acceptance
 
-Not established by tests, documentation, or the existence of a pinnable
-revision. A consuming project retains responsibility for its declared-use
-review and acceptance criteria.
+Owner: the consuming project for its declared use.
 
 ## Intended use and non-use
 

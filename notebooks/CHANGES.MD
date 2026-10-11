@@ -882,10 +882,15 @@ independently maintained free-electron and `pbc1d` representations.
 The maintained model verifies the represented free-electron limit,
 Brillouin-zone endpoint agreement, weak-potential first-gap behavior, amplitude-
 sign invariance, and grid refinement. Its potential amplitude is illustrative,
-not a fitted semiconductor parameter. The extended prototype remains preserved
-because its density-of-states, finite-temperature chemical-potential,
-occupied/unoccupied DOS, thermal-window, and interactive layers still require
-separate maintained contracts.
+not a fitted semiconductor parameter. Reusable one-dimensional potential
+rendering now belongs to `projectkoios.physkit.potentials.periodic1d`, while the
+maintained band figure uses the dimension-independent scalar-path visualizer in
+`projectkoios.physkit.solidstate.visualization` rather than notebook-local band
+plotting behavior. The extended prototype remains preserved because its
+finite-temperature chemical-potential, occupied/unoccupied DOS, thermal-window,
+and interactive layers still require separate maintained contracts. Its
+ordinary full-zone DOS is now superseded by the maintained dimensional DOS
+contract described below.
 
 ## Forty-seventh relocation: canonical solid-state lecture-note root
 
@@ -915,3 +920,235 @@ algorithm. The maintained resolver derives a complete finite integer search
 bound from the smallest singular value of the direct basis. Exact source hashes
 and semantic adaptations are recorded in
 `docs/provenance/nonorthogonal-lattice-geometry-notebook-migration.md`.
+
+## Forty-ninth extraction: dimensional full-zone density of states
+
+The exploratory one-dimensional histogram and maintained two-dimensional
+checkerboard Gaussian DOS were rewritten behind shared normalization contracts
+in `projectkoios.physkit.dos`. Concrete reciprocal-length,
+reciprocal-area, and reciprocal-volume validation belongs to `dos1d`, `dos2d`,
+and `dos3d` respectively. A dimension-independent DOS visualizer owns reusable
+horizontal and vertical rendering.
+
+The maintained 1D cosine-potential, 2D checkerboard, and 3D effective-mass
+laboratories now use endpoint-excluded full-zone meshes and the dimensional DOS
+models. Every represented complete band has an explicit state-count integral;
+state degeneracy and Gaussian broadening remain declared inputs. The former 1D
+prototype's duplicated endpoint and arbitrary-unit label were not retained.
+
+Exact source identities and adaptations are recorded in
+`docs/provenance/full-zone-density-of-states-library.md`.
+
+## Fiftieth disposition: exploratory cosine band-gap prototype
+
+`notebooks/solidstate/bloch1d/cosinepotential/exploratory-band-gap-prototype.ipynb`
+was removed after individual review. All 12 nonempty code cells executed without
+error, and its saved figures were inspected. Its cosine potential, Bloch bands,
+first-gap checks, full-zone DOS, visualizers, and explanatory material now have
+named maintained package, notebook, and lecture-note destinations.
+
+The prototype's duplicated Brillouin-zone endpoint weighting and arbitrary-unit
+DOS label were not retained. Exact source identity, evidence, destination
+mapping, rejected behavior, and recovery information are recorded in
+`docs/provenance/exploratory-band-gap-prototype-disposition.md`. The separate
+extended thermal prototype remains present and requires its own review.
+
+## Fifty-first extraction: weighted chemical potential and thermal DOS
+
+The extended cosine-potential prototype was reviewed individually. Its
+self-contained final calculation executes, but the notebook does not execute
+linearly from a clean namespace. More importantly, it duplicates a periodic
+Brillouin-zone endpoint, normalizes six one-spin bands to one abstract state,
+and solves its particle-number equation on histogram-bin centers.
+
+The existing `FermiDiracChemicalPotentialSolver` now supports explicit positive
+state weights and a target in the same physical or unitless state-weight unit.
+The full-zone DOS models map every original sampled eigenvalue to its exact
+state-density weight before solving; neither a histogram nor Gaussian display
+grid participates in the inversion.
+
+`projectkoios.physkit.dos.thermal` owns occupied and unoccupied DOS, the
+Fermi--Dirac thermal window, thermally active DOS, and numerical rendered-DOS
+integrals. The maintained 1D cosine-potential laboratory demonstrates a
+spin-degenerate fixed state density over temperature. It explicitly separates
+the exact sampled-state solve from broadened thermal visualization.
+
+Exact donor identity, execution evidence, the observed histogram-bin shift, and
+adaptation decisions are recorded in
+`docs/provenance/weighted-fermi-dirac-thermal-dos-library.md`. No
+zero-temperature Fermi-energy convention was inferred or added.
+
+## Fifty-second disposition: extended cosine thermal prototype
+
+`notebooks/solidstate/bloch1d/cosinepotential/exploratory-bands-dos-thermal-prototype.ipynb`
+was removed after the weighted chemical-potential and thermal-DOS extraction.
+Every reviewed reusable and pedagogical layer has a maintained destination, and
+the prototype's exact bytes remain recoverable from preservation commit
+`fbf7e9968671cffc18760e9a4aadaf165843d4cc` and Git blob
+`687879784df581a4308104614ff59bc796f5e55f`.
+
+The removal does not promote the prototype's duplicated endpoint, abstract
+six-band normalization, histogram-bin chemical-potential inversion, or broken
+clean linear execution. Final disposition is recorded in
+`docs/provenance/weighted-fermi-dirac-thermal-dos-library.md`.
+
+## Fifty-third extraction: sampled one-dimensional Bloch-state visualization
+
+The exploratory free-electron finite-difference notebook was reviewed
+individually. Its seven static nonempty code cells execute from a clean
+namespace; execution then stops because its saved widget cells import
+`ipywidgets`, which is not a project dependency. The artifact remains present
+pending final disposition.
+
+`BlochState1DPlotData` and `BlochState1DVisualizer` now own unit-aware complex
+amplitude, probability-density, phase, and cell-periodic Fourier rendering. The
+maintained laboratory exposes reduced wave number and band index as ordinary
+editable inputs without requiring a widget runtime.
+
+The extraction corrects two presentation defects. Amplitude and probability
+density no longer share one ordinate despite having different physical units,
+and the discrete Fourier transform is applied to
+$u_k=e^{-ikx}\psi_k$ after removing the Bloch carrier rather than directly to a
+twisted nonzero-$k$ state. Exact source identity, execution evidence, destination
+mapping, and remaining disposition are recorded in
+`docs/provenance/free-electron-bloch-prototype-review.md`.
+
+## Fifty-fourth extraction: oblique periodic free particle
+
+The intended periodic-boundary PIAB2D prototype was reviewed individually. Its
+stored source fails with a syntax error before constructing its solver, and its
+active experimental route uses Dirichlet-style stencils, a duplicated periodic
+endpoint, hard-coded spacing, and no primitive-cell Jacobian normalization.
+Saved figures were not treated as evidence that the stored code implements
+periodic boundaries.
+
+`notebooks/qm/piab2d/tise/numerical/oblique-periodic-free-particle.ipynb` is the
+maintained successor. It consumes `periodic.finite_difference` rather than
+reimplementing the stencil and composes the explicit nondimensional Hamiltonian
+$H=-\Delta_h/2$. The laboratory checks sparse Hermiticity, the zero-twist
+constant mode, a nonzero-twist discrete plane-wave identity, second-order
+refinement, area-weighted state normalization, and probability density on the
+physical parallelogram.
+
+The model is named a periodic free particle rather than a particle in a box.
+Its lecture note distinguishes quotient-seam periodicity from hard walls and
+records the inverse-metric mixed derivative. Exact source identity, rejected
+behavior, destination mapping, and recovery information are recorded in
+`docs/provenance/oblique-periodic-boundary-prototype-review.md`. The exploratory
+artifact remains present pending final disposition; the generalized oblique-
+coordinate prototype requires a separate review.
+
+## Fifty-fifth review: generalized oblique-coordinate prototype
+
+The generalized oblique-coordinate prototype was reviewed route by route. A
+clean sequential execution reaches ten nonempty code cells and then stops at
+the first reciprocal-space calculation because `B` is undefined. Its final
+nonempty cell contains prose as code and stores a `SyntaxError`.
+
+The bounded route has the structural inverse-metric pure and mixed derivatives,
+but it combines unit finite-difference spacing with 50 plotted points on the
+unit interval, does not consistently distinguish interior unknowns from
+boundary samples, and omits cell-Jacobian state normalization. It is a
+homogeneous-Dirichlet parallelogram problem, not a periodic primitive-cell
+problem.
+
+The reciprocal plane-wave route is conceptually superseded by the maintained
+`PeriodicFreeParticle2D` methodological-review notebook and the nondimensional
+oblique periodic laboratory. Historical reciprocal plots that mix incompatible
+basis assignments or array lengths, and the unnormalized “Fermi surface” sketch,
+were not accepted as maintained evidence.
+
+The prototype remains present because its bounded oblique homogeneous-
+Dirichlet route has no maintained package-backed destination. Repair in place
+is not recommended: the bounded and periodic routes own different state spaces
+and boundary conditions. Exact identity, execution evidence, destination
+mapping, and the retention recommendation are recorded in
+`docs/provenance/generalized-oblique-coordinate-prototype-review.md`.
+
+## Fifty-sixth extraction: bounded oblique Dirichlet free particle
+
+The scientifically distinct bounded route from the generalized prototype now
+has a maintained package-backed destination. `ObliquePiab2D` owns a unit-aware
+direct-basis parallelogram, positive isotropic particle mass, and explicit
+homogeneous-Dirichlet interpretation. The rectangular `Piab2D` contract remains
+separate and unchanged.
+
+`qm.piab2d.tise.finite_difference` owns full-grid extents including boundaries,
+interior-only unknowns, the inverse-metric pure and mixed centered stencil,
+sparse real Hamiltonian storage, partial low-spectrum solving, and constant
+cell-Jacobian quadrature weights. Returned eigenfunction columns are normalized
+in physical area.
+
+`oblique-dirichlet-free-particle.ipynb` demonstrates sparse Hermiticity,
+positive bounded energies, physical-parallelogram state plots with restored
+zero edges, and second-order rectangular-limit refinement. Its lecture note
+contrasts hard-wall and quotient-periodic topologies explicitly.
+
+The generalized exploratory prototype remains present pending a separate final-
+disposition authorization. Its invalid execution sequence, incorrect spacing,
+cross-route array mismatches, and unsupported Fermi-surface label were not
+migrated as maintained behavior.
+
+## Fifty-seventh disposition: generalized oblique-coordinate prototype
+
+`notebooks/qm/piab2d/tise/numerical/generalized-oblique-coordinate-prototype.ipynb`
+was removed after individual route review and maintained replacement. All ten
+saved graphical outputs were inspected before disposition. Their valuable
+bounded-state, reciprocal-lattice, plane-wave, and physical-parallelogram
+presentation layers now have maintained package, notebook, and lecture-note
+destinations.
+
+The removal does not promote the prototype's incorrect finite-difference
+spacing, broken clean execution, incompatible direct-basis reassignments,
+array-length mismatches, or unsupported Fermi-surface label. Exact source
+identity, execution evidence, saved-figure inventory, destination mapping, and
+recovery information are recorded in
+`docs/provenance/generalized-oblique-coordinate-prototype-review.md`. The exact
+bytes remain recoverable from preservation commit
+`fbf7e9968671cffc18760e9a4aadaf165843d4cc` and Git blob
+`2cf7a63a6722724537758c0e12cad60a3ca24445`.
+
+## Fifty-eighth disposition: oblique periodic-boundary prototype
+
+`notebooks/qm/piab2d/tise/numerical/oblique-periodic-boundary-prototype.ipynb`
+was removed after individual review. All four saved density figures were
+inspected. They reflect the active Dirichlet-style stencil rather than the
+notebook's stated periodic intent.
+
+The periodic model, Bloch seam phases, endpoint-excluded grid, plane-wave
+checks, refinement, normalization, and physical-cell rendering are maintained
+by `oblique-periodic-free-particle.ipynb` and
+`projectkoios.physkit.periodic.finite_difference`. The bounded density sequence
+is maintained by `oblique-dirichlet-free-particle.ipynb` and the `ObliquePiab2D`
+finite-difference solver.
+
+Invalid syntax, absent seam couplings, duplicated endpoints, hard-coded inputs,
+and missing Jacobian normalization were not migrated. Exact identity, execution
+evidence, saved-figure findings, destination mapping, and recovery information
+are recorded in
+`docs/provenance/oblique-periodic-boundary-prototype-review.md`. The exact bytes
+remain recoverable from preservation commit
+`fbf7e9968671cffc18760e9a4aadaf165843d4cc` and Git blob
+`5cbc204ca336a3601ecd7fbfa935c0ff521cab3c`.
+
+## Fifty-ninth disposition: free-electron Bloch prototype
+
+`notebooks/solidstate/bloch1d/freeelectron/exploratory-finite-difference-prototype.ipynb`
+was removed after individual review. All 22 saved figures were inspected. Their
+folded bands, finite-difference bands, sampled states, phase, Fourier, and cosine-
+potential presentation layers have maintained destinations.
+
+The maintained free-electron laboratory uses package-owned exact and finite-
+difference models, separate unit-aware amplitude and density axes, Fourier
+weights computed after removing the Bloch carrier, and explicit editable
+wave-number and band-index inputs. The cosine extension belongs to the separate
+maintained cosine-potential laboratory.
+
+Duplicated notebook-local operators, mixed-unit plot axes, carrier-leaked
+Fourier weights, dense defaults, and the optional widget runtime were not
+migrated. Exact identity, clean-execution evidence, saved-figure inventory,
+destination mapping, and recovery information are recorded in
+`docs/provenance/free-electron-bloch-prototype-review.md`. The exact bytes remain
+recoverable from preservation commit
+`fbf7e9968671cffc18760e9a4aadaf165843d4cc` and Git blob
+`9a5a1a14b35934061108e93b76ace6d80ad5737b`.

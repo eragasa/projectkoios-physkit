@@ -54,6 +54,21 @@ research-facing laboratory selects `UnitSystem.METAL`:
 The evaluator explicitly converts the compound represented unit to
 electron-volts.
 
+## Three-dimensional density of states
+
+For explicit degeneracy $g$, the full-zone DOS per volume is
+
+$$
+g_{3D}(E)=\frac{g}{(2\pi)^3}\sum_n\int_{\mathrm{BZ}}
+\delta(E-E_n(\mathbf k))\,d^3k.
+$$
+
+Since $|\det B|=(2\pi)^3/\Omega$, every complete band integrates to
+$g/\Omega$ states per volume. A uniform fractional reciprocal mesh must exclude
+its duplicated periodic endpoint. The maintained laboratory uses Gaussian
+broadening only to visualize a coarse sampled spectrum and states no convergence
+claim for that broadening or mesh.
+
 ## Normalized plane waves
 
 The cell-normalized modes are

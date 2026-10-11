@@ -3,15 +3,17 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TypeAlias
 
 import numpy as np
 from numpy.typing import NDArray
 
 from projectkoios.physkit.periodic.lattice import DirectLattice1D
+from projectkoios.physkit.potentials.periodic1d.cosine import (
+    CosinePotential1D,
+)
+from projectkoios.physkit.units import ScalarQuantity, Unitless
 
-
-ComplexArray: TypeAlias = NDArray[np.complex128]
+type ComplexArray = NDArray[np.complex128]
 
 
 class PeriodicPotentialFourier1D(ABC):
@@ -102,27 +104,23 @@ class CosinePotentialFourier1D(
             / self.lattice.lattice_constant
         )
 
-        coefficients = np.zeros(
-            transfers.shape,
-            dtype=np.complex128,
+        flattened_transfers = transfers.ravel()
+        if flattened_transfers.size == 0:
+            return np.zeros(transfers.shape, dtype=np.complex128)
+        nearest_modes = np.rint(
+            flattened_transfers / fundamental_vector
+        ).astype(np.int64)
+        reciprocal_modes = nearest_modes * fundamental_vector
+        representable = np.isclose(flattened_transfers, reciprocal_modes)
+        mode_indices = tuple((int(mode),) for mode in nearest_modes)
+        periodic_potential = CosinePotential1D(
+            amplitude=ScalarQuantity(self.amplitude, Unitless())
         )
-
-        coupled = (
-            np.isclose(
-                transfers,
-                fundamental_vector,
-            )
-            | np.isclose(
-                transfers,
-                -fundamental_vector,
-            )
-        )
-
-        coefficients[coupled] = (
-            0.5 * self.amplitude
-        )
-
-        return coefficients
+        coefficients = periodic_potential.fourier_coefficients(
+            mode_indices=mode_indices
+        ).coefficients.magnitude.copy()
+        coefficients[~representable] = 0.0
+        return coefficients.reshape(transfers.shape)
 
 
 class PlaneWaveBlochModel1D:

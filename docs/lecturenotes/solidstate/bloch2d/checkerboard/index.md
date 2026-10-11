@@ -53,6 +53,27 @@ For the maintained laboratory's illustrative parameters, the valence maximum
 is near $\Gamma$ and the conduction minimum is at the zone corner $M$, so the
 first complete gap is indirect.
 
+## Two-dimensional density of states
+
+For degeneracy $g$, the DOS per area is
+
+$$
+g_{2D}(E)=\frac{g}{(2\pi)^2}\sum_n\int_{\mathrm{BZ}}
+\delta(E-E_n(\mathbf k))\,d^2k.
+$$
+
+An endpoint-excluded uniform mesh with $N_k$ unique points assigns each sampled
+energy the state-density weight
+
+$$
+\frac{g\,A_{\mathrm{BZ}}}{(2\pi)^2N_k}.
+$$
+
+For the displayed square cell, a complete represented band integrates to
+$g/a^2$ states per area. Gaussian broadening produces a smooth visualization,
+but unbroadened sampled energies remain the appropriate input for the separate
+carrier-neutrality sum.
+
 ## Evidence boundary
 
 Maintained tests verify the represented free-electron limit, the checkerboard

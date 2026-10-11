@@ -3,9 +3,10 @@
 ## Current responsibility
 
 This module owns reusable finite-level canonical and Fermi–Dirac occupation
-analysis and occupation-weighted sampled-eigenfunction density evaluation.
-Energy, thermal-energy, and chemical-potential units are explicit. Degeneracy
-is never introduced implicitly.
+analysis, explicitly weighted chemical-potential inversion, and
+occupation-weighted sampled-eigenfunction density evaluation. Energy,
+thermal-energy, chemical-potential, and state-weight units are explicit.
+Degeneracy is never introduced implicitly.
 
 ## Supported façades and responses
 
@@ -13,6 +14,7 @@ is never introduced implicitly.
 - [`FermiDiracOccupationEvaluation`](FermiDiracOccupationEvaluation/index.md)
 - [`FermiDiracChemicalPotentialSolver`](FermiDiracChemicalPotentialSolver/index.md)
 - [`FermiDiracChemicalPotentialResult`](FermiDiracChemicalPotentialResult/index.md)
+- [`WeightedFermiDiracChemicalPotentialResult`](WeightedFermiDiracChemicalPotentialResult/index.md)
 - [`CanonicalLevelProbabilityModel`](CanonicalLevelProbabilityModel/index.md)
 - [`CanonicalLevelProbabilityEvaluation`](CanonicalLevelProbabilityEvaluation/index.md)
 - [`OccupiedEigenfunctionDensityEvaluator`](OccupiedEigenfunctionDensityEvaluator/index.md)
@@ -22,6 +24,7 @@ is never introduced implicitly.
 
 - [`FermiDiracOccupationEvaluationRequest`](FermiDiracOccupationEvaluationRequest/index.md)
 - [`FermiDiracChemicalPotentialSolveRequest`](FermiDiracChemicalPotentialSolveRequest/index.md)
+- [`WeightedFermiDiracChemicalPotentialSolveRequest`](WeightedFermiDiracChemicalPotentialSolveRequest/index.md)
 - [`CanonicalLevelProbabilityEvaluationRequest`](CanonicalLevelProbabilityEvaluationRequest/index.md)
 - [`OccupiedEigenfunctionDensityEvaluationRequest`](OccupiedEigenfunctionDensityEvaluationRequest/index.md)
 

@@ -12,6 +12,37 @@
   nondimensional checkerboard models, canonical sparse plane-wave Hamiltonians,
   automatic sparse partial-spectrum solving, and explicit dense fallback for
   complete spectra.
+- Add unit-aware periodic scalar-potential contracts, one-, two-, and
+  three-dimensional cosine-product models, and explicit sampled-diagonal and
+  reciprocal-Fourier sparse operator converters; route the maintained cosine and
+  checkerboard Bloch models through the reusable potential boundary.
+- Add a model-backed one-dimensional periodic-potential visualizer and a
+  dimension-independent band-path visualizer with unit- and shape-checked
+  optional reference bands.
+- Add shared equal-weight full-zone DOS estimators with explicit one-, two-, and
+  three-dimensional normalization, Gaussian and histogram representations,
+  state-count results, and dimension-independent visualization; migrate the
+  maintained 1D, 2D, and 3D laboratories to these APIs.
+- Extend the Fermi--Dirac chemical-potential solver with explicit unit-aware
+  state weights, add occupied, unoccupied, thermal-window, and thermally active
+  DOS results, and migrate the maintained 1D laboratory to exact sampled-state
+  inversion rather than histogram-bin inversion.
+- Add unit-aware one-dimensional sampled Bloch-state visualization with
+  separate amplitude, probability-density, and phase axes and Fourier weights
+  computed after removing the Bloch carrier.
+- Add a maintained nondimensional oblique periodic free-particle laboratory
+  using the package-owned endpoint-excluded inverse-metric Laplacian, Bloch
+  quotient seams, sparse eigensolving, plane-wave verification, and
+  Jacobian-aware state normalization.
+- Add a unit-aware bounded `ObliquePiab2D` model, sparse homogeneous-Dirichlet
+  inverse-metric finite-difference solver, physical-area state normalization,
+  and maintained hard-wall parallelogram laboratory.
+- Remove the superseded generalized oblique-coordinate prototype after its
+  bounded and periodic routes received separate maintained destinations.
+- Remove the superseded oblique periodic-boundary prototype after separating
+  its periodic intent from its bounded saved-output behavior.
+- Remove the superseded free-electron Bloch prototype after migrating its bands,
+  sampled-state visualization, and corrected cell-periodic Fourier analysis.
 
 ## 0.1.1 - 2026-10-10
 

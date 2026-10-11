@@ -5,11 +5,17 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 import numpy as np
-from scipy import sparse
 
 from projectkoios.physkit.core.actions import ActionizedDataObject, DataObjectActionizer
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
+from projectkoios.physkit.potentials.periodic.operators import (
+    PeriodicPotentialToSampledDiagonalOperatorConverter,
+    PeriodicPotentialToSampledDiagonalOperatorRequest,
+)
+from projectkoios.physkit.potentials.periodic1d.cosine import (
+    CosinePotential1D,
+)
 from projectkoios.physkit.solidstate.bloch1d.cell import BlochPrimitiveCell1D
 from projectkoios.physkit.solidstate.bloch1d.freeelectron.finite_difference import (
     FreeElectronBloch1DFiniteDifferenceHamiltonianConstructor,
@@ -21,6 +27,7 @@ from projectkoios.physkit.solidstate.bloch1d.freeelectron.model import (
 from projectkoios.physkit.units import (
     MatrixQuantity,
     ScalarQuantity,
+    Unitless,
     VectorQuantity,
 )
 
@@ -134,15 +141,19 @@ class CosinePotentialBloch1DBandSolver(
             )
             positions = free_hamiltonian.grid.positions.magnitude
             cell_length = request.model.cell.oriented_length.magnitude
-            potential = request.model.amplitude.magnitude * np.cos(
-                2.0 * np.pi * positions / cell_length
+            potential_operator = (
+                PeriodicPotentialToSampledDiagonalOperatorConverter().action(
+                    request=PeriodicPotentialToSampledDiagonalOperatorRequest(
+                        model=request.model.periodic_potential,
+                        fractional_coordinates=MatrixQuantity(
+                            magnitude=(positions / cell_length)[:, np.newaxis],
+                            unit=Unitless(),
+                        ),
+                    )
+                )
             )
             represented = free_hamiltonian.represented_hamiltonian.to_csr()
-            represented = represented + sparse.diags(
-                potential,
-                offsets=0,
-                format="csr",
-            )
+            represented = represented + potential_operator.represented_operator.to_csr()
             eigenvalues = np.linalg.eigvalsh(represented.toarray())
             energy_rows.append(
                 np.asarray(eigenvalues[: request.band_count], dtype=np.float64)
@@ -191,6 +202,11 @@ class CosinePotentialBloch1D(
             raise TypeError("amplitude must be ScalarQuantity")
         if self.amplitude.unit != self.cell.unit_system.energy_unit:
             raise ValueError("amplitude must use the selected energy unit")
+
+    @property
+    def periodic_potential(self) -> CosinePotential1D:
+        """Return the reusable fractional-coordinate potential model."""
+        return CosinePotential1D(amplitude=self.amplitude)
 
     def solve_bands(
         self,
