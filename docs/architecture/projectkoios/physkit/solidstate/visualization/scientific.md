@@ -18,6 +18,20 @@ conventions, and the meaning of any reference bands. The visualizer does not
 infer degeneracies, gaps, band connectivity, occupations, density of states, or
 material identity.
 
+A one-dimensional Bloch state factors as
+
+$$
+\psi_k(x)=e^{ikx}u_k(x),\qquad u_k(x+a)=u_k(x).
+$$
+
+Complex amplitude and probability density have different units and are not
+placed on one ordinate. Integer reciprocal-cell Fourier labels describe the
+periodic factor $u_k$, so the visualizer removes $e^{ikx}$ before applying the
+discrete transform. Applying a periodic FFT directly to a nonzero-$k$ twisted
+state would introduce carrier leakage unrelated to reciprocal-mode mixing.
+Individual eigenvectors inside a degenerate numerical eigenspace are
+basis-dependent; visualizing one does not establish a unique physical state.
+
 Drawing a curve establishes no scientific validation. Any claim about
 convergence, a material band gap, or agreement with an analytical reference
 must be supported by the owning model and its separate numerical or scientific

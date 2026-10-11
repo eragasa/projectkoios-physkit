@@ -991,3 +991,24 @@ The removal does not promote the prototype's duplicated endpoint, abstract
 six-band normalization, histogram-bin chemical-potential inversion, or broken
 clean linear execution. Final disposition is recorded in
 `docs/provenance/weighted-fermi-dirac-thermal-dos-library.md`.
+
+## Fifty-third extraction: sampled one-dimensional Bloch-state visualization
+
+The exploratory free-electron finite-difference notebook was reviewed
+individually. Its seven static nonempty code cells execute from a clean
+namespace; execution then stops because its saved widget cells import
+`ipywidgets`, which is not a project dependency. The artifact remains present
+pending final disposition.
+
+`BlochState1DPlotData` and `BlochState1DVisualizer` now own unit-aware complex
+amplitude, probability-density, phase, and cell-periodic Fourier rendering. The
+maintained laboratory exposes reduced wave number and band index as ordinary
+editable inputs without requiring a widget runtime.
+
+The extraction corrects two presentation defects. Amplitude and probability
+density no longer share one ordinate despite having different physical units,
+and the discrete Fourier transform is applied to
+$u_k=e^{-ikx}\psi_k$ after removing the Bloch carrier rather than directly to a
+twisted nonzero-$k$ state. Exact source identity, execution evidence, destination
+mapping, and remaining disposition are recorded in
+`docs/provenance/free-electron-bloch-prototype-review.md`.

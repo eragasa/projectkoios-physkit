@@ -17,6 +17,11 @@ coordinate. High-symmetry labels, path construction, material interpretation,
 and figure-specific annotations remain with the caller unless a reusable typed
 contract is introduced.
 
+The [`bloch_states`](bloch_states/index.md) module owns unit-aware rendering for
+one-dimensional sampled Bloch states. It keeps complex amplitude, probability
+density, and phase on semantically distinct axes. Its Fourier view removes the
+Bloch carrier before transforming the cell-periodic factor.
+
 Older electronic- and phonon-specific visualizers remain supported by their
 defining modules. The dimension-independent band visualizer does not change
 their contracts.

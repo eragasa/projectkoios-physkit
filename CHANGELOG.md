@@ -27,6 +27,9 @@
   state weights, add occupied, unoccupied, thermal-window, and thermally active
   DOS results, and migrate the maintained 1D laboratory to exact sampled-state
   inversion rather than histogram-bin inversion.
+- Add unit-aware one-dimensional sampled Bloch-state visualization with
+  separate amplitude, probability-density, and phase axes and Fourier weights
+  computed after removing the Bloch carrier.
 
 ## 0.1.1 - 2026-10-10
 

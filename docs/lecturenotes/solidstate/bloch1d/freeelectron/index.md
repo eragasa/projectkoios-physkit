@@ -64,6 +64,33 @@ $$
 Its difference from the continuum dispersion is discretization error, not
 free-electron model error.
 
+## Sampled states and reciprocal content
+
+A grid-normalized physical state satisfies
+
+$$
+\sum_j |\psi_k(x_j)|^2\,\Delta x=1,
+$$
+
+so its amplitude and probability density carry inverse-square-root-length and
+inverse-length units respectively. They should not share one unlabeled ordinate.
+The phase of the twisted state contains the explicit Bloch carrier.
+
+To inspect integer reciprocal-cell components, first form
+
+$$
+u_k(x_j)=e^{-ikx_j}\psi_k(x_j)
+$$
+
+and apply the discrete Fourier transform to $u_k$, not directly to the twisted
+full state. Otherwise the noninteger Bloch carrier produces spectral leakage
+that can be mistaken for reciprocal-mode mixing.
+
+At an exact or nearly degenerate energy, an eigensolver may return any
+orthonormal basis for the represented eigenspace. Real-space or Fourier plots of
+one eigenvector are therefore basis-dependent; subspace-level conclusions are
+the stable objects.
+
 ## Evidence boundary
 
 The exact and finite-difference routes provide software and numerical
