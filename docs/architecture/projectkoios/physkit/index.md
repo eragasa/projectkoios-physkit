@@ -31,6 +31,7 @@ mirror contract.
 - [Package `projectkoios.physkit.mechanics`](mechanics/index.md)
 - [Package `projectkoios.physkit.numerics`](numerics/index.md)
 - [Package `projectkoios.physkit.periodic`](periodic/index.md)
+- [Package `projectkoios.physkit.potentials`](potentials/index.md)
 - [Package `projectkoios.physkit.plasmas`](plasmas/index.md)
 - [Package `projectkoios.physkit.qm`](qm/index.md)
 - [Package `projectkoios.physkit.solidstate`](solidstate/index.md)

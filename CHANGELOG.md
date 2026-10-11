@@ -12,6 +12,10 @@
   nondimensional checkerboard models, canonical sparse plane-wave Hamiltonians,
   automatic sparse partial-spectrum solving, and explicit dense fallback for
   complete spectra.
+- Add unit-aware periodic scalar-potential contracts, one-, two-, and
+  three-dimensional cosine-product models, and explicit sampled-diagonal and
+  reciprocal-Fourier sparse operator converters; route the maintained cosine and
+  checkerboard Bloch models through the reusable potential boundary.
 
 ## 0.1.1 - 2026-10-10
 

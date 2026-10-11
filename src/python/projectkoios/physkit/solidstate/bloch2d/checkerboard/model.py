@@ -12,6 +12,13 @@ from projectkoios.physkit.constants import SI
 from projectkoios.physkit.core.actions import ActionizedDataObject, DataObjectActionizer
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
+from projectkoios.physkit.potentials.periodic.operators import (
+    PeriodicPotentialToFourierOperatorConverter,
+    PeriodicPotentialToFourierOperatorRequest,
+)
+from projectkoios.physkit.potentials.periodic2d.checkerboard import (
+    CheckerboardPotential2D,
+)
 from projectkoios.physkit.solidstate.bloch2d.cell import BlochCell2D
 from projectkoios.physkit.units import (
     MODEL_SYSTEM_UNIT_CONVERTER,
@@ -156,23 +163,12 @@ class CheckerboardPotentialBloch2DHamiltonianConstructor(
             / mass.magnitude
             * conversion_factor
         )
-        mode_lookup = {mode: index for index, mode in enumerate(mode_indices)}
-        coupling_rows: list[int] = []
-        coupling_columns: list[int] = []
-        coupling_values: list[complex] = []
-        coupling = 0.25 * model.amplitude.magnitude
-        for row, mode in enumerate(mode_indices):
-            for first_shift in (-1, 1):
-                for second_shift in (-1, 1):
-                    target = (
-                        mode[0] + first_shift,
-                        mode[1] + second_shift,
-                    )
-                    column = mode_lookup.get(target)
-                    if column is not None:
-                        coupling_rows.append(row)
-                        coupling_columns.append(column)
-                        coupling_values.append(complex(coupling))
+        potential_operator = PeriodicPotentialToFourierOperatorConverter().action(
+            request=PeriodicPotentialToFourierOperatorRequest(
+                model=model.periodic_potential,
+                mode_indices=mode_indices,
+            )
+        )
         basis_size = mode_matrix.shape[0]
         represented = sparse.diags(
             kinetic_energies,
@@ -181,17 +177,7 @@ class CheckerboardPotentialBloch2DHamiltonianConstructor(
             format="csr",
             dtype=np.complex128,
         )
-        represented += sparse.coo_array(
-            (
-                np.asarray(coupling_values, dtype=np.complex128),
-                (
-                    np.asarray(coupling_rows, dtype=np.int64),
-                    np.asarray(coupling_columns, dtype=np.int64),
-                ),
-            ),
-            shape=(basis_size, basis_size),
-            dtype=np.complex128,
-        ).tocsr()
+        represented += potential_operator.represented_operator.to_csr()
         return CheckerboardPotentialBloch2DHamiltonian(
             request=request,
             mode_indices=mode_indices,
@@ -370,6 +356,11 @@ class CheckerboardPotentialBloch2D(
             raise TypeError("amplitude must be ScalarQuantity")
         if self.amplitude.unit != self.cell.unit_system.energy_unit:
             raise ValueError("amplitude must use the selected energy unit")
+
+    @property
+    def periodic_potential(self) -> CheckerboardPotential2D:
+        """Return the reusable fractional-coordinate potential model."""
+        return CheckerboardPotential2D(amplitude=self.amplitude)
 
     @property
     def electron_mass(self) -> ScalarQuantity:

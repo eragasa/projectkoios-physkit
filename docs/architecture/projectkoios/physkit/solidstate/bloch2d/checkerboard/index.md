@@ -15,10 +15,13 @@ the explicitly unitless `UnitSystem.NONDIMENSIONAL` convention; it rejects
 `UnitSystem.SI`.
 
 The model constructs a reciprocal plane-wave basis with the square cutoff
-$-M\leq m_1,m_2\leq M$. The represented Hamiltonian contains free-electron
-kinetic energies and the four checkerboard Fourier coefficients
-$V_{(\pm1,\pm1)}=V_0/4$. In the nondimensional convention, $\hbar=1$ and the
-bare-electron mass is $m_e=1$.
+$-M\leq m_1,m_2\leq M$. Its representation-independent
+[`CheckerboardPotential2D`](../../../potentials/periodic2d/index.md)
+owns the four Fourier coefficients $V_{(\pm1,\pm1)}=V_0/4$. The shared
+periodic-potential Fourier converter constructs the canonical sparse convolution
+operator, which the Bloch model combines with free-electron kinetic energies.
+In the nondimensional convention, $\hbar=1$ and the bare-electron mass is
+$m_e=1$.
 
 `CheckerboardPotentialBloch2DHamiltonianConstructor` returns the immutable
 canonical complex CSR Hamiltonian and reciprocal-mode ordering for one Bloch
