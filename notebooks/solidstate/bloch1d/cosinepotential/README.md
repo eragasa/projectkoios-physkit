@@ -7,15 +7,7 @@
   uses the maintained PhysKit cosine-potential solver to calculate a
   dimensionally explicit 1D intrinsic carrier state, then evaluates separate
   3D bulk nondegenerate intrinsic-semiconductor relations.
-- [`exploratory-bands-dos-thermal-prototype.ipynb`](exploratory-bands-dos-thermal-prototype.ipynb)
-  preserves the former
-  `notebooks/scratch/solidstate/bloch_1d_cosine_potential_bands_dos.ipynb`
-  byte-for-byte.
-
-The former band-gap prototype was removed after individual review because all
-of its reusable and pedagogical layers have maintained destinations. Its exact
-identity and disposition are recorded under `docs/provenance/`. The extended
-exploratory artifact remains preserved pending final disposition, but its
-finite-temperature chemical-potential, occupied/unoccupied DOS, thermal-window,
-thermally active DOS, and ordinary DOS layers now have maintained contracts and
-package-backed examples.
+The former band-gap and extended thermal prototypes were removed after
+individual review because all reusable and pedagogical layers have maintained
+destinations. Their exact identities, adaptations, rejected behavior, and
+recovery information are recorded under `docs/provenance/`.

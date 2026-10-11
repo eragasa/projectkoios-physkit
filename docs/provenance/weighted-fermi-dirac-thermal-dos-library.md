@@ -12,7 +12,9 @@ relocated byte-for-byte from
 - Preservation commit: `fbf7e9968671cffc18760e9a4aadaf165843d4cc`
 - Extraction baseline: `5e936a2`
 
-The artifact remains present pending its final individual disposition.
+The artifact was removed from the maintained notebook tree after extraction and
+individual review. Its exact bytes remain recoverable from the preservation
+commit and Git blob above.
 
 ## Review evidence
 
@@ -63,3 +65,12 @@ used only for declared thermal visualization and approximate plotted integrals.
 No zero-temperature Fermi-energy convention was extracted. An integer-filled
 insulator admits any chemical potential inside its gap at zero temperature;
 midgap or another convention requires a separate explicit contract.
+
+## Disposition
+
+**Removed after replacement.** The band model, normalized full-zone DOS,
+weighted finite-temperature inversion, occupied and unoccupied DOS, thermal
+window, thermally active DOS, visualization, and pedagogical explanations all
+have named maintained destinations. Keeping the monolithic notebook live would
+duplicate those contracts while retaining clean-execution, endpoint,
+normalization, and histogram-inversion defects.

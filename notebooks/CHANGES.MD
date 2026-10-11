@@ -975,6 +975,19 @@ the exact sampled-state solve from broadened thermal visualization.
 
 Exact donor identity, execution evidence, the observed histogram-bin shift, and
 adaptation decisions are recorded in
-`docs/provenance/weighted-fermi-dirac-thermal-dos-library.md`. The exploratory
-artifact remains present pending final disposition. No zero-temperature
-Fermi-energy convention was inferred or added.
+`docs/provenance/weighted-fermi-dirac-thermal-dos-library.md`. No
+zero-temperature Fermi-energy convention was inferred or added.
+
+## Fifty-second disposition: extended cosine thermal prototype
+
+`notebooks/solidstate/bloch1d/cosinepotential/exploratory-bands-dos-thermal-prototype.ipynb`
+was removed after the weighted chemical-potential and thermal-DOS extraction.
+Every reviewed reusable and pedagogical layer has a maintained destination, and
+the prototype's exact bytes remain recoverable from preservation commit
+`fbf7e9968671cffc18760e9a4aadaf165843d4cc` and Git blob
+`687879784df581a4308104614ff59bc796f5e55f`.
+
+The removal does not promote the prototype's duplicated endpoint, abstract
+six-band normalization, histogram-bin chemical-potential inversion, or broken
+clean linear execution. Final disposition is recorded in
+`docs/provenance/weighted-fermi-dirac-thermal-dos-library.md`.
