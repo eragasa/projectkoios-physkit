@@ -41,6 +41,8 @@
   bounded and periodic routes received separate maintained destinations.
 - Remove the superseded oblique periodic-boundary prototype after separating
   its periodic intent from its bounded saved-output behavior.
+- Remove the superseded free-electron Bloch prototype after migrating its bands,
+  sampled-state visualization, and corrected cell-periodic Fourier analysis.
 
 ## 0.1.1 - 2026-10-10
 

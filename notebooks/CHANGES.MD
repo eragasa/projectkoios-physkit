@@ -1130,3 +1130,25 @@ are recorded in
 remain recoverable from preservation commit
 `fbf7e9968671cffc18760e9a4aadaf165843d4cc` and Git blob
 `5cbc204ca336a3601ecd7fbfa935c0ff521cab3c`.
+
+## Fifty-ninth disposition: free-electron Bloch prototype
+
+`notebooks/solidstate/bloch1d/freeelectron/exploratory-finite-difference-prototype.ipynb`
+was removed after individual review. All 22 saved figures were inspected. Their
+folded bands, finite-difference bands, sampled states, phase, Fourier, and cosine-
+potential presentation layers have maintained destinations.
+
+The maintained free-electron laboratory uses package-owned exact and finite-
+difference models, separate unit-aware amplitude and density axes, Fourier
+weights computed after removing the Bloch carrier, and explicit editable
+wave-number and band-index inputs. The cosine extension belongs to the separate
+maintained cosine-potential laboratory.
+
+Duplicated notebook-local operators, mixed-unit plot axes, carrier-leaked
+Fourier weights, dense defaults, and the optional widget runtime were not
+migrated. Exact identity, clean-execution evidence, saved-figure inventory,
+destination mapping, and recovery information are recorded in
+`docs/provenance/free-electron-bloch-prototype-review.md`. The exact bytes remain
+recoverable from preservation commit
+`fbf7e9968671cffc18760e9a4aadaf165843d4cc` and Git blob
+`9a5a1a14b35934061108e93b76ace6d80ad5737b`.

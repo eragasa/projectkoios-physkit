@@ -11,7 +11,9 @@ relocated byte-for-byte from `notebooks/semphy/freeelectron.bloch1d.ipynb`.
 - Preservation commit: `fbf7e9968671cffc18760e9a4aadaf165843d4cc`
 - Review baseline: `f0f638f`
 
-The artifact remains present pending final disposition.
+The artifact was removed after individual review and maintained replacement.
+Its exact bytes remain recoverable from the preservation commit and Git blob
+listed above.
 
 ## Review evidence
 
@@ -22,8 +24,13 @@ records, and no saved error output.
 A clean in-memory execution successfully completed the first seven nonempty code
 cells and reproduced the static bands, state, phase, Fourier, and
 cosine-potential figures. It then stopped at the first interactive cell because
-`ipywidgets` is not an installed project dependency. This is a presentation
-dependency failure rather than evidence about the underlying physical model.
+`ipywidgets` is not an installed project dependency.
+
+All 22 saved PNG displays were extracted and inspected before disposition. They
+contain repeated folded-band plots, sampled-state amplitude/density/phase plots,
+cell-grid Fourier weights, one cosine-potential band comparison, and duplicated
+plots associated with the widget cells. Each valuable presentation has the
+maintained destination listed below.
 
 ## Maintained destinations
 
@@ -56,13 +63,14 @@ conversion as a reusable default, and the embedded cosine-potential duplicate
 were not promoted. Individual eigenvectors at degeneracy remain explicitly
 basis-dependent.
 
-The two widget views are not package behavior and do not justify adding an
-`ipywidgets` runtime dependency. The maintained notebook keeps parameter
-selection executable through ordinary explicit variables, while this source
-artifact remains recoverable for historical inspection.
+The two widget views are not package behavior. The maintained notebook keeps
+parameter selection executable through ordinary explicit variables.
 
-## Current disposition
+## Final disposition
 
-**Retain pending operator disposition.** The reviewed pedagogical content now
-has maintained destinations, but the artifact has not been removed. A later
-removal decision can rely on the exact recovery identifiers above.
+**Removed after replacement.** Exact folded bands, finite-difference bands,
+sampled states, phase, corrected cell-periodic Fourier weights, cosine-potential
+bands, and explicit parameter selection all have maintained package, notebook,
+and lecture-note destinations. Duplicated code, mixed-unit axes, carrier-leaked
+Fourier weights, dense notebook-local defaults, and the optional widget runtime
+were not migrated.
