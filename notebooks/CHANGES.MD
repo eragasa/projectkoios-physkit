@@ -882,10 +882,15 @@ independently maintained free-electron and `pbc1d` representations.
 The maintained model verifies the represented free-electron limit,
 Brillouin-zone endpoint agreement, weak-potential first-gap behavior, amplitude-
 sign invariance, and grid refinement. Its potential amplitude is illustrative,
-not a fitted semiconductor parameter. The extended prototype remains preserved
-because its density-of-states, finite-temperature chemical-potential,
-occupied/unoccupied DOS, thermal-window, and interactive layers still require
-separate maintained contracts.
+not a fitted semiconductor parameter. Reusable one-dimensional potential
+rendering now belongs to `projectkoios.physkit.potentials.periodic1d`, while the
+maintained band figure uses the dimension-independent scalar-path visualizer in
+`projectkoios.physkit.solidstate.visualization` rather than notebook-local band
+plotting behavior. The extended prototype remains preserved because its
+finite-temperature chemical-potential, occupied/unoccupied DOS, thermal-window,
+and interactive layers still require separate maintained contracts. Its
+ordinary full-zone DOS is now superseded by the maintained dimensional DOS
+contract described below.
 
 ## Forty-seventh relocation: canonical solid-state lecture-note root
 
@@ -915,3 +920,22 @@ algorithm. The maintained resolver derives a complete finite integer search
 bound from the smallest singular value of the direct basis. Exact source hashes
 and semantic adaptations are recorded in
 `docs/provenance/nonorthogonal-lattice-geometry-notebook-migration.md`.
+
+## Forty-ninth extraction: dimensional full-zone density of states
+
+The exploratory one-dimensional histogram and maintained two-dimensional
+checkerboard Gaussian DOS were rewritten behind shared normalization contracts
+in `projectkoios.physkit.dos`. Concrete reciprocal-length,
+reciprocal-area, and reciprocal-volume validation belongs to `dos1d`, `dos2d`,
+and `dos3d` respectively. A dimension-independent DOS visualizer owns reusable
+horizontal and vertical rendering.
+
+The maintained 1D cosine-potential, 2D checkerboard, and 3D effective-mass
+laboratories now use endpoint-excluded full-zone meshes and the dimensional DOS
+models. Every represented complete band has an explicit state-count integral;
+state degeneracy and Gaussian broadening remain declared inputs. The former 1D
+prototype's duplicated endpoint and arbitrary-unit label were not retained.
+
+Exact source identities and adaptations are recorded in
+`docs/provenance/full-zone-density-of-states-library.md`. The exploratory
+notebooks remain present pending their individual final dispositions.

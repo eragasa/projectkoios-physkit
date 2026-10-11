@@ -16,6 +16,13 @@
   three-dimensional cosine-product models, and explicit sampled-diagonal and
   reciprocal-Fourier sparse operator converters; route the maintained cosine and
   checkerboard Bloch models through the reusable potential boundary.
+- Add a model-backed one-dimensional periodic-potential visualizer and a
+  dimension-independent band-path visualizer with unit- and shape-checked
+  optional reference bands.
+- Add shared equal-weight full-zone DOS estimators with explicit one-, two-, and
+  three-dimensional normalization, Gaussian and histogram representations,
+  state-count results, and dimension-independent visualization; migrate the
+  maintained 1D, 2D, and 3D laboratories to these APIs.
 
 ## 0.1.1 - 2026-10-10
 

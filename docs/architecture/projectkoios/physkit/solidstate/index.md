@@ -10,3 +10,5 @@ This package owns reusable solid-state representations and models.
 - [`phase_field`](phase_field/index.md) owns reduced diffuse-interface models.
 - [`semiconductors`](semiconductors/index.md) owns dimension-specific
   effective-mass semiconductor models and related primitive-cell references.
+- [`visualization`](visualization/index.md) owns reusable rendering behavior for
+  solid-state results and dimension-independent band-path plot data.
