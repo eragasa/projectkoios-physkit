@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "projectkoios-physkit"
-version = "0.1.2"
+version = "0.1.3.dev0"
 description = "Reusable computational-physics models and numerical methods for Project Koios"
 readme = "README.md"
 requires-python = ">=3.14"

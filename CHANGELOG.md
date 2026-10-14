@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add raw scalar-hopping Hermiticity and supplied-operation diagnostics plus a
+  unit-aware Bloch evaluator backed by the exact reviewed
+  `projectkoios.numerics` finite Fourier-series owner.
+
 ## 0.1.2 - 2026-10-11
 
 - Add immutable unit-aware stress tensors with explicit pressure-unit and sign-
