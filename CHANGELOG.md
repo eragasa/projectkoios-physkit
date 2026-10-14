@@ -5,6 +5,8 @@
 - Add raw scalar-hopping Hermiticity and supplied-operation diagnostics plus a
   unit-aware Bloch evaluator backed by the exact reviewed
   `projectkoios.numerics` finite Fourier-series owner.
+- Advance the exact `projectkoios-optimization` dependency revision while
+  preserving the finite Fourier-series implementation consumed by PhysKit.
 
 ## 0.1.2 - 2026-10-11
 

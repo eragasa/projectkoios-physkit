@@ -28,7 +28,7 @@ imaginary component remain separate responsibilities.
 `FiniteFourierSeriesEvaluationDefinition`, calls a nominal
 `FiniteFourierSeriesEvaluator`, and wraps the returned built-in complex values in
 the model energy unit. The dependency is bound to exact Numerics owner commit
-`6c3f73cd5f1810c8de915e1559658ea4b79c2357`.
+`23e1c88772f1bc9a1505cd25df5418cd945a76fa`.
 
 The upstream Numerics operation remains unit-free and does not receive lattice,
 hopping, Bloch, basis, energy-reference, or acceptance meaning. PhysKit is not a
