@@ -20,6 +20,34 @@ policy, and independent quotient-seam construction.
 | `fcca7be70845aebe016dd6ba970f54d0bf8a879c` | `python/src/ksdft2effmass/solid_state/operator_construction.py` | `e85af86c298e7c488a53828e3517b44bb9a638b8` | `ce3f10f4249ddcea0310888bfb37885f16d678e0132c1ca4a960a026f2cc6d2c` | `projectkoios.physkit.periodic.lattice.operator_construction` |
 | `a3a569064033cfa508d4f9ccbb0509f64745f8d6` | `python/src/ksdft2effmass/solid_state/gauge_bridges.py` | `a10a010b7457280e64d202ea8885c8d0cfe6b169` | `87a73884b7e222b2292ac17d00b82fe1d4942b21eae649a5b04b6fa0e7ccbe1f` | `projectkoios.physkit.periodic.lattice.gauge_bridges` |
 
+## Destination-authored extensions
+
+`projectkoios.physkit.solidstate.tb.diagnostics` was authored at the PhysKit
+destination against the extracted `ScalarHoppingModel` and
+`IntegralLatticeOperation` contracts. It does not claim exact implementation
+lineage from a donor module. The module owns raw tolerance-free Hermiticity and
+caller-supplied integral-operation comparisons.
+
+`projectkoios.physkit.solidstate.tb.bloch` was also authored at the PhysKit
+destination. It owns the physics-semantic mapping from fractional reciprocal
+wave vectors and energy-unit-bearing scalar hopping coefficients to correlated
+Bloch values. Its positive-exponent convention agrees with the donor's hopping
+transform convention, but the adapter does not claim copied implementation
+lineage from that module.
+
+## Numerics owner binding
+
+The generic ordered finite Fourier-series calculation is consumed from the
+`projectkoios-optimization` distribution at exact commit
+`6c3f73cd5f1810c8de915e1559658ea4b79c2357`, tree
+`5b3d6a7c2ab26909a815799718651f0b615b49ca`. The owning API is
+`projectkoios.numerics.finite_periodic.finite_series` and fixes
+$\sum_j c_j\exp(+2\pi i\,x\cdot m_j)$ without normalization.
+
+PhysKit passes only unit-free built-in coordinate, integer-mode, and coefficient
+tuples to that owner. Lattice interpretation, model identity, basis identity,
+energy reference, and energy unit remain in the PhysKit adapter and result.
+
 ## Semantic adaptations
 
 - `FiniteLatticeShape` became `FinitePeriodicDomain` because the record is an
@@ -56,8 +84,12 @@ The destination tests under
 `tests/projectkoios/physkit/periodic/lattice/` cover finite-domain geometry,
 boundary phases, symmetry operations, hopping records, represented operators,
 compatibility-gated sparse addition, centered uniform-link construction, and
-site-diagonal gauge bridges. The corresponding ksdft integration tests exercise
-its compatibility imports and independent seam-route reconciliation.
+site-diagonal gauge bridges. Tests under
+`tests/projectkoios/physkit/solidstate/tb/` cover destination-authored raw
+scalar hopping diagnostics and the physics-semantic adapter to the exact
+Numerics finite-series owner revision. The corresponding ksdft integration
+tests exercise its compatibility imports and independent seam-route
+reconciliation.
 
 These tests establish only their documented software and bounded numerical
 requirements. They do not establish physical-model adequacy, semiconductor
