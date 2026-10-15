@@ -10,6 +10,15 @@
 
 from enum import StrEnum
 
+from .charge import Charge
+from .density import Density
+from .dipole import Dipole
+from .electricfield import ElectricField
+from .energy import Energy
+from .force import Force
+from .length import Length
+from .mass import Mass
+from .pressure import Pressure
 from .quantities import (
     MODEL_SYSTEM_UNIT_CONVERTER,
     ModelSystemUnit,
@@ -17,20 +26,11 @@ from .quantities import (
     ScalarQuantity,
     Unitless,
 )
-from .pressure import Pressure
-from .length import Length
-from .force import Force
 from .temperature import Temperature
-from .energy import Energy
-from .mass import Mass
 from .time import Time
-from .charge import Charge
-from .velocity import Velocity
 from .torque import Torque
+from .velocity import Velocity
 from .viscosity import Viscosity
-from .dipole import Dipole
-from .density import Density
-from .electricfield import ElectricField
 
 
 class UnitSystem(StrEnum):
@@ -111,6 +111,7 @@ class UnitsSI:
 
     Canonical mechanical + EM SI units.
     """
+
     name = "SI"
 
     # --- kinematics ---
@@ -124,7 +125,7 @@ class UnitsSI:
     energy = Energy.Units.J
     torque = Torque.Units.N_m
     pressure = Pressure.Units.Pa
-    viscosity = Viscosity.Units.Pa_s   # dynamic viscosity μ
+    viscosity = Viscosity.Units.Pa_s  # dynamic viscosity μ
 
     # --- thermodynamics ---
     temperature = Temperature.Units.K
@@ -135,12 +136,14 @@ class UnitsSI:
     dipole = Dipole.Units.C_m
     electric_field = ElectricField.Units.V_per_m
 
+
 class UnitsCGS:
     """
     CGS unit system (cm–g–s, electrostatic/esu).
 
     Mechanical CGS + electrostatic CGS (Gaussian-compatible).
     """
+
     name = "CGS"
 
     # --- kinematics ---
@@ -153,18 +156,19 @@ class UnitsCGS:
     force = Force.Units.dyn
     energy = Energy.Units.erg
     torque = Torque.Units.dyn_cm
-    pressure = Pressure.Units.Ba          # barye = dyn/cm^2
-    viscosity = Viscosity.Units.Poise     # dynamic viscosity μ
+    pressure = Pressure.Units.Ba  # barye = dyn/cm^2
+    viscosity = Viscosity.Units.Poise  # dynamic viscosity μ
 
     # --- thermodynamics ---
     temperature = Temperature.Units.K
     density = Density.Units.g_per_cm_dim  # cm^dim aware
 
     # --- electromagnetism (CGS–esu) ---
-    charge = Charge.Units.esu             # statcoulomb
+    charge = Charge.Units.esu  # statcoulomb
     dipole = Dipole.Units.esu_cm
     electric_field = ElectricField.Units.statV_per_cm
     # equivalent to dyn / esu
+
 
 class UnitsElectron:
     """
@@ -174,12 +178,13 @@ class UnitsElectron:
     while time, temperature, pressure, and fields remain
     in laboratory units.
     """
+
     name = "lammps.electron"
 
     # --- kinematics ---
     length = Length.Units.bohr
     time = Time.Units.fs
-    velocity = Velocity.Units.bohr_per_t0   # atomic velocity unit
+    velocity = Velocity.Units.bohr_per_t0  # atomic velocity unit
 
     # --- mechanics ---
     mass = Mass.Units.amu
@@ -191,9 +196,10 @@ class UnitsElectron:
     pressure = Pressure.Units.Pa
 
     # --- electromagnetism ---
-    charge = Charge.Units.e        # dimensionless multiples of e
+    charge = Charge.Units.e  # dimensionless multiples of e
     dipole = Dipole.Units.Debye
     electric_field = ElectricField.Units.V_per_cm
+
 
 class UnitsHartree:
     """
@@ -208,53 +214,56 @@ class UnitsHartree:
     This is a Hamiltonian-normalized unit system,
     not a laboratory unit system.
     """
+
     name = "hartree"
 
     # --- mechanics / quantum ---
-    length = Length.Units.bohr        # a₀
-    mass = Mass.Units.me              # electron mass
-    time = Time.Units.atomic          # t₀ = ħ / E_h
-    energy = Energy.Units.Ha          # Hartree
+    length = Length.Units.bohr  # a₀
+    mass = Mass.Units.me  # electron mass
+    time = Time.Units.atomic  # t₀ = ħ / E_h
+    energy = Energy.Units.Ha  # Hartree
     velocity = Velocity.Units.atomic  # a₀ / t₀
     force = Force.Units.Ha_per_bohr
 
     # --- electromagnetism ---
-    charge = Charge.Units.atomic      # dimensionless (±1)
+    charge = Charge.Units.atomic  # dimensionless (±1)
     electric_field = ElectricField.Units.atomic
 
     # --- derived (conceptual, not SI) ---
     pressure = Pressure.Units.atomic  # E_h / a₀³
-    density = Density.Units.atomic    # m_e / a₀^dim
+    density = Density.Units.atomic  # m_e / a₀^dim
 
 
 class UnitsReal:
-  """
-  Real unit system (LAMMPS 'real')
+    """
+    Real unit system (LAMMPS 'real')
 
-  https://docs.lammps.org/units.html
-  """
-  name = "lammps.real"
+    https://docs.lammps.org/units.html
+    """
 
-  mass = Mass.Units.g_per_mol
-  length = Length.Units.A
-  time = Time.Units.fs
-  energy = Energy.Units.kcal_per_mol
+    name = "lammps.real"
 
-  velocity = Velocity.Units.A_per_fs
-  force = Force.Units.kcal_per_mol_A
-  torque = Torque.Units.kcal_per_mol
+    mass = Mass.Units.g_per_mol
+    length = Length.Units.A
+    time = Time.Units.fs
+    energy = Energy.Units.kcal_per_mol
 
-  temperature = Temperature.Units.K
-  pressure = Pressure.Units.atm
+    velocity = Velocity.Units.A_per_fs
+    force = Force.Units.kcal_per_mol_A
+    torque = Torque.Units.kcal_per_mol
 
-  viscosity = Viscosity.Units.Poise   # dynamic viscosity
+    temperature = Temperature.Units.K
+    pressure = Pressure.Units.atm
 
-  charge = Charge.Units.e
-  dipole = Dipole.Units.e_A
+    viscosity = Viscosity.Units.Poise  # dynamic viscosity
 
-  electric_field = ElectricField.Units.V_per_A
+    charge = Charge.Units.e
+    dipole = Dipole.Units.e_A
 
-  density = Density.Units.g_per_cm3   # (3D); in general LAMMPS uses g/cm^dim
+    electric_field = ElectricField.Units.V_per_A
+
+    density = Density.Units.g_per_cm3  # (3D); in general LAMMPS uses g/cm^dim
+
 
 class UnitsMetal:
     """
@@ -262,6 +271,7 @@ class UnitsMetal:
 
     Practical MD units for crystalline solids and metals.
     """
+
     name = "lammps.metal"
 
     # --- kinematics ---
@@ -275,35 +285,38 @@ class UnitsMetal:
     force = Force.Units.eV_per_A
     torque = Torque.Units.eV
     pressure = Pressure.Units.bar
-    viscosity = Viscosity.Units.Poise    # dynamic viscosity μ
+    viscosity = Viscosity.Units.Poise  # dynamic viscosity μ
 
     # --- thermodynamics ---
     temperature = Temperature.Units.K
     density = Density.Units.g_per_cm_dim  # cm^dim aware
 
     # --- electromagnetism ---
-    charge = Charge.Units.e               # ±1 = ±e
+    charge = Charge.Units.e  # ±1 = ±e
     dipole = Dipole.Units.e_A
     electric_field = ElectricField.Units.V_per_A
 
 
 class UnitsImperial:
-  """
-  Imperial unit system (absolute).
+    """
+    Imperial unit system (absolute).
 
-  Uses absolute force (lbf), not mass-based units.
-  """
-  length = Length.Units.ft
-  mass = Mass.Units.lbm
-  force = Force.Units.lbf
-  pressure = Pressure.Units.psi
-  temperature = Temperature.Units.R
+    Uses absolute force (lbf), not mass-based units.
+    """
+
+    length = Length.Units.ft
+    mass = Mass.Units.lbm
+    force = Force.Units.lbf
+    pressure = Pressure.Units.psi
+    temperature = Temperature.Units.R
+
 
 class UnitsUSCS:
-  """
-  US Customary System (engineering, absolute)
-  """
-  length = Length.Units.ft
-  force = Force.Units.lbf
-  pressure = Pressure.Units.psi
-  temperature = Temperature.Units.R
+    """
+    US Customary System (engineering, absolute)
+    """
+
+    length = Length.Units.ft
+    force = Force.Units.lbf
+    pressure = Pressure.Units.psi
+    temperature = Temperature.Units.R

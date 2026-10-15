@@ -6,8 +6,11 @@ import numpy as np
 import pytest
 from scipy.sparse import csr_matrix
 
-from projectkoios.physkit.discretization import HomogeneousDirichletStateSpace1D, UniformGrid1D
 import projectkoios.physkit.operators as public_operators
+from projectkoios.physkit.discretization import (
+    HomogeneousDirichletStateSpace1D,
+    UniformGrid1D,
+)
 from projectkoios.physkit.operators import DiscreteLinearOperator1D, LinearOperator
 from projectkoios.physkit.operators.base import LinearOperator as DefiningLinearOperator
 from projectkoios.physkit.operators.discrete_1d import (
@@ -149,9 +152,7 @@ def test_complex_scaling_preserves_endpoints_and_canonical_complex_behavior() ->
     assert scaled.codomain is operator.codomain
     assert scaled.shape == operator.shape
     assert scaled.dtype == np.dtype(np.complex128)
-    np.testing.assert_array_equal(
-        result, np.array([8.0 + 16.0j, -15.0 - 30.0j])
-    )
+    np.testing.assert_array_equal(result, np.array([8.0 + 16.0j, -15.0 - 30.0j]))
     assert result.flags.c_contiguous and result.flags.owndata
     assert not np.shares_memory(result, state)
     assert factor == np.complex64(99.0 + 99.0j)
@@ -173,7 +174,9 @@ def test_scaling_rejects_nonfinite_or_unrepresentable_numeric_factors(
         DiagonalOperator().scaled(factor)  # type: ignore[arg-type]
 
 
-def test_scaled_operator_is_observably_immutable_and_has_no_public_composition() -> None:
+def test_scaled_operator_is_observably_immutable_and_has_no_public_composition() -> (
+    None
+):
     operator = DiagonalOperator()
     scaled = operator.scaled(2.0)
 

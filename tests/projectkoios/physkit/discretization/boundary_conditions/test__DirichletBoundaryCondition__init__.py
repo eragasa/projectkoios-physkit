@@ -2,8 +2,13 @@
 
 import pytest
 
-from projectkoios.physkit.core.boundaries import BoundaryCondition, BoundaryConditionType
-from projectkoios.physkit.discretization.boundary_conditions import DirichletBoundaryCondition
+from projectkoios.physkit.core.boundaries import (
+    BoundaryCondition,
+    BoundaryConditionType,
+)
+from projectkoios.physkit.discretization.boundary_conditions import (
+    DirichletBoundaryCondition,
+)
 from projectkoios.physkit.units import ScalarQuantity, Unitless
 
 

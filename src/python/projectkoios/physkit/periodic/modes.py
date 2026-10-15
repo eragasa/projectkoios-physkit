@@ -2,16 +2,13 @@
 
 from __future__ import annotations
 
-from typing import TypeAlias
-
 import numpy as np
 from numpy.typing import NDArray
 
 from projectkoios.physkit.periodic.basis import ReciprocalModeBasis1D
 
-
-FloatArray: TypeAlias = NDArray[np.float64]
-ComplexArray: TypeAlias = NDArray[np.complex128]
+type FloatArray = NDArray[np.float64]
+type ComplexArray = NDArray[np.complex128]
 
 
 class BlochMode1D:
@@ -66,9 +63,7 @@ class BlochMode1D:
         basis: ReciprocalModeBasis1D,
         coefficients: ComplexArray,
     ) -> None:
-        self.wavevector: float = float(
-            wavevector
-        )
+        self.wavevector: float = float(wavevector)
 
         self.basis = basis
 
@@ -100,19 +95,14 @@ class BlochMode1D:
             one-dimensional, or its size does not match the basis.
         """
         if not np.isfinite(self.wavevector):
-            raise ValueError(
-                "wavevector must be finite."
-            )
+            raise ValueError("wavevector must be finite.")
 
         if self.coefficients.ndim != 1:
-            raise ValueError(
-                "coefficients must be one-dimensional."
-            )
+            raise ValueError("coefficients must be one-dimensional.")
 
         if self.coefficients.size != self.basis.size:
             raise ValueError(
-                "The number of coefficients must equal "
-                "the reciprocal-mode basis size."
+                "The number of coefficients must equal the reciprocal-mode basis size."
             )
 
     def cell_periodic_part(
@@ -147,18 +137,14 @@ class BlochMode1D:
         )
 
         if coordinates.ndim != 1:
-            raise ValueError(
-                "coordinates must be one-dimensional."
-            )
+            raise ValueError("coordinates must be one-dimensional.")
 
         # Each row contains one reciprocal-lattice basis function evaluated
         # over every real-space coordinate:
         #
         #     plane_waves[m, j] = exp(i G_m x_j).
         plane_waves: ComplexArray = np.exp(
-            1j
-            * self.basis.vectors[:, None]
-            * coordinates[None, :]
+            1j * self.basis.vectors[:, None] * coordinates[None, :]
         )
 
         # Contract the reciprocal-mode index to obtain u_k(x_j).
@@ -194,16 +180,10 @@ class BlochMode1D:
             dtype=np.float64,
         )
 
-        periodic_part = self.cell_periodic_part(
-            coordinates
-        )
+        periodic_part = self.cell_periodic_part(coordinates)
 
         # Multiply the cell-periodic function by the macroscopic Bloch phase.
-        bloch_phase: ComplexArray = np.exp(
-            1j
-            * self.wavevector
-            * coordinates
-        )
+        bloch_phase: ComplexArray = np.exp(1j * self.wavevector * coordinates)
 
         return bloch_phase * periodic_part
 

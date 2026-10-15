@@ -7,7 +7,6 @@ from numbers import Complex
 
 import numpy as np
 
-
 __all__ = [
     "BoundaryConditionType",
     "BoundaryCondition",
@@ -107,14 +106,10 @@ class AxisBoundaryConditions:
         upper: BoundaryCondition,
     ) -> None:
         if not isinstance(lower, BoundaryCondition):
-            raise TypeError(
-                "lower must be a BoundaryCondition."
-            )
+            raise TypeError("lower must be a BoundaryCondition.")
 
         if not isinstance(upper, BoundaryCondition):
-            raise TypeError(
-                "upper must be a BoundaryCondition."
-            )
+            raise TypeError("upper must be a BoundaryCondition.")
 
         self.lower: BoundaryCondition = lower
         self.upper: BoundaryCondition = upper
@@ -140,24 +135,14 @@ class AxisBoundaryConditions:
 
         if lower_is_paired != upper_is_paired:
             raise ValueError(
-                "Periodic and Bloch conditions must occur "
-                "on both sides of an axis."
+                "Periodic and Bloch conditions must occur on both sides of an axis."
             )
 
-        if (
-            lower_is_paired
-            and self.lower.type is not self.upper.type
-        ):
-            raise ValueError(
-                "Paired boundary-condition types must match."
-            )
+        if lower_is_paired and self.lower.type is not self.upper.type:
+            raise ValueError("Paired boundary-condition types must match.")
 
     def __repr__(self) -> str:
-        return (
-            "AxisBoundaryConditions("
-            f"lower={self.lower!r}, "
-            f"upper={self.upper!r})"
-        )
+        return f"AxisBoundaryConditions(lower={self.lower!r}, upper={self.upper!r})"
 
 
 class DirichletBoundaryCondition(BoundaryCondition):
@@ -195,33 +180,21 @@ class DirichletBoundaryCondition(BoundaryCondition):
         self,
         value: Complex = 0.0,
     ) -> None:
-        if (
-            isinstance(value, (bool, np.bool_))
-            or not isinstance(value, Complex)
-        ):
-            raise TypeError(
-                "value must be a real or complex scalar."
-            )
+        if isinstance(value, (bool, np.bool_)) or not isinstance(value, Complex):
+            raise TypeError("value must be a real or complex scalar.")
 
         self.value: complex = complex(value)
-        self.type: BoundaryConditionType = (
-            BoundaryConditionType.DIRICHLET
-        )
+        self.type: BoundaryConditionType = BoundaryConditionType.DIRICHLET
 
         self.check_args()
 
     def check_args(self) -> None:
         """Validate the prescribed value."""
         if not np.isfinite(self.value):
-            raise ValueError(
-                "value must be finite."
-            )
+            raise ValueError("value must be finite.")
 
     def __repr__(self) -> str:
-        return (
-            f"DirichletBoundaryCondition("
-            f"value={self.value!r})"
-        )
+        return f"DirichletBoundaryCondition(value={self.value!r})"
 
 
 class NeumannBoundaryCondition(BoundaryCondition):
@@ -261,33 +234,21 @@ class NeumannBoundaryCondition(BoundaryCondition):
         self,
         value: Complex = 0.0,
     ) -> None:
-        if (
-            isinstance(value, (bool, np.bool_))
-            or not isinstance(value, Complex)
-        ):
-            raise TypeError(
-                "value must be a real or complex scalar."
-            )
+        if isinstance(value, (bool, np.bool_)) or not isinstance(value, Complex):
+            raise TypeError("value must be a real or complex scalar.")
 
         self.value: complex = complex(value)
-        self.type: BoundaryConditionType = (
-            BoundaryConditionType.NEUMANN
-        )
+        self.type: BoundaryConditionType = BoundaryConditionType.NEUMANN
 
         self.check_args()
 
     def check_args(self) -> None:
         """Validate the prescribed derivative."""
         if not np.isfinite(self.value):
-            raise ValueError(
-                "value must be finite."
-            )
+            raise ValueError("value must be finite.")
 
     def __repr__(self) -> str:
-        return (
-            f"NeumannBoundaryCondition("
-            f"value={self.value!r})"
-        )
+        return f"NeumannBoundaryCondition(value={self.value!r})"
 
 
 class RobinBoundaryCondition(BoundaryCondition):
@@ -338,60 +299,35 @@ class RobinBoundaryCondition(BoundaryCondition):
         beta: Complex,
         value: Complex = 0.0,
     ) -> None:
-        if (
-            isinstance(alpha, (bool, np.bool_))
-            or not isinstance(alpha, Complex)
-        ):
-            raise TypeError(
-                "alpha must be a real or complex scalar."
-            )
+        if isinstance(alpha, (bool, np.bool_)) or not isinstance(alpha, Complex):
+            raise TypeError("alpha must be a real or complex scalar.")
 
-        if (
-            isinstance(beta, (bool, np.bool_))
-            or not isinstance(beta, Complex)
-        ):
-            raise TypeError(
-                "beta must be a real or complex scalar."
-            )
+        if isinstance(beta, (bool, np.bool_)) or not isinstance(beta, Complex):
+            raise TypeError("beta must be a real or complex scalar.")
 
-        if (
-            isinstance(value, (bool, np.bool_))
-            or not isinstance(value, Complex)
-        ):
-            raise TypeError(
-                "value must be a real or complex scalar."
-            )
+        if isinstance(value, (bool, np.bool_)) or not isinstance(value, Complex):
+            raise TypeError("value must be a real or complex scalar.")
 
         self.alpha: complex = complex(alpha)
         self.beta: complex = complex(beta)
         self.value: complex = complex(value)
-        self.type: BoundaryConditionType = (
-            BoundaryConditionType.ROBIN
-        )
+        self.type: BoundaryConditionType = BoundaryConditionType.ROBIN
 
         self.check_args()
 
     def check_args(self) -> None:
         """Validate the Robin coefficients and value."""
         if not np.isfinite(self.alpha):
-            raise ValueError(
-                "alpha must be finite."
-            )
+            raise ValueError("alpha must be finite.")
 
         if not np.isfinite(self.beta):
-            raise ValueError(
-                "beta must be finite."
-            )
+            raise ValueError("beta must be finite.")
 
         if not np.isfinite(self.value):
-            raise ValueError(
-                "value must be finite."
-            )
+            raise ValueError("value must be finite.")
 
         if self.alpha == 0.0 and self.beta == 0.0:
-            raise ValueError(
-                "alpha and beta must not both be zero."
-            )
+            raise ValueError("alpha and beta must not both be zero.")
 
     def __repr__(self) -> str:
         return (
@@ -420,9 +356,7 @@ class PeriodicBoundaryCondition(BoundaryCondition):
     """
 
     def __init__(self) -> None:
-        self.type: BoundaryConditionType = (
-            BoundaryConditionType.PERIODIC
-        )
+        self.type: BoundaryConditionType = BoundaryConditionType.PERIODIC
 
     def __repr__(self) -> str:
         return "PeriodicBoundaryCondition()"
@@ -453,9 +387,7 @@ class BlochBoundaryCondition(BoundaryCondition):
     """
 
     def __init__(self) -> None:
-        self.type: BoundaryConditionType = (
-            BoundaryConditionType.BLOCH
-        )
+        self.type: BoundaryConditionType = BoundaryConditionType.BLOCH
 
     def __repr__(self) -> str:
         return "BlochBoundaryCondition()"
@@ -483,9 +415,7 @@ class AsymptoticDecayBoundaryCondition(BoundaryCondition):
     """
 
     def __init__(self) -> None:
-        self.type: BoundaryConditionType = (
-            BoundaryConditionType.ASYMPTOTIC_DECAY
-        )
+        self.type: BoundaryConditionType = BoundaryConditionType.ASYMPTOTIC_DECAY
 
     def __repr__(self) -> str:
         return "AsymptoticDecayBoundaryCondition()"
@@ -526,33 +456,21 @@ class SommerfeldRadiationBoundaryCondition(BoundaryCondition):
         self,
         wavenumber: Complex,
     ) -> None:
-        if (
-            isinstance(wavenumber, (bool, np.bool_))
-            or not isinstance(wavenumber, Complex)
+        if isinstance(wavenumber, (bool, np.bool_)) or not isinstance(
+            wavenumber, Complex
         ):
-            raise TypeError(
-                "wavenumber must be a real or complex scalar."
-            )
+            raise TypeError("wavenumber must be a real or complex scalar.")
 
-        self.wavenumber: complex = complex(
-            wavenumber
-        )
+        self.wavenumber: complex = complex(wavenumber)
 
-        self.type: BoundaryConditionType = (
-            BoundaryConditionType.SOMMERFELD_RADIATION
-        )
+        self.type: BoundaryConditionType = BoundaryConditionType.SOMMERFELD_RADIATION
 
         self.check_args()
 
     def check_args(self) -> None:
         """Validate the outgoing-field wavenumber."""
         if not np.isfinite(self.wavenumber):
-            raise ValueError(
-                "wavenumber must be finite."
-            )
+            raise ValueError("wavenumber must be finite.")
 
     def __repr__(self) -> str:
-        return (
-            "SommerfeldRadiationBoundaryCondition("
-            f"wavenumber={self.wavenumber!r})"
-        )
+        return f"SommerfeldRadiationBoundaryCondition(wavenumber={self.wavenumber!r})"

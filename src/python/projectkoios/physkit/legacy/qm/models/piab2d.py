@@ -3,11 +3,8 @@
 from __future__ import annotations
 
 from abc import ABC
-from typing import Generic, TypeVar
 
-from .piab import Piab
-from .piab import PiabResult
-from .piab import PiabSolver
+from .piab import Piab, PiabResult, PiabSolver
 
 
 class Piab2D(Piab):
@@ -26,15 +23,8 @@ class Piab2DResult(PiabResult):
     pass
 
 
-Piab2DResultT = TypeVar(
-    "Piab2DResultT",
-    bound=Piab2DResult,
-)
-
-
-class Piab2DSolver(
+class Piab2DSolver[Piab2DResultT: Piab2DResult](
     PiabSolver[Piab2DResultT],
-    Generic[Piab2DResultT],
     ABC,
 ):
     """

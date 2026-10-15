@@ -1,11 +1,18 @@
 """Public lattice-geometry API for :mod:`projectkoios.physkit.periodic`."""
 
-from projectkoios.physkit.periodic.lattice.base import Lattice, Lattice3D
+from projectkoios.physkit.periodic.kpoints import (
+    KPointPath1D,
+    KPointPath2D,
+    KPointPath3D,
+    KPointPathND,
+)
 from projectkoios.physkit.periodic.lattice.base import (
     DirectLattice,
+    FirstBrillouinZone,
+    Lattice,
+    Lattice3D,
     ReciprocalLattice,
     WignerSeitzCell,
-    FirstBrillouinZone
 )
 from projectkoios.physkit.periodic.lattice.lattice1d import (
     DirectLattice1D,
@@ -24,13 +31,6 @@ from projectkoios.physkit.periodic.lattice.lattice3d import (
     FirstBrillouinZone3D,
     ReciprocalLattice3D,
     WignerSeitzCell3D,
-)
-
-from projectkoios.physkit.periodic.kpoints import (
-    KPointPath1D,
-    KPointPath2D,
-    KPointPath3D,
-    KPointPathND
 )
 
 __all__ = [

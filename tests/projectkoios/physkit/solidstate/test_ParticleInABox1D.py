@@ -1,7 +1,6 @@
 import pytest
-pytestmark = pytest.mark.skip(reason="Scratch stub; not ready for collection.")
 
-import numpy as np
+pytestmark = pytest.mark.skip(reason="Scratch stub; not ready for collection.")
 
 
 class Laplacian:

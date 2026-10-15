@@ -2,8 +2,8 @@
 
 The module separates immutable geometry from representation semantics.  A
 :class:`HomogeneousDirichletStateSpace1D` contains a closed
-:class:`~projectkoios.physkit.discretization.grid_1d.UniformGrid1D`, prescribes exact zero
-endpoint values, and interprets the ``N - 2`` interior samples as a real or
+:class:`~projectkoios.physkit.discretization.grid_1d.UniformGrid1D`, prescribes
+exact zero endpoint values, and interprets the ``N - 2`` interior samples as a real or
 complex active vector.  Restriction discards endpoints without checking their
 values; embedding supplies exact zeros.
 
@@ -54,7 +54,9 @@ def _validated_numeric_vector(
     dtype = np.complex128 if np.iscomplexobj(array) else np.float64
     result = np.array(array, dtype=dtype, order="C", copy=True)
     if not np.all(np.isfinite(result)):
-        raise ValueError(f"{name} cannot be represented by finite {dtype.__name__} values.")
+        raise ValueError(
+            f"{name} cannot be represented by finite {dtype.__name__} values."
+        )
     return result
 
 
@@ -299,9 +301,7 @@ class HomogeneousDirichletStateSpace1D:
         restrict
             Project a full sampled vector onto its interior entries.
         """
-        active = _validated_numeric_vector(
-            active_state, self.dimension, "active_state"
-        )
+        active = _validated_numeric_vector(active_state, self.dimension, "active_state")
         full = np.zeros(self._grid.num_points, dtype=active.dtype, order="C")
         full[1:-1] = active
         return full

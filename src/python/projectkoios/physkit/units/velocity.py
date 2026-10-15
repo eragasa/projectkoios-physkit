@@ -14,6 +14,7 @@ Notes:
   * Å/fs and Å/ps are common (LAMMPS real/metal)
   * bohr / atomic time (t0) is the atomic velocity unit
 """
+
 from enum import IntEnum
 
 
@@ -36,8 +37,8 @@ class Velocity:
         A_per_ps = 3
 
         # Atomic / electronic
-        bohr_per_t0 = 4      # a0 / atomic time unit
-        atomic = 5           # synonym for bohr_per_t0
+        bohr_per_t0 = 4  # a0 / atomic time unit
+        atomic = 5  # synonym for bohr_per_t0
 
     # ------------------------------------------------------------------
     # Unit scale factors to canonical m/s
@@ -56,19 +57,19 @@ class Velocity:
     _BOHR_PER_T0_TO_M_PER_S = _A0 / _T0
 
     _TO_m_per_s = (
-        1.0,                            # m/s
-        _CM_TO_M,                       # cm/s
-        _A_TO_M / _FS_TO_S,             # Å/fs
-        _A_TO_M / _PS_TO_S,             # Å/ps
-        _BOHR_PER_T0_TO_M_PER_S,        # bohr/t0
-        _BOHR_PER_T0_TO_M_PER_S,        # atomic (same)
+        1.0,  # m/s
+        _CM_TO_M,  # cm/s
+        _A_TO_M / _FS_TO_S,  # Å/fs
+        _A_TO_M / _PS_TO_S,  # Å/ps
+        _BOHR_PER_T0_TO_M_PER_S,  # bohr/t0
+        _BOHR_PER_T0_TO_M_PER_S,  # atomic (same)
     )
 
     # ------------------------------------------------------------------
     # Core conversion
     # ------------------------------------------------------------------
     @staticmethod
-    def convert(*, from_, to: "Velocity.Units"):
+    def convert(*, from_, to: Velocity.Units):
         """
         Convert velocity values between units.
         """
@@ -81,11 +82,11 @@ class Velocity:
     # Internal canonical helpers
     # ------------------------------------------------------------------
     @staticmethod
-    def _to_canonical(value, unit: "Velocity.Units"):
+    def _to_canonical(value, unit: Velocity.Units):
         """Convert value to canonical unit (m/s)."""
         return value * Velocity._TO_m_per_s[int(unit)]
 
     @staticmethod
-    def _from_canonical(value_m_s, unit: "Velocity.Units"):
+    def _from_canonical(value_m_s, unit: Velocity.Units):
         """Convert value from canonical unit (m/s)."""
         return value_m_s / Velocity._TO_m_per_s[int(unit)]

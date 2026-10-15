@@ -2,12 +2,14 @@
 # 2026, Eugene Joseph M. Ragasa
 
 from __future__ import annotations
-from typing import TypeAlias
+
 from numbers import Real
+
 import numpy as np
 from numpy.typing import NDArray
 
-FloatArray: TypeAlias = NDArray[np.float64]
+type FloatArray = NDArray[np.float64]
+
 
 class CartesianAxis:
     """
@@ -168,9 +170,7 @@ class CartesianAxis:
             raise ValueError(f"{self.name}_max must be finite.")
 
         if self.upper <= self.lower:
-            raise ValueError(
-                f"{self.name}_max must be greater than {self.name}_min."
-            )
+            raise ValueError(f"{self.name}_max must be greater than {self.name}_min.")
 
         if self.N < 2:
             raise ValueError(f"N{self.name} must be at least 2.")
@@ -270,6 +270,7 @@ class CartesianGrid1D:
             f"endpoint={self.endpoint})"
         )
 
+
 class ActiveSet1D:
     """
     Active grid indices on a one-dimensional Cartesian grid.
@@ -308,24 +309,16 @@ class ActiveSet1D:
         )
 
         if self.indices.ndim != 1:
-            raise ValueError(
-                "indices must be one-dimensional."
-            )
+            raise ValueError("indices must be one-dimensional.")
 
         if np.any(self.indices < 0):
-            raise ValueError(
-                "indices must not contain negative values."
-            )
+            raise ValueError("indices must not contain negative values.")
 
         if np.any(self.indices >= self.grid.Nx):
-            raise ValueError(
-                "indices must be less than grid.Nx."
-            )
+            raise ValueError("indices must be less than grid.Nx.")
 
         if np.unique(self.indices).size != self.indices.size:
-            raise ValueError(
-                "indices must not contain repeated values."
-            )
+            raise ValueError("indices must not contain repeated values.")
 
     @property
     def coordinates(self) -> FloatArray:
@@ -352,11 +345,7 @@ class ActiveSet1D:
         return int(self.indices.size)
 
     def __repr__(self) -> str:
-        return (
-            f"ActiveSet1D("
-            f"size={self.size}, "
-            f"indices={self.indices!r})"
-        )
+        return f"ActiveSet1D(size={self.size}, indices={self.indices!r})"
 
 
 class CartesianGrid2D:
@@ -401,8 +390,12 @@ class CartesianGrid2D:
 
     def __init__(
         self,
-        x_min: float, x_max: float, Nx: int,
-        y_min: float, y_max: float, Ny: int,
+        x_min: float,
+        x_max: float,
+        Nx: int,
+        y_min: float,
+        y_max: float,
+        Ny: int,
         *,
         endpoint_x: bool = True,
         endpoint_y: bool = True,
@@ -546,24 +539,39 @@ class CartesianGrid3D:
 
     def __init__(
         self,
-        x_min: float, x_max: float, Nx: int,
-        y_min: float, y_max: float, Ny: int,
-        z_min: float, z_max: float, Nz: int,
+        x_min: float,
+        x_max: float,
+        Nx: int,
+        y_min: float,
+        y_max: float,
+        Ny: int,
+        z_min: float,
+        z_max: float,
+        Nz: int,
         *,
         endpoint_x: bool = True,
         endpoint_y: bool = True,
         endpoint_z: bool = True,
     ) -> None:
         self.x_axis = CartesianAxis(
-            name="x", lower=x_min, upper=x_max, N=Nx,
+            name="x",
+            lower=x_min,
+            upper=x_max,
+            N=Nx,
             endpoint=endpoint_x,
         )
         self.y_axis = CartesianAxis(
-            name="y", lower=y_min, upper=y_max, N=Ny,
+            name="y",
+            lower=y_min,
+            upper=y_max,
+            N=Ny,
             endpoint=endpoint_y,
         )
         self.z_axis = CartesianAxis(
-            name="z", lower=z_min, upper=z_max, N=Nz,
+            name="z",
+            lower=z_min,
+            upper=z_max,
+            N=Nz,
             endpoint=endpoint_z,
         )
 
@@ -591,7 +599,9 @@ class CartesianGrid3D:
         self.shape: tuple[int, int, int] = (self.Nx, self.Ny, self.Nz)
         self.size: int = self.Nx * self.Ny * self.Nz
         self.delta: tuple[float, float, float] = (
-            self.dx, self.dy, self.dz,
+            self.dx,
+            self.dy,
+            self.dz,
         )
 
     @property
@@ -626,9 +636,7 @@ class CartesianGrid3D:
         """
         X, Y, Z = self.mesh
 
-        return np.column_stack(
-            (X.ravel(), Y.ravel(), Z.ravel())
-        )
+        return np.column_stack((X.ravel(), Y.ravel(), Z.ravel()))
 
     def __repr__(self) -> str:
         """Return an unambiguous representation of the grid."""

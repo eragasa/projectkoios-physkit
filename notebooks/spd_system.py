@@ -1,5 +1,6 @@
-import pygame
 import math
+
+import pygame
 
 pygame.init()
 
@@ -42,6 +43,7 @@ history = []
 
 t = 0.0
 
+
 # ----------------------------
 # Helpers
 # ----------------------------
@@ -64,13 +66,7 @@ def draw_spring(x1, x2, y):
 
     points.append((x2, y))
 
-    pygame.draw.lines(
-        screen,
-        (100, 220, 255),
-        False,
-        points,
-        3
-    )
+    pygame.draw.lines(screen, (100, 220, 255), False, points, 3)
 
 
 # ----------------------------
@@ -79,17 +75,14 @@ def draw_spring(x1, x2, y):
 running = True
 
 while running:
-
     dt = clock.tick(60) / 1000
     t += dt
 
     for event in pygame.event.get():
-
         if event.type == pygame.QUIT:
             running = False
 
         elif event.type == pygame.KEYDOWN:
-
             if event.key == pygame.K_r:
                 x = 150
                 v = 0
@@ -116,17 +109,11 @@ while running:
                 force_amp = max(0, force_amp - 5)
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
-
             mx, my = pygame.mouse.get_pos()
 
             mass_x = equilibrium + x
 
-            rect = pygame.Rect(
-                mass_x,
-                HEIGHT // 2 - mass_h // 2,
-                mass_w,
-                mass_h
-            )
+            rect = pygame.Rect(mass_x, HEIGHT // 2 - mass_h // 2, mass_w, mass_h)
 
             if rect.collidepoint(mx, my):
                 dragging = True
@@ -138,7 +125,6 @@ while running:
     # Mouse drag
     # ------------------------
     if dragging:
-
         mx, _ = pygame.mouse.get_pos()
 
         x = mx - equilibrium
@@ -148,11 +134,7 @@ while running:
     # Physics update
     # ------------------------
     elif not paused:
-
-        forcing = (
-            force_amp *
-            math.sin(2 * math.pi * force_freq * t)
-        )
+        forcing = force_amp * math.sin(2 * math.pi * force_freq * t)
 
         a = (-k * x - c * v + forcing) / m
 
@@ -189,71 +171,40 @@ while running:
     screen.fill((30, 30, 35))
 
     # Wall
-    pygame.draw.rect(
-        screen,
-        (170, 170, 170),
-        (wall_x - 25, 80, 25, 300)
-    )
+    pygame.draw.rect(screen, (170, 170, 170), (wall_x - 25, 80, 25, 300))
 
     mass_x = equilibrium + x
     mass_y = HEIGHT // 2 - mass_h // 2
 
     # Spring
-    draw_spring(
-        wall_x,
-        mass_x,
-        HEIGHT // 2
-    )
+    draw_spring(wall_x, mass_x, HEIGHT // 2)
 
     # Mass
     pygame.draw.rect(
-        screen,
-        (255, 180, 80),
-        (mass_x, mass_y, mass_w, mass_h),
-        border_radius=8
+        screen, (255, 180, 80), (mass_x, mass_y, mass_w, mass_h), border_radius=8
     )
 
     # Equilibrium marker
-    pygame.draw.line(
-        screen,
-        (100, 255, 100),
-        (equilibrium, 100),
-        (equilibrium, 450),
-        2
-    )
+    pygame.draw.line(screen, (100, 255, 100), (equilibrium, 100), (equilibrium, 450), 2)
 
     # ------------------------
     # Graph
     # ------------------------
     graph_y = 500
 
-    pygame.draw.line(
-        screen,
-        (120, 120, 120),
-        (0, graph_y),
-        (WIDTH, graph_y),
-        1
-    )
+    pygame.draw.line(screen, (120, 120, 120), (0, graph_y), (WIDTH, graph_y), 1)
 
     if len(history) > 1:
-
         pts = []
 
         for i, value in enumerate(history):
-
             gx = 600 + i
 
             gy = graph_y - value * 0.25
 
             pts.append((gx, gy))
 
-        pygame.draw.lines(
-            screen,
-            (255, 100, 100),
-            False,
-            pts,
-            2
-        )
+        pygame.draw.lines(screen, (255, 100, 100), False, pts, 2)
 
     # ------------------------
     # Text
@@ -265,59 +216,23 @@ while running:
     draw_text(f"Displacement: {x:.2f}", 20, 130)
     draw_text(f"Velocity: {v:.2f}", 20, 160)
 
-    draw_text(
-        f"Energy: {total_energy:.2f}",
-        20,
-        190
-    )
+    draw_text(f"Energy: {total_energy:.2f}", 20, 190)
 
-    draw_text(
-        f"Force Amp: {force_amp:.1f}",
-        20,
-        220
-    )
+    draw_text(f"Force Amp: {force_amp:.1f}", 20, 220)
 
-    draw_text(
-        f"State: {state}",
-        20,
-        260
-    )
+    draw_text(f"State: {state}", 20, 260)
 
-    draw_text(
-        "Drag block with mouse",
-        20,
-        320
-    )
+    draw_text("Drag block with mouse", 20, 320)
 
-    draw_text(
-        "UP/DOWN : damping",
-        20,
-        350
-    )
+    draw_text("UP/DOWN : damping", 20, 350)
 
-    draw_text(
-        "LEFT/RIGHT : spring",
-        20,
-        380
-    )
+    draw_text("LEFT/RIGHT : spring", 20, 380)
 
-    draw_text(
-        "F/G : forcing",
-        20,
-        410
-    )
+    draw_text("F/G : forcing", 20, 410)
 
-    draw_text(
-        "SPACE : pause",
-        20,
-        440
-    )
+    draw_text("SPACE : pause", 20, 440)
 
-    draw_text(
-        "R : reset",
-        20,
-        470
-    )
+    draw_text("R : reset", 20, 470)
 
     pygame.display.flip()
 

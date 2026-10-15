@@ -1,12 +1,11 @@
 # physkit/core/state.py
 
 from dataclasses import dataclass
+
 import numpy as np
 
 # physkit/core/state.py
 
-from dataclasses import dataclass
-import numpy as np
 
 @dataclass
 class Grid1D:
@@ -15,6 +14,7 @@ class Grid1D:
     Dirichlet boundaries (e.g. psi=0 at 0 and L) are handled by the physics,
     not stored as degrees of freedom.
     """
+
     x: np.ndarray  # shape (N,), internal points only
 
     @property
@@ -29,13 +29,14 @@ class Wavefunction1D:
     """
     Discrete wavefunction psi(x) sampled on a Grid1D.
     """
+
     grid: Grid1D
     values: np.ndarray  # shape (N,)
 
-    def copy(self) -> "Wavefunction1D":
+    def copy(self) -> Wavefunction1D:
         return Wavefunction1D(self.grid, self.values.copy())
 
-    def normalize(self) -> "Wavefunction1D":
+    def normalize(self) -> Wavefunction1D:
         """
         Normalize with respect to the discrete L2 norm approximating
         the continuum integral ∫ |psi(x)|^2 dx on (0, L).
@@ -48,7 +49,7 @@ class Wavefunction1D:
         self.values /= norm
         return self
 
-    def inner(self, other: "Wavefunction1D") -> complex:
+    def inner(self, other: Wavefunction1D) -> complex:
         """
         Discrete inner product ⟨self | other⟩ ≈ ∫ psi* phi dx.
         """

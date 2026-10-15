@@ -3,15 +3,14 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import TypeAlias
 
 import numpy as np
 from numpy.typing import NDArray
 
 from projectkoios.physkit.periodic.reciprocal import ReciprocalLattice1D
 
-FloatArray: TypeAlias = NDArray[np.float64]
-IntArray: TypeAlias = NDArray[np.int64]
+type FloatArray = NDArray[np.float64]
+type IntArray = NDArray[np.int64]
 
 
 class ReciprocalModeBasis1D:
@@ -104,14 +103,10 @@ class ReciprocalModeBasis1D:
             mode_limit,
             (int, np.integer),
         ):
-            raise TypeError(
-                "mode_limit must be an integer."
-            )
+            raise TypeError("mode_limit must be an integer.")
 
         if mode_limit < 0:
-            raise ValueError(
-                "mode_limit must be nonnegative."
-            )
+            raise ValueError("mode_limit must be nonnegative.")
 
         modes: IntArray = np.arange(
             -mode_limit,
@@ -150,19 +145,13 @@ class ReciprocalModeBasis1D:
             If the modes are empty, multidimensional, or duplicated.
         """
         if self.modes.ndim != 1:
-            raise ValueError(
-                "modes must be one-dimensional."
-            )
+            raise ValueError("modes must be one-dimensional.")
 
         if self.modes.size == 0:
-            raise ValueError(
-                "modes cannot be empty."
-            )
+            raise ValueError("modes cannot be empty.")
 
         if np.unique(self.modes).size != self.modes.size:
-            raise ValueError(
-                "modes must be unique."
-            )
+            raise ValueError("modes must be unique.")
 
     def shifted_wavevectors(
         self,
@@ -182,8 +171,6 @@ class ReciprocalModeBasis1D:
             Shifted vectors ``wavevector + G_m``.
         """
         if not np.isscalar(wavevector):
-            raise TypeError(
-                "wavevector must be a scalar."
-            )
+            raise TypeError("wavevector must be a scalar.")
 
         return self.vectors + float(wavevector)

@@ -36,12 +36,11 @@ or conversion between SI and Gaussian CGS equation forms.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import math
+from dataclasses import dataclass
 from typing import (
     Final,
     Protocol,
-    TypeAlias,
     runtime_checkable,
 )
 
@@ -171,10 +170,7 @@ class ConstantsGaussianCGS:
 
 ConstantsCGS = ConstantsGaussianCGS
 
-Constants: TypeAlias = (
-    ConstantsSI
-    | ConstantsGaussianCGS
-)
+type Constants = ConstantsSI | ConstantsGaussianCGS
 
 
 SI: Final[ConstantsSI] = ConstantsSI()

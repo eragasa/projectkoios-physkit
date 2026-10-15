@@ -12,10 +12,6 @@ from __future__ import annotations
 
 from abc import ABC
 from numbers import Integral
-from typing import (
-    Generic,
-    TypeVar,
-)
 
 import numpy as np
 from numpy.typing import NDArray
@@ -25,7 +21,6 @@ from projectkoios.physkit.legacy.qm.models.piab1d import (
     Piab1DResult,
     Piab1DSolver,
 )
-
 
 FloatArray = NDArray[np.float64]
 IntArray = NDArray[np.int64]
@@ -73,9 +68,7 @@ class Piab1DTISEResult(
         energies: FloatArray,
     ) -> None:
         if not isinstance(model, Piab1D):
-            raise TypeError(
-                "model must be an instance of Piab1D."
-            )
+            raise TypeError("model must be an instance of Piab1D.")
 
         quantum_numbers_array = np.asarray(
             quantum_numbers,
@@ -138,33 +131,22 @@ class Piab1DTISEResult(
             the energies are nonfinite or not strictly increasing.
         """
         if quantum_numbers.ndim != 1:
-            raise ValueError(
-                "quantum_numbers must be one-dimensional."
-            )
+            raise ValueError("quantum_numbers must be one-dimensional.")
 
         if energies.ndim != 1:
-            raise ValueError(
-                "energies must be one-dimensional."
-            )
+            raise ValueError("energies must be one-dimensional.")
 
         if quantum_numbers.size == 0:
-            raise ValueError(
-                "At least one quantum number is required."
-            )
+            raise ValueError("At least one quantum number is required.")
 
         if quantum_numbers.size != energies.size:
-            raise ValueError(
-                "quantum_numbers and energies must have "
-                "the same length."
-            )
+            raise ValueError("quantum_numbers and energies must have the same length.")
 
         if not np.issubdtype(
             quantum_numbers.dtype,
             np.integer,
         ):
-            raise TypeError(
-                "quantum_numbers must have an integer dtype."
-            )
+            raise TypeError("quantum_numbers must have an integer dtype.")
 
         expected_quantum_numbers = np.arange(
             1,
@@ -182,22 +164,13 @@ class Piab1DTISEResult(
             )
 
         if not np.all(np.isfinite(energies)):
-            raise ValueError(
-                "energies must contain only finite values."
-            )
+            raise ValueError("energies must contain only finite values.")
 
         if np.any(energies <= 0.0):
-            raise ValueError(
-                "energies must be greater than zero."
-            )
+            raise ValueError("energies must be greater than zero.")
 
-        if (
-            energies.size > 1
-            and np.any(np.diff(energies) <= 0.0)
-        ):
-            raise ValueError(
-                "energies must be strictly increasing."
-            )
+        if energies.size > 1 and np.any(np.diff(energies) <= 0.0):
+            raise ValueError("energies must be strictly increasing.")
 
     @property
     def number_of_states(self) -> int:
@@ -219,16 +192,8 @@ class Piab1DTISEResult(
         )
 
 
-Piab1DTISEResultType = TypeVar(
-    "Piab1DTISEResultType",
-    bound=Piab1DTISEResult,
-    covariant=True,
-)
-
-
-class Piab1DTISESolver(
+class Piab1DTISESolver[Piab1DTISEResultType: Piab1DTISEResult](
     Piab1DSolver[Piab1DTISEResultType],
-    Generic[Piab1DTISEResultType],
     ABC,
 ):
     """
@@ -260,30 +225,19 @@ class Piab1DTISESolver(
         number_of_states: int,
     ) -> None:
         if not isinstance(model, Piab1D):
-            raise TypeError(
-                "model must be an instance of Piab1D."
-            )
+            raise TypeError("model must be an instance of Piab1D.")
 
-        if (
-            isinstance(
-                number_of_states,
-                (bool, np.bool_),
-            )
-            or not isinstance(
-                number_of_states,
-                Integral,
-            )
+        if isinstance(
+            number_of_states,
+            (bool, np.bool_),
+        ) or not isinstance(
+            number_of_states,
+            Integral,
         ):
-            raise TypeError(
-                "number_of_states must be an integer."
-            )
+            raise TypeError("number_of_states must be an integer.")
 
         if number_of_states < 1:
-            raise ValueError(
-                "number_of_states must be at least one."
-            )
+            raise ValueError("number_of_states must be at least one.")
 
         self.model: Piab1D = model
-        self.number_of_states: int = int(
-            number_of_states
-        )
+        self.number_of_states: int = int(number_of_states)

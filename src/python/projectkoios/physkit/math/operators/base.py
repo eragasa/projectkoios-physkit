@@ -1,8 +1,11 @@
 # physkit/core/operator.py
 
 from abc import ABC, abstractmethod
+
 import numpy as np
+
 from .state import Grid1D, Wavefunction1D
+
 
 class LinearOperator1D(ABC):
     """

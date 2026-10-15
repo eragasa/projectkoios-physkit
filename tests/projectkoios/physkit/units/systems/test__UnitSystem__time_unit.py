@@ -1,6 +1,6 @@
 """Verification of ``UnitSystem.time_unit``."""
 
-from projectkoios.physkit.units import PhysicalUnit, UnitSystem, Unitless
+from projectkoios.physkit.units import PhysicalUnit, Unitless, UnitSystem
 
 
 def test_returns_selected_time_scale() -> None:

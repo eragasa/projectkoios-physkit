@@ -1,10 +1,15 @@
-import numpy as np
-from projectkoios.physkit.qm.models.piab1d import ParticleInABox1D
-
 import math
 
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.axes import Axes
 
-class Tise1DAnalytical
+from projectkoios.physkit.qm.models.piab1d import ParticleInABox1D
+
+
+class Tise1DAnalytical:
+    pass
+
 
 class ParticleInABox1DAnalytical(Tise1DAnalytical):
     def __init__(self, x_min, x_max, *, mass: float = 1, hbar: float = 1):
@@ -15,11 +20,7 @@ class ParticleInABox1DAnalytical(Tise1DAnalytical):
         self.L = self.x_max - self.x_min
 
     def get_energies(self, n: np.ndarray) -> np.ndarray:
-        energies = (
-            n**2
-            * (self.hbar**2 * math.pi**2)
-            / (2 * self.mass * self.L**2)
-        )
+        energies = n**2 * (self.hbar**2 * math.pi**2) / (2 * self.mass * self.L**2)
         return energies
 
     def get_k(self, n: np.ndarray) -> np.ndarray:
@@ -35,10 +36,7 @@ class ParticleInABox1DAnalytical(Tise1DAnalytical):
         k = self.get_k(n=n)
 
         energies = (
-            self.hbar**2
-            / (2 * self.mass)
-            * (4 / dx**2)
-            * np.sin(k * dx / 2) ** 2
+            self.hbar**2 / (2 * self.mass) * (4 / dx**2) * np.sin(k * dx / 2) ** 2
         )
 
         return energies
@@ -49,9 +47,7 @@ class ParticleInABox1DAnalytical(Tise1DAnalytical):
 
         psi_n(x) = sqrt(2/L) sin(n pi (x - x_min) / L)
         """
-        return np.sqrt(2.0 / self.L) * np.sin(
-            n * np.pi * (x - self.x_min) / self.L
-        )
+        return np.sqrt(2.0 / self.L) * np.sin(n * np.pi * (x - self.x_min) / self.L)
 
 
 # model parameters
@@ -75,21 +71,16 @@ eigvec = solver.eigvec
 
 norms = solver.norms
 
-import matplotlib.pyplot as plt
-from matplotlib.axes import Axes
-
 
 class VisualizePiab1D:
     def __init__(self, piab1d_computational: ParticleInABox1D):
         self.piab1d_computational: ParticleInABox1D = piab1d_computational
 
-        self.piab1d_analytical: ParticleInABoxAnalytical1D = (
-            ParticleInABoxAnalytical1D(
-                x_min=self.piab1d_computational.grid.x_min,
-                x_max=self.piab1d_computational.grid.x_max,
-                mass=self.piab1d_computational.mass,
-                hbar=self.piab1d_computational.hbar,
-            )
+        self.piab1d_analytical: ParticleInABox1DAnalytical = ParticleInABox1DAnalytical(
+            x_min=self.piab1d_computational.grid.x_min,
+            x_max=self.piab1d_computational.grid.x_max,
+            mass=self.piab1d_computational.mass,
+            hbar=self.piab1d_computational.hbar,
         )
 
     def get_n(self) -> np.ndarray:
@@ -225,6 +216,7 @@ class VisualizePiab1D:
         ax.set_title("Particle in a Box Wavefunctions")
         ax.legend()
         ax.grid(True)
+
 
 fig, ax = plt.subplots(
     nrows=2,

@@ -2,7 +2,9 @@
 
 import numpy as np
 
-from projectkoios.physkit.discretization.boundary_conditions import DirichletBoundaryCondition
+from projectkoios.physkit.discretization.boundary_conditions import (
+    DirichletBoundaryCondition,
+)
 from projectkoios.physkit.discretization.cartesian_grids import UniformCartesianGrid1D
 from projectkoios.physkit.discretization.intervals import DirichletInterval
 from projectkoios.physkit.operators.operators_1d import (

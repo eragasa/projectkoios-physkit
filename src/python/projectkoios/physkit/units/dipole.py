@@ -17,6 +17,7 @@ Notes:
   * Atomistic / MD: e·Å
   * Atomic units: e·a0 (with e = 1, a0 = 1 in Hartree a.u.)
 """
+
 from enum import IntEnum
 
 
@@ -32,16 +33,16 @@ class Dipole:
         C_m = 0
 
         # CGS (electrostatic)
-        esu_cm = 1        # statC·cm
+        esu_cm = 1  # statC·cm
 
         # Spectroscopy / chemistry
-        Debye = 2         # D
+        Debye = 2  # D
 
         # Atomistic / MD
-        e_A = 3           # e·Å
+        e_A = 3  # e·Å
 
         # Atomic units (Hartree)
-        atomic = 4        # e·a0
+        atomic = 4  # e·a0
 
     # ------------------------------------------------------------------
     # Unit scale factors to canonical C·m
@@ -66,18 +67,18 @@ class Dipole:
     _DEBYE_TO_C_M = 1.0e-18 * _ESU_TO_C * _CM_TO_M  # 3.33564095198152e-30 C·m
 
     _TO_C_M = (
-        1.0,                                 # C·m
-        _ESU_TO_C * _CM_TO_M,                 # esu·cm -> C·m
-        _DEBYE_TO_C_M,                        # Debye -> C·m
-        _E * _A_TO_M,                         # e·Å -> C·m
-        _E * _A0,                             # e·a0 -> C·m
+        1.0,  # C·m
+        _ESU_TO_C * _CM_TO_M,  # esu·cm -> C·m
+        _DEBYE_TO_C_M,  # Debye -> C·m
+        _E * _A_TO_M,  # e·Å -> C·m
+        _E * _A0,  # e·a0 -> C·m
     )
 
     # ------------------------------------------------------------------
     # Core conversion
     # ------------------------------------------------------------------
     @staticmethod
-    def convert(*, from_, to: "Dipole.Units"):
+    def convert(*, from_, to: Dipole.Units):
         """
         Convert electric dipole moment values between units.
         """
@@ -90,11 +91,11 @@ class Dipole:
     # Internal canonical helpers
     # ------------------------------------------------------------------
     @staticmethod
-    def _to_canonical(value, unit: "Dipole.Units"):
+    def _to_canonical(value, unit: Dipole.Units):
         """Convert value to canonical unit (C·m)."""
         return value * Dipole._TO_C_M[int(unit)]
 
     @staticmethod
-    def _from_canonical(value_C_m, unit: "Dipole.Units"):
+    def _from_canonical(value_C_m, unit: Dipole.Units):
         """Convert value from canonical unit (C·m)."""
         return value_C_m / Dipole._TO_C_M[int(unit)]

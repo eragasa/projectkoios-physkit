@@ -12,6 +12,7 @@ Notes:
 - kcal/mol is the canonical energy unit in LAMMPS 'real'.
 - Ha (Hartree) is the atomic unit of energy.
 """
+
 from enum import IntEnum
 
 
@@ -24,12 +25,12 @@ class Energy:
 
     class Units(IntEnum):
         # SI
-        J   = 0
-        kJ  = 1
-        MJ  = 2
+        J = 0
+        kJ = 1
+        MJ = 2
 
         # Solid-state / atomic-scale
-        eV  = 3
+        eV = 3
         meV = 4
         keV = 5
         MeV = 6
@@ -59,32 +60,27 @@ class Energy:
     _EH = 4.3597447222071e-18
 
     _TO_J = (
-        1.0,            # J
-        1.0e3,          # kJ
-        1.0e6,          # MJ
-
-        1.0 * _Q,       # eV
-        1.0e-3 * _Q,    # meV
-        1.0e3 * _Q,     # keV
-        1.0e6 * _Q,     # MeV
-        1.0e9 * _Q,     # GeV
-
-        1.0e-7,         # erg
-
-        1.3558179483314,      # ft·lbf
-        1.3558179483314 / 12, # in·lbf
-
-        4184.0,         # kcal
-        4184.0,         # kcal/mol → J/mol (energy scale per mole)
-
-        _EH,            # Ha
+        1.0,  # J
+        1.0e3,  # kJ
+        1.0e6,  # MJ
+        1.0 * _Q,  # eV
+        1.0e-3 * _Q,  # meV
+        1.0e3 * _Q,  # keV
+        1.0e6 * _Q,  # MeV
+        1.0e9 * _Q,  # GeV
+        1.0e-7,  # erg
+        1.3558179483314,  # ft·lbf
+        1.3558179483314 / 12,  # in·lbf
+        4184.0,  # kcal
+        4184.0,  # kcal/mol → J/mol (energy scale per mole)
+        _EH,  # Ha
     )
 
     # ------------------------------------------------------------------
     # Core conversion
     # ------------------------------------------------------------------
     @staticmethod
-    def convert(*, from_, to: "Energy.Units"):
+    def convert(*, from_, to: Energy.Units):
         """
         Convert energy values between units.
         """
@@ -96,11 +92,11 @@ class Energy:
     # Internal canonical helpers
     # ------------------------------------------------------------------
     @staticmethod
-    def _to_canonical(value, unit: "Energy.Units"):
+    def _to_canonical(value, unit: Energy.Units):
         """Convert value to canonical unit (J)."""
         return value * Energy._TO_J[int(unit)]
 
     @staticmethod
-    def _from_canonical(value_J, unit: "Energy.Units"):
+    def _from_canonical(value_J, unit: Energy.Units):
         """Convert value from canonical unit (J)."""
         return value_J / Energy._TO_J[int(unit)]

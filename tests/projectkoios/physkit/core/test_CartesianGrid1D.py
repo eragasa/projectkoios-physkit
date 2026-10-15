@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from projectkoios.physkit.core.grids import CartesianGrid1D, CartesianAxis
+from projectkoios.physkit.core.grids import CartesianAxis, CartesianGrid1D
 
 
 def test__init__stores_axis_object():

@@ -6,7 +6,9 @@ import numpy as np
 import pytest
 
 from projectkoios.physkit.discretization import UniformGrid1D
-from projectkoios.physkit.discretization.grid_1d import UniformGrid1D as DefiningUniformGrid1D
+from projectkoios.physkit.discretization.grid_1d import (
+    UniformGrid1D as DefiningUniformGrid1D,
+)
 
 
 def test_public_import_is_the_defining_class() -> None:
@@ -36,7 +38,9 @@ def test_valid_scalar_inputs_are_canonicalized_and_geometry_is_correct(
     )
 
 
-@pytest.mark.parametrize("name", ["boundary_values", "active_indices", "restrict", "embed"])
+@pytest.mark.parametrize(
+    "name", ["boundary_values", "active_indices", "restrict", "embed"]
+)
 def test_grid_exposes_geometry_only(name: str) -> None:
     assert not hasattr(UniformGrid1D(0.0, 1.0, 5), name)
 
@@ -56,7 +60,9 @@ def test_coordinates_are_owned_c_contiguous_float64_copies() -> None:
     )
 
 
-@pytest.mark.parametrize("attribute,value", [("a", 2.0), ("b", 3.0), ("num_points", 8), ("extra", 1)])
+@pytest.mark.parametrize(
+    "attribute,value", [("a", 2.0), ("b", 3.0), ("num_points", 8), ("extra", 1)]
+)
 def test_grid_is_observably_immutable(attribute: str, value: object) -> None:
     grid = UniformGrid1D(0.0, 1.0, 5)
 

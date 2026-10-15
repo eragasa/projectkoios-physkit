@@ -1,10 +1,11 @@
-
-from dataclasses import dataclass
 from typing import Protocol
+
 
 class State(Protocol):
     """One configuration of a system."""
+
     ...
+
 
 class StateSpace(Protocol):
     """Collection of valid states for a model."""

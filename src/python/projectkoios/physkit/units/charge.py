@@ -17,6 +17,7 @@ Notes:
 - In Hartree atomic units, the unit of charge is e by definition (e = 1),
   so the atomic charge unit has the same SI magnitude as the elementary charge.
 """
+
 from enum import IntEnum
 
 
@@ -32,13 +33,13 @@ class Charge:
         C = 0
 
         # CGS (electrostatic)
-        esu = 1          # statcoulomb
+        esu = 1  # statcoulomb
 
         # Reduced / electronic
-        e = 2            # elementary charge units (±1 = ±e)
+        e = 2  # elementary charge units (±1 = ±e)
 
         # Atomic units (Hartree)
-        atomic = 3       # atomic unit of charge (e = 1)
+        atomic = 3  # atomic unit of charge (e = 1)
 
     # ------------------------------------------------------------------
     # Unit scale factors to canonical C
@@ -53,17 +54,17 @@ class Charge:
     _ESU_TO_C = 0.1 / _C_CM_PER_S  # = 3.33564095198152e-10 C
 
     _TO_C = (
-        1.0,        # C
+        1.0,  # C
         _ESU_TO_C,  # esu (statC)
-        _E,         # e
-        _E,         # atomic (same SI magnitude as e; e=1 by definition)
+        _E,  # e
+        _E,  # atomic (same SI magnitude as e; e=1 by definition)
     )
 
     # ------------------------------------------------------------------
     # Core conversion
     # ------------------------------------------------------------------
     @staticmethod
-    def convert(*, from_, to: "Charge.Units"):
+    def convert(*, from_, to: Charge.Units):
         """
         Convert charge values between units.
 
@@ -82,11 +83,11 @@ class Charge:
     # Internal canonical helpers
     # ------------------------------------------------------------------
     @staticmethod
-    def _to_canonical(value, unit: "Charge.Units"):
+    def _to_canonical(value, unit: Charge.Units):
         """Convert value to canonical unit (C)."""
         return value * Charge._TO_C[int(unit)]
 
     @staticmethod
-    def _from_canonical(value_C, unit: "Charge.Units"):
+    def _from_canonical(value_C, unit: Charge.Units):
         """Convert value from canonical unit (C)."""
         return value_C / Charge._TO_C[int(unit)]

@@ -5,7 +5,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar
 
-from projectkoios.physkit.core.boundaries import BoundaryCondition, BoundaryConditionType
+from projectkoios.physkit.core.boundaries import (
+    BoundaryCondition,
+    BoundaryConditionType,
+)
 from projectkoios.physkit.units import ScalarQuantity
 
 

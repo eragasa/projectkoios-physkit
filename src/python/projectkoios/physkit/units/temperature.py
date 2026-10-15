@@ -13,9 +13,12 @@ Implementation is intentionally minimal and explicit.
 """
 
 from enum import IntEnum
+
 import numpy as np
-from projectkoios.physkit.types import ArrayLike
+
 from projectkoios.physkit.numeric import as_f64_array
+from projectkoios.physkit.types import ArrayLike
+
 
 class Temperature:
     """
@@ -23,23 +26,24 @@ class Temperature:
 
     Canonical base unit: K (kelvin)
     """
+
     class Units(IntEnum):
-      K  = 0    # Absolute
-      C  = 1    # SI-adjacent, degree Celsius
-      mK = 2    # SI-adjacent, micro-Kelvin
-      F  = 3    # Imperial/USCS, degree Fahrenheit
-      R  = 4    # Imperial/ISCS, degree Rankine
+        K = 0  # Absolute
+        C = 1  # SI-adjacent, degree Celsius
+        mK = 2  # SI-adjacent, micro-Kelvin
+        F = 3  # Imperial/USCS, degree Fahrenheit
+        R = 4  # Imperial/ISCS, degree Rankine
 
     # ------------------------------------------------------------------
     # Conversion parameters
     # T[K] = scale * T[unit] + offset
     # ------------------------------------------------------------------
     _TO_K = {
-        Units.K:  (1.0, 0.0),
-        Units.C:  (1.0, 273.15),
+        Units.K: (1.0, 0.0),
+        Units.C: (1.0, 273.15),
         Units.mK: (1.0e-3, 0.0),
-        Units.F:  (5.0/9.0, 459.67 * 5.0/9.0),
-        Units.R:  (5.0/9.0, 0.0),
+        Units.F: (5.0 / 9.0, 459.67 * 5.0 / 9.0),
+        Units.R: (5.0 / 9.0, 0.0),
     }
 
     # internal guard: ensure table covers all enum members
@@ -47,35 +51,26 @@ class Temperature:
     if _MISSING:
         raise RuntimeError(f"Temperature._TO_K missing entries for: {_MISSING}")
 
-
     # ------------------------------------------------------------------
     # base helpers
     # ------------------------------------------------------------------
     @staticmethod
-    def to_canonical(
-       value: ArrayLike, 
-       unit: "Temperature.Units"
-    ) -> ArrayLike:
+    def to_canonical(value: ArrayLike, unit: Temperature.Units) -> ArrayLike:
         """Convert to base unit (K)."""
         value = as_f64_array(value)
         scale, offset = Temperature._TO_K[unit]
         return value * scale + offset
 
     @staticmethod
-    def from_canonical(
-       value_k: ArrayLike, 
-       unit: "Temperature.Units"
-    ) -> np.ndarray:
+    def from_canonical(value_k: ArrayLike, unit: Temperature.Units) -> np.ndarray:
         """Convert from base unit (K)."""
         value_k = as_f64_array(value_k)
         scale, offset = Temperature._TO_K[unit]
         return (value_k - offset) / scale
-    
+
     @staticmethod
     def convert(
-        value: ArrayLike,
-        units_from: "Temperature.Units",
-        units_to: "Temperature.Units"
+        value: ArrayLike, units_from: Temperature.Units, units_to: Temperature.Units
     ) -> np.ndarray:
         """
         Convert temperature.
@@ -97,18 +92,17 @@ class Temperature:
     @staticmethod
     def check_in_range(
         T_array: ArrayLike,
-        units: "Temperature.Units",
+        units: Temperature.Units,
         valid_range: tuple[float, float],
         *,
-        inclusive: bool = True
+        inclusive: bool = True,
     ) -> None:
         T_arr = np.array(T_array, dtype=float)
-        T_lo, T_hi =  valid_range
+        T_lo, T_hi = valid_range
         if inclusive:
-          bad = np.any((T_arr < T_lo) | (T_arr > T_hi))
+            bad = np.any((T_arr < T_lo) | (T_arr > T_hi))
         else:
-          bad = np.any((T_arr <= T_lo) | (T_arr >= T_hi))
+            bad = np.any((T_arr <= T_lo) | (T_arr >= T_hi))
 
         if bad:
-          raise ValueError(
-            f"T outside of valid range [{T_lo}, {T_hi}] in {units}")
+            raise ValueError(f"T outside of valid range [{T_lo}, {T_hi}] in {units}")

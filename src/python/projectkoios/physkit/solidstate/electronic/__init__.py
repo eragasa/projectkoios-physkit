@@ -13,7 +13,6 @@ from projectkoios.physkit.solidstate.electronic.solvers import (
     PlaneWaveBlochSolver1D,
 )
 
-
 __all__ = [
     "CosinePotentialFourier1D",
     "ElectronicBandStructureResult",

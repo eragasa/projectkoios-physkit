@@ -3,16 +3,14 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import TypeAlias
 
 import numpy as np
 from numpy.typing import NDArray
 
 from projectkoios.physkit.periodic.lattice import FirstBrillouinZone1D
 
-
-FloatArray: TypeAlias = NDArray[np.float64]
-IntArray: TypeAlias = NDArray[np.int64]
+type FloatArray = NDArray[np.float64]
+type IntArray = NDArray[np.int64]
 
 
 class KPointPath1D:

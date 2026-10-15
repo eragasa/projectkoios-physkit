@@ -7,20 +7,15 @@ from __future__ import annotations
 
 from abc import ABC
 from numbers import Real
-from typing import (
-    ClassVar,
-    Generic,
-    Literal,
-    TypeVar,
-)
+from typing import ClassVar, Literal
 
 import numpy as np
 
 from projectkoios.physkit.constants import (
+    SI,
     Constants,
     ConstantsGaussianCGS,
     ConstantsSI,
-    SI,
 )
 from projectkoios.physkit.core.boundaries import (
     AxisBoundaryConditions,
@@ -104,29 +99,14 @@ class Piab1D(Piab):
         *,
         constants: Constants = SI,
     ) -> None:
-        if (
-            isinstance(x_lower, (bool, np.bool_))
-            or not isinstance(x_lower, Real)
-        ):
-            raise TypeError(
-                "x_lower must be a real scalar."
-            )
+        if isinstance(x_lower, (bool, np.bool_)) or not isinstance(x_lower, Real):
+            raise TypeError("x_lower must be a real scalar.")
 
-        if (
-            isinstance(x_upper, (bool, np.bool_))
-            or not isinstance(x_upper, Real)
-        ):
-            raise TypeError(
-                "x_upper must be a real scalar."
-            )
+        if isinstance(x_upper, (bool, np.bool_)) or not isinstance(x_upper, Real):
+            raise TypeError("x_upper must be a real scalar.")
 
-        if (
-            isinstance(mass, (bool, np.bool_))
-            or not isinstance(mass, Real)
-        ):
-            raise TypeError(
-                "mass must be a real scalar."
-            )
+        if isinstance(mass, (bool, np.bool_)) or not isinstance(mass, Real):
+            raise TypeError("mass must be a real scalar.")
 
         if not isinstance(
             constants,
@@ -136,8 +116,7 @@ class Piab1D(Piab):
             ),
         ):
             raise TypeError(
-                "constants must be an instance of ConstantsSI "
-                "or ConstantsGaussianCGS."
+                "constants must be an instance of ConstantsSI or ConstantsGaussianCGS."
             )
 
         self.x_lower: float = float(x_lower)
@@ -147,20 +126,15 @@ class Piab1D(Piab):
 
         self.check_args()
 
-        self.length: float = (
-            self.x_upper
-            - self.x_lower
-        )
+        self.length: float = self.x_upper - self.x_lower
 
-        self.boundary_conditions: AxisBoundaryConditions = (
-            AxisBoundaryConditions(
-                lower=DirichletBoundaryCondition(
-                    value=0.0,
-                ),
-                upper=DirichletBoundaryCondition(
-                    value=0.0,
-                ),
-            )
+        self.boundary_conditions: AxisBoundaryConditions = AxisBoundaryConditions(
+            lower=DirichletBoundaryCondition(
+                value=0.0,
+            ),
+            upper=DirichletBoundaryCondition(
+                value=0.0,
+            ),
         )
 
     def check_args(self) -> None:
@@ -174,39 +148,25 @@ class Piab1D(Piab):
             nonfinite or physically invalid.
         """
         if not np.isfinite(self.x_lower):
-            raise ValueError(
-                "x_lower must be finite."
-            )
+            raise ValueError("x_lower must be finite.")
 
         if not np.isfinite(self.x_upper):
-            raise ValueError(
-                "x_upper must be finite."
-            )
+            raise ValueError("x_upper must be finite.")
 
         if self.x_upper <= self.x_lower:
-            raise ValueError(
-                "x_upper must be greater than x_lower."
-            )
+            raise ValueError("x_upper must be greater than x_lower.")
 
         if not np.isfinite(self.mass):
-            raise ValueError(
-                "mass must be finite."
-            )
+            raise ValueError("mass must be finite.")
 
         if self.mass <= 0.0:
-            raise ValueError(
-                "mass must be greater than zero."
-            )
+            raise ValueError("mass must be greater than zero.")
 
         if not np.isfinite(self.constants.hbar):
-            raise ValueError(
-                "constants.hbar must be finite."
-            )
+            raise ValueError("constants.hbar must be finite.")
 
         if self.constants.hbar <= 0.0:
-            raise ValueError(
-                "constants.hbar must be greater than zero."
-            )
+            raise ValueError("constants.hbar must be greater than zero.")
 
     def __repr__(self) -> str:
         """
@@ -235,16 +195,8 @@ class Piab1DResult(
     pass
 
 
-Piab1DResultType = TypeVar(
-    "Piab1DResultType",
-    bound=Piab1DResult,
-    covariant=True,
-)
-
-
-class Piab1DSolver(
+class Piab1DSolver[Piab1DResultType: Piab1DResult](
     PiabSolver[Piab1DResultType],
-    Generic[Piab1DResultType],
     ABC,
 ):
     """

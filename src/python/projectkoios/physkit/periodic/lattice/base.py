@@ -3,14 +3,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TypeAlias, Self
+from typing import Self
 
 import numpy as np
 from numpy.typing import NDArray
 
-
-FloatArray: TypeAlias = NDArray[np.float64]
-IntArray: TypeAlias = NDArray[np.int64]
+type FloatArray = NDArray[np.float64]
+type IntArray = NDArray[np.int64]
 
 
 class Lattice(ABC):
@@ -45,7 +44,6 @@ class Lattice(ABC):
             Primitive-cell measure appropriate to the lattice dimension.
         """
         raise NotImplementedError
-
 
     @abstractmethod
     def vector(self, indices: IntArray) -> FloatArray:
@@ -87,6 +85,7 @@ class DirectLattice(Lattice):
     A direct lattice defines the discrete real-space translations that leave
     a periodic system invariant.
     """
+
 
 class ReciprocalLattice(Lattice):
     """
@@ -200,6 +199,7 @@ class ReciprocalLattice(Lattice):
         """
         raise NotImplementedError
 
+
 class WignerSeitzCell(ABC):
     """
     Abstract Wigner--Seitz cell of a lattice.
@@ -226,7 +226,6 @@ class WignerSeitzCell(ABC):
         raise NotImplementedError
 
 
-
 class FirstBrillouinZone(WignerSeitzCell):
     """
     Abstract first Brillouin zone.
@@ -245,4 +244,3 @@ class FirstBrillouinZone(WignerSeitzCell):
     def reduce(self, wavevector: FloatArray) -> FloatArray:
         """Reduce a wavevector to one representative inside the zone."""
         raise NotImplementedError
-

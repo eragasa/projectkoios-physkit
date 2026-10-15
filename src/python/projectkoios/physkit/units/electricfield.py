@@ -25,6 +25,7 @@ Caution:
     1 statC = 0.1/c C   (c in cm/s)
     1 statV = 1 erg/statC
 """
+
 from enum import IntEnum
 
 
@@ -76,18 +77,18 @@ class ElectricField:
 
     # Convert to V/m:
     _TO_V_per_m = (
-        1.0,                              # V/m
-        1.0 / _CM_TO_M,                   # V/cm -> V/m
-        1.0 / _A_TO_M,                    # V/Å  -> V/m
-        _STATV_TO_V / _CM_TO_M,           # statV/cm -> V/m
-        _E0,                              # atomic -> V/m
+        1.0,  # V/m
+        1.0 / _CM_TO_M,  # V/cm -> V/m
+        1.0 / _A_TO_M,  # V/Å  -> V/m
+        _STATV_TO_V / _CM_TO_M,  # statV/cm -> V/m
+        _E0,  # atomic -> V/m
     )
 
     # ------------------------------------------------------------------
     # Core conversion
     # ------------------------------------------------------------------
     @staticmethod
-    def convert(*, from_, to: "ElectricField.Units"):
+    def convert(*, from_, to: ElectricField.Units):
         """
         Convert electric field values between units.
         """
@@ -100,11 +101,11 @@ class ElectricField:
     # Internal canonical helpers
     # ------------------------------------------------------------------
     @staticmethod
-    def _to_canonical(value, unit: "ElectricField.Units"):
+    def _to_canonical(value, unit: ElectricField.Units):
         """Convert value to canonical unit (V/m)."""
         return value * ElectricField._TO_V_per_m[int(unit)]
 
     @staticmethod
-    def _from_canonical(value_V_m, unit: "ElectricField.Units"):
+    def _from_canonical(value_V_m, unit: ElectricField.Units):
         """Convert value from canonical unit (V/m)."""
         return value_V_m / ElectricField._TO_V_per_m[int(unit)]

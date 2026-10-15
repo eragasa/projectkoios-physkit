@@ -3,7 +3,8 @@ tests/projectkoios/physkit/constants/test_constants_protocol.py
 
 Purpose
 -------
-These tests validate that `projectkoios.physkit.constants` exposes constants containers that:
+These tests validate that `projectkoios.physkit.constants` exposes constants
+containers that:
 
 1) Satisfy the structural interface `PhysicalConstantsProtocol` at runtime.
 2) Provide the expected attributes as numeric values (or `None` where allowed).
@@ -29,13 +30,13 @@ and basic self-consistency.
 """
 
 import math
-import pytest
 
 from projectkoios.physkit.constants import (
-    PhysicalConstantsProtocol,
+    ConstantsCGS,  # or ConstantsCGS if that’s your name
     ConstantsSI,
-    ConstantsCGS,   # or ConstantsCGS if that’s your name
+    PhysicalConstantsProtocol,
 )
+
 
 def test_satisfies_protocol_runtime():
     """
@@ -45,7 +46,7 @@ def test_satisfies_protocol_runtime():
 
     This runtime check is intentionally shallow: it verifies the presence of the
     required attributes/methods but does not enforce the annotated types. That is
-    why we include explicit numeric checks in `test_required_attributes...`.    
+    why we include explicit numeric checks in `test_required_attributes...`.
     """
     c = ConstantsSI()
     assert isinstance(c, PhysicalConstantsProtocol)
@@ -58,7 +59,7 @@ def test_required_attributes_exist_and_are_numeric_where_expected():
     iterable.
     """
     # 1-tuples needs a trailing comma
-    for c in (ConstantsSI(), ):
+    for c in (ConstantsSI(),):
         assert isinstance(c.a0, float)
         assert isinstance(c.q, float)
         assert isinstance(c.k_B, float)
@@ -71,7 +72,7 @@ def test_required_attributes_exist_and_are_numeric_where_expected():
         assert (c.m_u_u is None) or isinstance(c.m_u_u, float)
         assert (c.eps0 is None) or isinstance(c.eps0, float)
 
+
 def test_hbar_is_consistent_with_h():
     for c in (ConstantsSI(), ConstantsCGS()):
         assert math.isclose(c.hbar, c.h / (2.0 * math.pi), rel_tol=0.0, abs_tol=0.0)
-

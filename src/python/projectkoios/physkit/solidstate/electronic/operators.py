@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import TypeAlias
-
 import numpy as np
 from numpy.typing import NDArray
 
@@ -12,9 +10,8 @@ from projectkoios.physkit.solidstate.electronic.models import (
     PlaneWaveBlochModel1D,
 )
 
-
-FloatArray: TypeAlias = NDArray[np.float64]
-ComplexArray: TypeAlias = NDArray[np.complex128]
+type FloatArray = NDArray[np.float64]
+type ComplexArray = NDArray[np.complex128]
 
 
 class PlaneWaveBlochHamiltonian1D:
@@ -42,9 +39,7 @@ class PlaneWaveBlochHamiltonian1D:
 
         # The potential does not depend on k, so it can be constructed once
         # and reused for every wavevector in the Brillouin zone.
-        self.potential_matrix: ComplexArray = (
-            self.construct_potential_matrix()
-        )
+        self.potential_matrix: ComplexArray = self.construct_potential_matrix()
 
     def kinetic_spectrum(
         self,
@@ -63,17 +58,9 @@ class PlaneWaveBlochHamiltonian1D:
         FloatArray
             Diagonal kinetic-energy entries.
         """
-        shifted_wavevectors = (
-            self.basis.shifted_wavevectors(
-                bloch_wavevector
-            )
-        )
+        shifted_wavevectors = self.basis.shifted_wavevectors(bloch_wavevector)
 
-        return (
-            self.model.hbar**2
-            * shifted_wavevectors**2
-            / (2.0 * self.model.mass)
-        )
+        return self.model.hbar**2 * shifted_wavevectors**2 / (2.0 * self.model.mass)
 
     def construct_potential_matrix(
         self,
@@ -87,13 +74,10 @@ class PlaneWaveBlochHamiltonian1D:
             Matrix with elements ``V_(G' - G)``.
         """
         transferred_wavevectors = (
-            self.basis.vectors[:, None]
-            - self.basis.vectors[None, :]
+            self.basis.vectors[:, None] - self.basis.vectors[None, :]
         )
 
-        return self.model.potential.coefficients(
-            transferred_wavevectors
-        )
+        return self.model.potential.coefficients(transferred_wavevectors)
 
     def construct_matrix(
         self,
@@ -116,14 +100,8 @@ class PlaneWaveBlochHamiltonian1D:
 
         # Add the kinetic spectrum directly to the diagonal without
         # constructing a separate dense diagonal matrix.
-        diagonal_indices = np.diag_indices(
-            self.basis.size
-        )
+        diagonal_indices = np.diag_indices(self.basis.size)
 
-        hamiltonian[diagonal_indices] += (
-            self.kinetic_spectrum(
-                bloch_wavevector
-            )
-        )
+        hamiltonian[diagonal_indices] += self.kinetic_spectrum(bloch_wavevector)
 
         return hamiltonian

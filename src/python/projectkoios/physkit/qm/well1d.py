@@ -1,9 +1,11 @@
 # physkit/qm/well1d.py
 
-import numpy as np
 from dataclasses import dataclass
-from ..core.state import Grid1D, Wavefunction1D
+
+import numpy as np
+
 from ..core.operator import LinearOperator1D
+from ..core.state import Grid1D, Wavefunction1D
 
 
 @dataclass
@@ -29,7 +31,7 @@ class InfiniteSquareWell1D:
         x_internal = x_full[1:-1]
         return Grid1D(x_internal)
 
-    def make_hamiltonian(self) -> "InfiniteSquareWellHamiltonian1D":
+    def make_hamiltonian(self) -> InfiniteSquareWellHamiltonian1D:
         grid = self.make_grid()
         return InfiniteSquareWellHamiltonian1D(grid=grid, m=self.m, hbar=self.hbar)
 
@@ -80,10 +82,10 @@ def reconstruct_with_boundaries(wf: Wavefunction1D, L: float):
     psi(0)=psi(L)=0, and construct the corresponding full x-grid.
     """
     x_internal = wf.grid.x
-    dx = wf.grid.dx
     # infer N_total = N_internal + 2
     N_internal = x_internal.size
     N_total = N_internal + 2
+    dx = L / (N_total - 1)  # noqa: F841 - Retain the derived grid spacing.
     x_full = np.linspace(0.0, L, N_total)
 
     psi_full = np.zeros(N_total, dtype=complex)

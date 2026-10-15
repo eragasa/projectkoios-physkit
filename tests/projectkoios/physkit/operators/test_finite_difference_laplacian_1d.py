@@ -6,7 +6,10 @@ import numpy as np
 import pytest
 from scipy.sparse import csr_matrix
 
-from projectkoios.physkit.discretization import HomogeneousDirichletStateSpace1D, UniformGrid1D
+from projectkoios.physkit.discretization import (
+    HomogeneousDirichletStateSpace1D,
+    UniformGrid1D,
+)
 from projectkoios.physkit.operators import (
     DiscreteLinearOperator1D,
     FiniteDifferenceLaplacian1D,
@@ -47,9 +50,7 @@ def componentwise_stencil_oracle(state: np.ndarray, spacing: float) -> np.ndarra
     expected = np.empty(state.size, dtype=state.dtype)
     for active_index in range(1, full.size - 1):
         expected[active_index - 1] = (
-            full[active_index - 1]
-            - 2.0 * full[active_index]
-            + full[active_index + 1]
+            full[active_index - 1] - 2.0 * full[active_index] + full[active_index + 1]
         ) / spacing**2
     return expected
 
@@ -103,7 +104,6 @@ def test_csr_and_dense_entries_equal_independent_direct_oracle(num_points: int) 
     np.testing.assert_array_equal(operator.to_dense(), expected)
 
 
-
 def test_n_equals_three_is_exact_one_by_one_positive_second_derivative_matrix() -> None:
     operator = make_operator(3, 0.0, 1.0)
 
@@ -142,7 +142,9 @@ def test_sparse_and_dense_inspection_are_defensive_owned_copies() -> None:
         np.array([1.0 + 2.0j, -2.0j, 0.5 - 0.25j, 4.0j, -3.0, 2.0 + 7.0j]),
     ],
 )
-def test_real_and_complex_application_equal_independent_stencil(state: np.ndarray) -> None:
+def test_real_and_complex_application_equal_independent_stencil(
+    state: np.ndarray,
+) -> None:
     operator = make_operator(8, -1.0, 2.0)
     before = state.copy()
     expected = componentwise_stencil_oracle(state, operator.domain.grid.spacing)
@@ -212,7 +214,9 @@ def test_real_and_complex_scaling_matches_explicit_multiplication(
 ) -> None:
     operator = make_operator(8)
     scaled = operator.scaled(factor)
-    reference = factor * componentwise_stencil_oracle(state, operator.domain.grid.spacing)
+    reference = factor * componentwise_stencil_oracle(
+        state, operator.domain.grid.spacing
+    )
     result = scaled @ state
 
     assert scaled.domain is operator.domain
@@ -235,7 +239,7 @@ def test_sine_modes_have_monotone_error_and_accepted_final_orders(mode: int) -> 
         x_active = operator.domain.active_coordinates
         spacing = operator.domain.grid.spacing
         sampled = np.sin(mode * np.pi * x_active)
-        exact_second_derivative = -(mode * np.pi) ** 2 * sampled
+        exact_second_derivative = -((mode * np.pi) ** 2) * sampled
         residual = operator @ sampled - exact_second_derivative
         weighted_residual_norm = np.sqrt(spacing * np.sum(np.abs(residual) ** 2))
         weighted_reference_norm = np.sqrt(
@@ -244,7 +248,7 @@ def test_sine_modes_have_monotone_error_and_accepted_final_orders(mode: int) -> 
         errors.append(float(weighted_residual_norm / weighted_reference_norm))
         spacings.append(spacing)
 
-    assert all(fine < coarse for coarse, fine in zip(errors, errors[1:]))
+    assert all(fine < coarse for coarse, fine in zip(errors, errors[1:], strict=False))
     for coarse_index, fine_index in ((1, 2), (2, 3)):
         order = np.log(errors[coarse_index] / errors[fine_index]) / np.log(
             spacings[coarse_index] / spacings[fine_index]

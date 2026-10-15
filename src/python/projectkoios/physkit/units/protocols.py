@@ -1,8 +1,10 @@
 # src/python/projectkoios/physkit/units/protocols.py
 # Author: Eugene Joseph M. Ragasa
 from __future__ import annotations
-from typing import Protocol, runtime_checkable
+
 from enum import IntEnum
+from typing import Protocol, runtime_checkable
+
 from projectkoios.physkit.types import ArrayLike
 
 
@@ -17,15 +19,9 @@ class UnitQuantityProtocol(Protocol):
     - be stateless
     """
 
-    class Units(IntEnum):
-        ...
+    class Units(IntEnum): ...
 
     @staticmethod
     def convert(
-        value: ArrayLike, 
-        units_from: IntEnum, 
-        units_to: IntEnum
-    ) -> ArrayLike:
-        ...
-
-
+        value: ArrayLike, units_from: IntEnum, units_to: IntEnum
+    ) -> ArrayLike: ...

@@ -4,17 +4,22 @@
 from __future__ import annotations
 
 import numpy as np
-import scipy.sparse as sp
 import scipy.sparse.linalg as spla
 from numpy.typing import NDArray
 from scipy.sparse import csr_matrix
 
-from projectkoios.physkit.core.boundaries import BoundaryCondition, DirichletBC
+from projectkoios.physkit.core.boundaries import (
+    BoundaryCondition,
+)
+from projectkoios.physkit.core.boundaries import (
+    DirichletBoundaryCondition as DirichletBC,
+)
 from projectkoios.physkit.core.grids import CartesianGrid1D
 from projectkoios.physkit.numerics.finite_difference import Laplacian1D
 from projectkoios.physkit.qm.potentials import Potential1D
 
 FloatArray = NDArray[np.float64]
+_DEFAULT_DIRICHLET_BC = DirichletBC(value=0.0)
 
 
 class TISEAnalytical1D:
@@ -67,8 +72,8 @@ class TISESolver1D:
         *,
         mass: float = 1.0,
         hbar: float = 1.0,
-        bc_x_min: BoundaryCondition = DirichletBC(value=0.0),
-        bc_x_max: BoundaryCondition = DirichletBC(value=0.0),
+        bc_x_min: BoundaryCondition = _DEFAULT_DIRICHLET_BC,
+        bc_x_max: BoundaryCondition = _DEFAULT_DIRICHLET_BC,
     ) -> None:
         self.mass: float = mass
         self.hbar: float = hbar

@@ -1,40 +1,44 @@
 # tests/projectkoios/physkit/units/test_temperature.py
 # Eugene Joseph M. Ragasa, 2026
-import numpy as np
-import pytest
+import inspect
 from enum import IntEnum
+
+import numpy as np
 
 from projectkoios.physkit.numeric import as_f64_array
 from projectkoios.physkit.units import Temperature
 from projectkoios.physkit.units.protocols import UnitQuantityProtocol
 
+
 # --- UnitQuantityProtocol conformity test ---
 def test_Temperature_is_UnitQuantityProtocol():
     assert isinstance(Temperature, UnitQuantityProtocol)
 
+
 def test_Temperature_has_Units_enum():
     assert hasattr(Temperature, "Units")
 
+
 def test_Temperature_Units_is_IntEnum():
     assert issubclass(Temperature.Units, IntEnum)
+
 
 def test_Temperature_convert_exists():
     assert hasattr(Temperature, "convert")
     assert callable(Temperature.convert)
 
-import inspect
-def test_Temperature_convert_check_signature():
-    sig_Temperature_convert \
-      = inspect.signature(Temperature.convert)
-    parameters_Temperature_convert \
-      = list(sig_Temperature_convert.parameters.keys())
 
-    sig_UnitQuantityProtocol_convert \
-      = inspect.signature(UnitQuantityProtocol.convert)
-    parameters_UnitQuantityProtocol_convert \
-      = list(sig_UnitQuantityProtocol_convert.parameters.keys())
-    
+def test_Temperature_convert_check_signature():
+    sig_Temperature_convert = inspect.signature(Temperature.convert)
+    parameters_Temperature_convert = list(sig_Temperature_convert.parameters.keys())
+
+    sig_UnitQuantityProtocol_convert = inspect.signature(UnitQuantityProtocol.convert)
+    parameters_UnitQuantityProtocol_convert = list(
+        sig_UnitQuantityProtocol_convert.parameters.keys()
+    )
+
     assert parameters_Temperature_convert == parameters_UnitQuantityProtocol_convert
+
 
 def test_Temperature_conforms_to_protocol():
 

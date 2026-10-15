@@ -6,11 +6,12 @@ Use :mod:`projectkoios.physkit.qm.piab1d` for the maintained one-dimensional mod
 from __future__ import annotations
 
 from abc import ABC
-from typing import Generic, TypeVar
 
-from projectkoios.physkit.qm.models.base import BaseQuantumModel
-from projectkoios.physkit.qm.models.base import QuantumResult
-from projectkoios.physkit.qm.models.base import QuantumSolver
+from projectkoios.physkit.qm.models.base import (
+    BaseQuantumModel,
+    QuantumResult,
+    QuantumSolver,
+)
 
 
 class Piab(
@@ -40,18 +41,8 @@ class PiabResult(
     pass
 
 
-# This placeholder represents the exact PIAB result returned by a
-# particular PIAB solver.
-PiabResultType = TypeVar(
-    "PiabResultType",
-    bound=PiabResult,
-    covariant=True,
-)
-
-
-class PiabSolver(
+class PiabSolver[PiabResultType: PiabResult](
     QuantumSolver[PiabResultType],
-    Generic[PiabResultType],
     ABC,
 ):
     """

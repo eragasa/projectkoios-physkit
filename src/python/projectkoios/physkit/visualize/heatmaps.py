@@ -11,7 +11,6 @@ from matplotlib.axes import Axes
 from matplotlib.colors import LinearSegmentedColormap
 from numpy.typing import ArrayLike, NDArray
 
-
 _WHITE_CENTERED_BLUE_RED = LinearSegmentedColormap.from_list(
     "physkit_white_centered_blue_red",
     ("#0000ff", "#ffffff", "#ff0000"),
@@ -35,10 +34,7 @@ class HeatMapVisualizer:
             uncoerced = np.asarray(values, dtype=object)
         except (TypeError, ValueError) as error:
             raise TypeError("values must be a non-ragged real matrix") from error
-        if any(
-            isinstance(value, (bool, np.bool_))
-            for value in uncoerced.flat
-        ):
+        if any(isinstance(value, (bool, np.bool_)) for value in uncoerced.flat):
             raise TypeError("values must not contain Boolean entries")
 
         try:

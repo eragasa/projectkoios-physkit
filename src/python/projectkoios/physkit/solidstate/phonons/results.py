@@ -3,14 +3,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TypeAlias
 
 import numpy as np
 from numpy.typing import NDArray
 
-
-FloatArray: TypeAlias = NDArray[np.float64]
-ComplexArray: TypeAlias = NDArray[np.complex128]
+type FloatArray = NDArray[np.float64]
+type ComplexArray = NDArray[np.complex128]
 
 
 @dataclass(frozen=True)

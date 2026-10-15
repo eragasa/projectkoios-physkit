@@ -1,6 +1,8 @@
 """Verification of homogeneous Dirichlet classification."""
 
-from projectkoios.physkit.discretization.boundary_conditions import DirichletBoundaryCondition
+from projectkoios.physkit.discretization.boundary_conditions import (
+    DirichletBoundaryCondition,
+)
 from projectkoios.physkit.units import PhysicalUnit, ScalarQuantity, Unitless
 
 

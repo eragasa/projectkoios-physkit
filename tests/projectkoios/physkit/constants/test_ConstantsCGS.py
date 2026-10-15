@@ -1,15 +1,13 @@
-
-import math
-import pytest
-
 from projectkoios.physkit.constants import (
+    ConstantsCGS,  # or ConstantsCGS if that’s your name
     PhysicalConstantsProtocol,
-    ConstantsCGS,   # or ConstantsCGS if that’s your name
 )
+
 
 def test_satisfies_protocol_runtime():
     c = ConstantsCGS()
     assert isinstance(c, PhysicalConstantsProtocol)
+
 
 def test_required_attributes_exist_and_are_numeric_where_expected():
     for c in (ConstantsCGS(),):

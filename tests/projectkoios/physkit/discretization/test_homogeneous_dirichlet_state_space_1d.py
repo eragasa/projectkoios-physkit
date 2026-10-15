@@ -33,7 +33,9 @@ def test_state_space_exposes_exact_geometry_boundary_and_active_data() -> None:
     assert space.grid is grid
     assert space.boundary_values == (0.0, 0.0)
     assert space.dimension == 3
-    np.testing.assert_array_equal(space.active_indices, np.array([1, 2, 3], dtype=np.intp))
+    np.testing.assert_array_equal(
+        space.active_indices, np.array([1, 2, 3], dtype=np.intp)
+    )
     np.testing.assert_array_equal(space.active_coordinates, grid.coordinates[1:-1])
     assert space.active_indices.dtype == np.dtype(np.intp)
     assert space.active_coordinates.dtype == np.dtype(np.float64)
@@ -70,7 +72,9 @@ def test_array_properties_return_owned_defensive_copies(property_name: str) -> N
     assert not np.array_equal(first, getattr(space, property_name))
 
 
-@pytest.mark.parametrize("attribute,value", [("grid", None), ("dimension", 99), ("extra", 1)])
+@pytest.mark.parametrize(
+    "attribute,value", [("grid", None), ("dimension", 99), ("extra", 1)]
+)
 def test_state_space_is_observably_immutable(attribute: str, value: object) -> None:
     space = make_space()
 

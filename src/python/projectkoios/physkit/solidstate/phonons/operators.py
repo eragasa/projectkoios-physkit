@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import TypeAlias
-
 import numpy as np
 from numpy.typing import NDArray
 
@@ -11,8 +9,7 @@ from projectkoios.physkit.solidstate.phonons.models import (
     MonatomicChainModel1D,
 )
 
-
-ComplexArray: TypeAlias = NDArray[np.complex128]
+type ComplexArray = NDArray[np.complex128]
 
 
 class MonatomicDynamicalMatrix1D:
@@ -66,12 +63,7 @@ class MonatomicDynamicalMatrix1D:
         mass = self.model.atomic_mass
         spring_constant = self.model.spring_constant
 
-        eigenvalue = (
-            2.0
-            * spring_constant
-            / mass
-            * (1.0 - np.cos(q * a))
-        )
+        eigenvalue = 2.0 * spring_constant / mass * (1.0 - np.cos(q * a))
 
         return np.array(
             [[eigenvalue]],

@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 
-class BaseQuantumModel(ABC):
+class BaseQuantumModel(ABC):  # noqa: B024 - nominal abstract ownership root
     """Base physical specification of a quantum-mechanical system.
 
     A model defines the physical system. It does not define a numerical
@@ -14,7 +14,7 @@ class BaseQuantumModel(ABC):
     """
 
 
-class QuantumResult(ABC):
+class QuantumResult(ABC):  # noqa: B024 - nominal abstract result root
     """
     Base result produced by a quantum-mechanical solver.
     """
@@ -32,9 +32,8 @@ QuantumResultType = TypeVar(
 )
 
 
-class QuantumSolver(
+class QuantumSolver[QuantumResultType: QuantumResult](
     ABC,
-    Generic[QuantumResultType],
 ):
     """
     Base interface for a quantum-mechanical solver.

@@ -57,7 +57,7 @@ def test__init__computes_length():
         endpoint=True,
     )
 
-    assert axis.L == pytest.approx(5.0)
+    assert pytest.approx(5.0) == axis.L
 
 
 def test__init__computes_spacing_with_endpoint():

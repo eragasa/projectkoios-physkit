@@ -1,20 +1,18 @@
 import numpy as np
-from pyscf import pbc
 import pyscf.pbc.scf as pscf
+from pyscf import pbc
 
 # 1. Define the 3D Silicon Unit Cell
 cell = pbc.gto.Cell()
-cell.atom = '''
+cell.atom = """
     Si 0.000000000000   0.000000000000   0.000000000000
     Si 1.357750000000   1.357750000000   1.357750000000
-'''
-cell.a = np.array([
-    [0.0000, 2.7155, 2.7155],
-    [2.7155, 0.0000, 2.7155],
-    [2.7155, 2.7155, 0.0000]
-])
-cell.basis = 'gth-szv'
-cell.pseudo = 'gth-pbe'
+"""
+cell.a = np.array(
+    [[0.0000, 2.7155, 2.7155], [2.7155, 0.0000, 2.7155], [2.7155, 2.7155, 0.0000]]
+)
+cell.basis = "gth-szv"
+cell.pseudo = "gth-pbe"
 
 # 2 Silicon atoms * 4 valence electrons = 8 electrons total.
 cell.nelectron = 8
@@ -79,4 +77,3 @@ print(f"Calculated HF Band Gap   : {bandgap:.4f} eV")
 print("\n--- Real-Space Charge Mapping ---")
 # Computes the charge matrix density projection per atom in the cell
 mf.mulliken_pop()
-

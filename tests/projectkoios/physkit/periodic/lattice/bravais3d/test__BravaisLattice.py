@@ -4,6 +4,7 @@ import unittest
 from collections.abc import Callable
 
 import numpy as np
+
 from projectkoios.physkit.periodic.lattice.bravais3d import (
     BravaisLattice,
     BravaisLatticeKind,

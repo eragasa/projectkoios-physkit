@@ -17,6 +17,7 @@ Notes:
   (eV, kcal/mol, Hartree) because τ = r × F and r is in Å/Bohr.
   We still provide explicit conversion factors to N·m.
 """
+
 from enum import IntEnum
 
 
@@ -58,25 +59,21 @@ class Torque:
     _IN_LBF_TO_N_M = _FT_LBF_TO_N_M / 12.0
 
     _TO_N_M = (
-        1.0,                 # N·m
-
-        1.0e-7,              # dyn·cm = (1 dyn)(1 cm) = (1e-5 N)(1e-2 m)
-
-        _FT_LBF_TO_N_M,      # ft·lbf
-        _IN_LBF_TO_N_M,      # in·lbf
-
-        1.0 * _Q,            # eV  (as an energy-like torque unit)
-        4.3597447222071e-18, # Ha  (Hartree) in J = N·m
-
-        4184.0,              # kcal (thermochemical) in J = N·m
-        4184.0,              # kcal/mol -> J/mol (LAMMPS-real torque)
+        1.0,  # N·m
+        1.0e-7,  # dyn·cm = (1 dyn)(1 cm) = (1e-5 N)(1e-2 m)
+        _FT_LBF_TO_N_M,  # ft·lbf
+        _IN_LBF_TO_N_M,  # in·lbf
+        1.0 * _Q,  # eV  (as an energy-like torque unit)
+        4.3597447222071e-18,  # Ha  (Hartree) in J = N·m
+        4184.0,  # kcal (thermochemical) in J = N·m
+        4184.0,  # kcal/mol -> J/mol (LAMMPS-real torque)
     )
 
     # ------------------------------------------------------------------
     # Core conversion
     # ------------------------------------------------------------------
     @staticmethod
-    def convert(*, from_, to: "Torque.Units"):
+    def convert(*, from_, to: Torque.Units):
         """
         Convert torque values between units.
         """
@@ -89,11 +86,11 @@ class Torque:
     # Internal canonical helpers
     # ------------------------------------------------------------------
     @staticmethod
-    def _to_canonical(value, unit: "Torque.Units"):
+    def _to_canonical(value, unit: Torque.Units):
         """Convert value to canonical unit (N·m)."""
         return value * Torque._TO_N_M[int(unit)]
 
     @staticmethod
-    def _from_canonical(value_N_m, unit: "Torque.Units"):
+    def _from_canonical(value_N_m, unit: Torque.Units):
         """Convert value from canonical unit (N·m)."""
         return value_N_m / Torque._TO_N_M[int(unit)]

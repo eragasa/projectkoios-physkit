@@ -5,16 +5,14 @@ from __future__ import annotations
 import numpy as np
 
 from projectkoios.physkit.periodic.lattice.base import (
+    DirectLattice,
+    FirstBrillouinZone,
     FloatArray,
     IntArray,
-)
-
-from projectkoios.physkit.periodic.lattice.base import (
-    DirectLattice,
     ReciprocalLattice,
     WignerSeitzCell,
-    FirstBrillouinZone,
 )
+
 
 class DirectLattice1D(DirectLattice):
     """
@@ -66,9 +64,7 @@ class DirectLattice1D(DirectLattice):
     ) -> None:
         # In one dimension, the primitive direct basis contains one vector.
         # The vector is represented by its scalar Cartesian component.
-        self.lattice_constant: float = float(
-            lattice_constant
-        )
+        self.lattice_constant: float = float(lattice_constant)
 
         self.check_args()
 
@@ -82,9 +78,7 @@ class DirectLattice1D(DirectLattice):
 
         # The basis defines the lattice and must remain fixed after
         # construction.
-        self._primitive_basis.setflags(
-            write=False
-        )
+        self._primitive_basis.setflags(write=False)
 
     def check_args(self) -> None:
         """
@@ -99,17 +93,11 @@ class DirectLattice1D(DirectLattice):
         ValueError
             If ``lattice_constant`` is nonfinite or nonpositive.
         """
-        if not np.isfinite(
-            self.lattice_constant
-        ):
-            raise ValueError(
-                "lattice_constant must be finite."
-            )
+        if not np.isfinite(self.lattice_constant):
+            raise ValueError("lattice_constant must be finite.")
 
         if self.lattice_constant <= 0.0:
-            raise ValueError(
-                "lattice_constant must be positive."
-            )
+            raise ValueError("lattice_constant must be positive.")
 
     @property
     def dimension(self) -> int:
@@ -158,13 +146,7 @@ class DirectLattice1D(DirectLattice):
         measure. This property represents the measure of a fundamental domain
         of the lattice, equivalently the lattice covolume.
         """
-        return float(
-            abs(
-                np.linalg.det(
-                    self.primitive_basis
-                )
-            )
-        )
+        return float(abs(np.linalg.det(self.primitive_basis)))
 
     @property
     def a1(self) -> float:
@@ -209,8 +191,7 @@ class DirectLattice1D(DirectLattice):
         )
 
         return np.asarray(
-            mode_array
-            * self.lattice_constant,
+            mode_array * self.lattice_constant,
             dtype=np.float64,
         )
 
@@ -240,14 +221,9 @@ class DirectLattice1D(DirectLattice):
             cell_index,
             (int, np.integer),
         ):
-            raise TypeError(
-                "cell_index must be an integer."
-            )
+            raise TypeError("cell_index must be an integer.")
 
-        return (
-            float(cell_index)
-            * self.lattice_constant
-        )
+        return float(cell_index) * self.lattice_constant
 
 
 class ReciprocalLattice1D(ReciprocalLattice):
@@ -318,9 +294,7 @@ class ReciprocalLattice1D(ReciprocalLattice):
             dtype=np.float64,
         )
 
-        self._primitive_basis.setflags(
-            write=False
-        )
+        self._primitive_basis.setflags(write=False)
 
     @classmethod
     def from_direct_lattice(
@@ -365,24 +339,13 @@ class ReciprocalLattice1D(ReciprocalLattice):
             direct_lattice,
             DirectLattice1D,
         ):
-            raise TypeError(
-                "direct_lattice must be a "
-                "DirectLattice1D instance."
-            )
+            raise TypeError("direct_lattice must be a DirectLattice1D instance.")
 
         reciprocal_basis: FloatArray = (
-            2.0
-            * np.pi
-            * np.linalg.inv(
-                direct_lattice.primitive_basis
-            ).T
+            2.0 * np.pi * np.linalg.inv(direct_lattice.primitive_basis).T
         )
 
-        return cls(
-            b1=float(
-                reciprocal_basis[0, 0]
-            )
-        )
+        return cls(b1=float(reciprocal_basis[0, 0]))
 
     def check_args(self) -> None:
         """
@@ -398,14 +361,10 @@ class ReciprocalLattice1D(ReciprocalLattice):
             If ``b1`` is nonfinite or zero.
         """
         if not np.isfinite(self.b1):
-            raise ValueError(
-                "b1 must be finite."
-            )
+            raise ValueError("b1 must be finite.")
 
         if np.isclose(self.b1, 0.0):
-            raise ValueError(
-                "b1 must be nonzero."
-            )
+            raise ValueError("b1 must be nonzero.")
 
     @property
     def dimension(self) -> int:
@@ -468,8 +427,7 @@ class ReciprocalLattice1D(ReciprocalLattice):
         )
 
         return np.asarray(
-            mode_array
-            * self.b1,
+            mode_array * self.b1,
             dtype=np.float64,
         )
 
@@ -511,15 +469,9 @@ class WignerSeitzCell1D(WignerSeitzCell):
 
         self.check_args()
 
-        self.lower: float = (
-            -0.5
-            * self._lattice.lattice_constant
-        )
+        self.lower: float = -0.5 * self._lattice.lattice_constant
 
-        self.upper: float = (
-            +0.5
-            * self._lattice.lattice_constant
-        )
+        self.upper: float = +0.5 * self._lattice.lattice_constant
 
     def check_args(self) -> None:
         """
@@ -538,10 +490,7 @@ class WignerSeitzCell1D(WignerSeitzCell):
             self._lattice,
             DirectLattice1D,
         ):
-            raise TypeError(
-                "lattice must be a "
-                "DirectLattice1D instance."
-            )
+            raise TypeError("lattice must be a DirectLattice1D instance.")
 
     @property
     def lattice(self) -> DirectLattice1D:
@@ -596,19 +545,11 @@ class WignerSeitzCell1D(WignerSeitzCell):
         )
 
         if point_array.size != 1:
-            raise ValueError(
-                "point must contain exactly one coordinate."
-            )
+            raise ValueError("point must contain exactly one coordinate.")
 
-        coordinate = float(
-            point_array.reshape(-1)[0]
-        )
+        coordinate = float(point_array.reshape(-1)[0])
 
-        return bool(
-            self.lower
-            <= coordinate
-            <= self.upper
-        )
+        return bool(self.lower <= coordinate <= self.upper)
 
 
 class FirstBrillouinZone1D(FirstBrillouinZone):
@@ -644,27 +585,17 @@ class FirstBrillouinZone1D(FirstBrillouinZone):
         self,
         reciprocal_lattice: ReciprocalLattice1D,
     ) -> None:
-        self._reciprocal_lattice = (
-            reciprocal_lattice
-        )
+        self._reciprocal_lattice = reciprocal_lattice
 
         self.check_args()
 
         # The orientation of b1 does not change the geometric zone. Its width
         # is determined by the distance between neighboring reciprocal points.
-        reciprocal_spacing = abs(
-            self._reciprocal_lattice.b1
-        )
+        reciprocal_spacing = abs(self._reciprocal_lattice.b1)
 
-        self.lower: float = (
-            -0.5
-            * reciprocal_spacing
-        )
+        self.lower: float = -0.5 * reciprocal_spacing
 
-        self.upper: float = (
-            +0.5
-            * reciprocal_spacing
-        )
+        self.upper: float = +0.5 * reciprocal_spacing
 
     def check_args(self) -> None:
         """
@@ -685,8 +616,7 @@ class FirstBrillouinZone1D(FirstBrillouinZone):
             ReciprocalLattice1D,
         ):
             raise TypeError(
-                "reciprocal_lattice must be a "
-                "ReciprocalLattice1D instance."
+                "reciprocal_lattice must be a ReciprocalLattice1D instance."
             )
 
     @property
@@ -758,19 +688,11 @@ class FirstBrillouinZone1D(FirstBrillouinZone):
         )
 
         if point_array.size != 1:
-            raise ValueError(
-                "point must contain exactly one wavevector."
-            )
+            raise ValueError("point must contain exactly one wavevector.")
 
-        wavevector = float(
-            point_array.reshape(-1)[0]
-        )
+        wavevector = float(point_array.reshape(-1)[0])
 
-        return bool(
-            self.lower
-            <= wavevector
-            <= self.upper
-        )
+        return bool(self.lower <= wavevector <= self.upper)
 
     def reduce(
         self,
@@ -804,11 +726,6 @@ class FirstBrillouinZone1D(FirstBrillouinZone):
         )
 
         return np.asarray(
-            (
-                wavevector_array
-                - self.lower
-            )
-            % self.measure
-            + self.lower,
+            (wavevector_array - self.lower) % self.measure + self.lower,
             dtype=np.float64,
         )

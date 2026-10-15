@@ -1,44 +1,53 @@
 from __future__ import annotations
-from dataclasses import dataclass, asdict
-from typing import Union
+
+from dataclasses import asdict, dataclass
+
 import numpy as np
+
 
 # --- plotting utilities
 def tex_power(n: float) -> str:
     """Convert 1e16 → 10^{16} as a TeX string."""
-    s = f"{n:.0e}"          # -> "1e16"
+    s = f"{n:.0e}"  # -> "1e16"
     base, exp = s.split("e")
     exp = int(exp)
     return rf"{base}\times 10^{{{exp}}}"
 
+
 # --- utils
+
 
 def _prevent_mutation(*args, **kwargs):
     raise AttributeError("ConstantsSI is immutable and cannot be modified.")
 
-ArrayLike = Union[float, np.ndarray]
+
+ArrayLike = float | np.ndarray
+
 
 @dataclass(frozen=True)
-class ConstantsSI():
-  q: float   = 1.602176634e-19   # C
-  k_B: float = 1.380649e-23      # J/K
-  eps0: float = 8.854187812e-12  # F/m
-  me0: float = 9.1093837015e-31  # kg, free electron mass
+class ConstantsSI:
+    q: float = 1.602176634e-19  # C
+    k_B: float = 1.380649e-23  # J/K
+    eps0: float = 8.854187812e-12  # F/m
+    me0: float = 9.1093837015e-31  # kg, free electron mass
+
+
 ConstantsSI.__setattr__ = _prevent_mutation
 ConstantsSI.__delattr__ = _prevent_mutation
 
 
 @dataclass
 class ParametersBase:
-  @property
-  def kwargs(self):
-    return asdict(self)
+    @property
+    def kwargs(self):
+        return asdict(self)
+
 
 @dataclass
 class LatticeMobilityParameters(ParametersBase):
-  T_ref: float       # reference temperature
-  mu_ref: float      # μ_lat at T_ref (cm^2/Vs)
-  alpha: float = 1.5 # acoustic phonon exponent
+    T_ref: float  # reference temperature
+    mu_ref: float  # μ_lat at T_ref (cm^2/Vs)
+    alpha: float = 1.5  # acoustic phonon exponent
 
 
 def lattice_scattering_mobility(
@@ -47,38 +56,39 @@ def lattice_scattering_mobility(
     mu_ref: float,
     alpha: float = 3.0 / 2.0,
 ) -> np.ndarray:
-  r"""
-  Compute the lattice-scattering-limited mobility.
+    r"""
+    Compute the lattice-scattering-limited mobility.
 
-  This model assumes acoustic-phonon scattering, for which the
-  mobility follows a power-law temperature dependence:
+    This model assumes acoustic-phonon scattering, for which the
+    mobility follows a power-law temperature dependence:
 
-  .. math::
+    .. math::
 
-      \mu_{\mathrm{lat}}(T)
-      = \mu_{\mathrm{lat}}(T_{\mathrm{ref}})
-        \left( \frac{T}{T_{\mathrm{ref}}} \right)^{-\alpha_{\mathrm{lat}}}
+        \mu_{\mathrm{lat}}(T)
+        = \mu_{\mathrm{lat}}(T_{\mathrm{ref}})
+          \left( \frac{T}{T_{\mathrm{ref}}} \right)^{-\alpha_{\mathrm{lat}}}
 
 
-    Parameters
-    ----------
-    T : float or ndarray
-        Temperature(s) in Kelvin.
-    T_ref : float
-        Reference temperature (K) where mu_lattice_ref is defined.
-    mu_ref : float
-        Lattice-limited mobility at T_ref (units: cm^2/(V*s)).
-    alpha : float, optional
-        Temperature exponent for acoustic-phonon scattering.
-        Typical value is 1.5.
+      Parameters
+      ----------
+      T : float or ndarray
+          Temperature(s) in Kelvin.
+      T_ref : float
+          Reference temperature (K) where mu_lattice_ref is defined.
+      mu_ref : float
+          Lattice-limited mobility at T_ref (units: cm^2/(V*s)).
+      alpha : float, optional
+          Temperature exponent for acoustic-phonon scattering.
+          Typical value is 1.5.
 
-    Returns
-    -------
-    ndarray
-        Lattice-limited mobility mu_lat(T) in cm^2/(V*s).
-  """
-  T = np.asarray(T, dtype=float)
-  return mu_ref * (T / T_ref) ** (-alpha)
+      Returns
+      -------
+      ndarray
+          Lattice-limited mobility mu_lat(T) in cm^2/(V*s).
+    """
+    T = np.asarray(T, dtype=float)
+    return mu_ref * (T / T_ref) ** (-alpha)
+
 
 @dataclass
 class ImpurityMobilityParameters(ParametersBase):
@@ -97,10 +107,12 @@ class ImpurityMobilityParameters(ParametersBase):
         Temperature exponent for impurity scattering (μ_imp ∝ T^alpha_T).
         For simple screened Coulomb scattering, alpha_T ≈ 3/2.
     """
+
     T_ref: float
     NI_ref: float
     mu_ref: float
     alpha_T: float = 1.5
+
 
 def impurity_scattering_mobility(
     T: ArrayLike,
@@ -141,11 +153,8 @@ def impurity_scattering_mobility(
     """
     T = np.asarray(T, float)
     NI = np.asarray(NI, float)
-    return (
-        mu_ref
-        * (T / T_ref) ** alpha_T
-        * (NI_ref / NI)
-    )
+    return mu_ref * (T / T_ref) ** alpha_T * (NI_ref / NI)
+
 
 @dataclass
 class CarrierMobilityModel:
@@ -159,6 +168,7 @@ class CarrierMobilityModel:
     impurity : ImpurityMobilityParams | None
         Impurity scattering parameters (optional).
     """
+
     m_eff: float
     lattice: LatticeMobilityParameters
     impurity: ImpurityMobilityParameters | None = None
@@ -255,11 +265,13 @@ class CarrierMobilityModel:
         E = np.asarray(E, dtype=float)
         return mu_m2 * E
 
+
 @dataclass
 class SemiconductorMobility:
     """
     Convenience wrapper holding both electron and hole mobility models.
     """
+
     electron: CarrierMobilityModel
     hole: CarrierMobilityModel
 
@@ -275,7 +287,7 @@ class SemiconductorMobility:
 
     def drift_velocity_n(self, T: ArrayLike, NI: ArrayLike, E: ArrayLike) -> np.ndarray:
         return self.electron.drift_velocity(T, NI, E)
-    
+
     # holes (p-type)
     def mu_p(self, T: ArrayLike, NI: ArrayLike) -> np.ndarray:
         return self.hole.mu_total(T, NI)

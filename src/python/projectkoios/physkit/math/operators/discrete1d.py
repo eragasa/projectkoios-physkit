@@ -9,8 +9,12 @@
 #    math.operators.continuous.continuous1d
 # ------------------------------------------------------------
 
-import sympy as sp
 from abc import ABC, abstractmethod
+
+import sympy as sp
+
+_DEFAULT_X = sp.Symbol("x")
+
 
 # ------------------------------------------------------------
 # Base continuous operator
@@ -25,7 +29,7 @@ class ContinuousOperator1D(ABC):
     where phi is a SymPy Function, not a discrete array.
     """
 
-    def __init__(self, x_symbol=x):
+    def __init__(self, x_symbol=_DEFAULT_X):
         self.x = x_symbol
 
     @abstractmethod
@@ -61,7 +65,7 @@ class PoissonOperator1D(ContinuousOperator1D):
     discretization; it is purely symbolic.
     """
 
-    def __init__(self, eps_expr, x_symbol=x):
+    def __init__(self, eps_expr, x_symbol=_DEFAULT_X):
         super().__init__(x_symbol=x_symbol)
 
         # eps(x) must be a SymPy expression depending on x

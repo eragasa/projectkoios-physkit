@@ -3,6 +3,7 @@ import pytest
 
 from projectkoios.physkit.discretization.grid_1d import ActiveSetType1D, Grid1D
 
+
 def test__Grid1D__x_returns_closed_uniform_grid():
     grid = Grid1D(a=0.0, b=1.0, N=5)
 
@@ -62,6 +63,7 @@ def test__Grid1D__constructor_raises_for_invalid_domain():
 def test__Grid1D__constructor_raises_for_too_few_points():
     with pytest.raises(ValueError, match="Require N >= 2"):
         Grid1D(a=0.0, b=1.0, N=1)
+
 
 def test__Grid1D__interior_active_indices_empty_for_two_point_grid():
     grid = Grid1D(

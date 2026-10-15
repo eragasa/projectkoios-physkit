@@ -11,7 +11,6 @@ from projectkoios.physkit.solidstate.phonons.solvers import (
     PhononBlochSolver1D,
 )
 
-
 __all__ = [
     "MonatomicChainModel1D",
     "MonatomicDynamicalMatrix1D",

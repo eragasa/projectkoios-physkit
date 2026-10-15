@@ -3,7 +3,9 @@
 import numpy as np
 import pytest
 
-from projectkoios.physkit.discretization.boundary_conditions import DirichletBoundaryCondition
+from projectkoios.physkit.discretization.boundary_conditions import (
+    DirichletBoundaryCondition,
+)
 from projectkoios.physkit.discretization.cartesian_grids import UniformCartesianGrid1D
 from projectkoios.physkit.discretization.intervals import DirichletInterval
 from projectkoios.physkit.operators.operators_1d import (
@@ -55,8 +57,7 @@ def test_preserves_selected_physical_length_scale() -> None:
 
     np.testing.assert_allclose(
         matrix.to_dense().magnitude,
-        np.array([[-2.0, 1.0, 0.0], [1.0, -2.0, 1.0], [0.0, 1.0, -2.0]])
-        / 2.5**2,
+        np.array([[-2.0, 1.0, 0.0], [1.0, -2.0, 1.0], [0.0, 1.0, -2.0]]) / 2.5**2,
         rtol=2.0e-16,
         atol=0.0,
     )

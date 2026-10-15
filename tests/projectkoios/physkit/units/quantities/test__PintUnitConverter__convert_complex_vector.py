@@ -3,8 +3,8 @@
 import numpy as np
 
 from projectkoios.physkit.units.quantities import (
-    ComplexVectorQuantity,
     MODEL_SYSTEM_UNIT_CONVERTER,
+    ComplexVectorQuantity,
     PhysicalUnit,
 )
 

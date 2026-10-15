@@ -3,11 +3,9 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import TypeAlias
 
 import numpy as np
 from numpy.typing import NDArray
-
 
 # ---------------------------------------------------------------------------
 # Array type aliases
@@ -15,8 +13,8 @@ from numpy.typing import NDArray
 
 # NDArray specifies the NumPy scalar dtype. Expected array shapes are
 # documented in the corresponding method docstrings.
-FloatArray: TypeAlias = NDArray[np.float64]
-ComplexArray: TypeAlias = NDArray[np.complex128]
+type FloatArray = NDArray[np.float64]
+type ComplexArray = NDArray[np.complex128]
 
 
 class BlochPhase1D:
@@ -75,9 +73,7 @@ class BlochPhase1D:
     ) -> None:
         # Normalize Python integers, Python floats, and NumPy scalar values to
         # one consistent internal floating-point representation.
-        self.wavevector: float = float(
-            wavevector
-        )
+        self.wavevector: float = float(wavevector)
 
         self.check_args()
 
@@ -95,9 +91,7 @@ class BlochPhase1D:
             If ``wavevector`` is not finite.
         """
         if not np.isfinite(self.wavevector):
-            raise ValueError(
-                "wavevector must be finite."
-            )
+            raise ValueError("wavevector must be finite.")
 
     def evaluate(
         self,
@@ -145,19 +139,11 @@ class BlochPhase1D:
         translation = float(translation)
 
         if not np.isfinite(translation):
-            raise ValueError(
-                "translation must be finite."
-            )
+            raise ValueError("translation must be finite.")
 
         # np.exp returns a NumPy complex scalar. Convert it to the built-in
         # complex type because this method represents one scalar phase.
-        return complex(
-            np.exp(
-                1j
-                * self.wavevector
-                * translation
-            )
-        )
+        return complex(np.exp(1j * self.wavevector * translation))
 
     def evaluate_array(
         self,
@@ -213,23 +199,15 @@ class BlochPhase1D:
         )
 
         if translation_array.ndim != 1:
-            raise ValueError(
-                "translations must be one-dimensional."
-            )
+            raise ValueError("translations must be one-dimensional.")
 
         if not np.all(np.isfinite(translation_array)):
-            raise ValueError(
-                "translations must contain only finite values."
-            )
+            raise ValueError("translations must contain only finite values.")
 
         # NumPy broadcasts the scalar wavevector over the complete translation
         # array, producing one phase for every direct-lattice translation.
         phases: ComplexArray = np.asarray(
-            np.exp(
-                1j
-                * self.wavevector
-                * translation_array
-            ),
+            np.exp(1j * self.wavevector * translation_array),
             dtype=np.complex128,
         )
 
@@ -278,27 +256,12 @@ class BlochPhase1D:
             If either input is not finite.
         """
         translation = float(translation)
-        reciprocal_vector = float(
-            reciprocal_vector
-        )
+        reciprocal_vector = float(reciprocal_vector)
 
         if not np.isfinite(translation):
-            raise ValueError(
-                "translation must be finite."
-            )
+            raise ValueError("translation must be finite.")
 
         if not np.isfinite(reciprocal_vector):
-            raise ValueError(
-                "reciprocal_vector must be finite."
-            )
+            raise ValueError("reciprocal_vector must be finite.")
 
-        return complex(
-            np.exp(
-                1j
-                * (
-                    self.wavevector
-                    + reciprocal_vector
-                )
-                * translation
-            )
-        )
+        return complex(np.exp(1j * (self.wavevector + reciprocal_vector) * translation))

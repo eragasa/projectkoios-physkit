@@ -6,7 +6,6 @@ from typing import ClassVar
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
-
 FloatArray = NDArray[np.float64]
 
 
@@ -21,9 +20,7 @@ def _as_vector(
     expected_shape = (dimension,)
 
     if array.shape != expected_shape:
-        raise ValueError(
-            f"{name} must have shape {expected_shape}, got {array.shape}."
-        )
+        raise ValueError(f"{name} must have shape {expected_shape}, got {array.shape}.")
 
     return array
 

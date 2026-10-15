@@ -7,12 +7,16 @@ import numpy as np
 import scipy.sparse as sp
 from scipy.sparse import csr_matrix
 
-from projectkoios.physkit.core.bc import (
+from projectkoios.physkit.core.boundaries import (
     BoundaryCondition,
-    DirichletBC,
 )
-
+from projectkoios.physkit.core.boundaries import (
+    DirichletBoundaryCondition as DirichletBC,
+)
 from projectkoios.physkit.core.grids import CartesianGrid1D
+
+_DEFAULT_DIRICHLET_BC = DirichletBC(value=0.0)
+
 
 class Laplacian1D:
     """
@@ -44,11 +48,12 @@ class Laplacian1D:
     last grid points. Periodic grids should use endpoint=False.
     """
 
-    def __init__(self,
+    def __init__(
+        self,
         grid: CartesianGrid1D,
         *,
-        bc_x_min: BoundaryCondition = DirichletBC(value=0.0),
-        bc_x_max: BoundaryCondition = DirichletBC(value=0.0)
+        bc_x_min: BoundaryCondition = _DEFAULT_DIRICHLET_BC,
+        bc_x_max: BoundaryCondition = _DEFAULT_DIRICHLET_BC,
     ) -> None:
         self.grid: CartesianGrid1D = grid
         self.bc_x_min: BoundaryCondition = bc_x_min
@@ -73,46 +78,34 @@ class Laplacian1D:
             raise TypeError("bc_x_max must be a BoundaryCondition")
 
     def check_boundary_conditions(self) -> None:
-        supported_bcs: tuple[type[BoundaryCondition], ...] = (
-            DirichletBC,
-        )
+        supported_bcs: tuple[type[BoundaryCondition], ...] = (DirichletBC,)
 
         if not isinstance(self.bc_x_min, supported_bcs):
             raise TypeError(f"bc_x_min:{self.bc_x_min} is not a supported BC")
         if not isinstance(self.bc_x_max, supported_bcs):
             raise TypeError(f"bc_x_min:{self.bc_x_max} is not a supported BC")
 
-        if isinstance(self.bc_x_min, DirichletBC):
-            if self.bc_x_min.value != 0:
-                raise ValueError(
-                    "Only DirichletBC(value=0.0) is supported at x_min."
-                )
+        if isinstance(self.bc_x_min, DirichletBC) and self.bc_x_min.value != 0:
+            raise ValueError("Only DirichletBC(value=0.0) is supported at x_min.")
 
-        if isinstance(self.bc_x_max, DirichletBC):
-            if self.bc_x_max.value != 0:
-                raise ValueError(
-                    "Only DirichletBC(value=0.0) is supported at x_max."
-                )
+        if isinstance(self.bc_x_max, DirichletBC) and self.bc_x_max.value != 0:
+            raise ValueError("Only DirichletBC(value=0.0) is supported at x_max.")
 
     def get_x_active_min_idx(self) -> int:
         x_active_min_idx = 0
-        if (
-            isinstance(self.bc_x_min, DirichletBC)
-        ):
+        if isinstance(self.bc_x_min, DirichletBC):
             x_active_min_idx = 1
         return x_active_min_idx
 
     def get_x_active_max_idx(self) -> int:
         x_active_max_idx = self.grid.Nx
-        if (
-            isinstance(self.bc_x_max, DirichletBC)
-        ):
+        if isinstance(self.bc_x_max, DirichletBC):
             x_active_max_idx = self.grid.Nx - 1
 
         return x_active_max_idx
 
     def get_x_active(self) -> np.ndarray:
-        return self.grid.x[self.x_active_min_idx:self.x_active_max_idx]
+        return self.grid.x[self.x_active_min_idx : self.x_active_max_idx]
 
     def build(self) -> csr_matrix:
         """

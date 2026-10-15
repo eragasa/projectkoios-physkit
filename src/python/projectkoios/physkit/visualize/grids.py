@@ -2,11 +2,15 @@ from __future__ import annotations
 
 import matplotlib.pyplot as plt
 import numpy as np
-
-from matplotlib.figure import Figure
 from matplotlib.axes import Axes
+from matplotlib.figure import Figure
 
-from projectkoios.physkit.core.grids import CartesianGrid1D, CartesianGrid2D, CartesianGrid3D
+from projectkoios.physkit.core.grids import (
+    CartesianGrid1D,
+    CartesianGrid2D,
+    CartesianGrid3D,
+)
+
 
 def plot_grid_1d(grid: CartesianGrid1D) -> tuple[Figure, Axes]:
     """
@@ -26,9 +30,7 @@ def plot_grid_1d(grid: CartesianGrid1D) -> tuple[Figure, Axes]:
 
 
 def plot_grid_2d(
-        grid: CartesianGrid2D,
-        *,
-        show_lines: bool = True
+    grid: CartesianGrid2D, *, show_lines: bool = True
 ) -> tuple[Figure, Axes]:
     """
     Plot the points of a 2D Cartesian grid.
@@ -53,10 +55,7 @@ def plot_grid_2d(
     return fig, ax
 
 
-def plot_grid_3d(
-        grid: CartesianGrid3D,
-        *,
-        max_points: int = 5000):
+def plot_grid_3d(grid: CartesianGrid3D, *, max_points: int = 5000):
     """
     Plot the points of a 3D Cartesian grid.
 

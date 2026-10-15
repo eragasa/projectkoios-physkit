@@ -1,9 +1,9 @@
 """Abstract finite-matrix operators on one-dimensional state spaces.
 
 :class:`DiscreteLinearOperator1D` specializes
-:class:`~projectkoios.physkit.operators.base.LinearOperator` by requiring a canonical SciPy
-CSR matrix.  Dense inspection is derived from the public defensive CSR copy,
-not from an independent representation, and returns owned C-contiguous data.
+:class:`~projectkoios.physkit.operators.base.LinearOperator` by requiring a
+canonical SciPy CSR matrix. Dense inspection is derived from the public defensive
+CSR copy, not from an independent representation, and returns owned C-contiguous data.
 Concrete subclasses define semantic domain/codomain validation, matrix sign,
 shape, and dtype.
 

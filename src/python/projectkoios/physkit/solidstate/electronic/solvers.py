@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import TypeAlias
-
 import numpy as np
 from numpy.typing import NDArray
 
@@ -15,9 +13,8 @@ from projectkoios.physkit.solidstate.electronic.results import (
     ElectronicBandStructureResult,
 )
 
-
-FloatArray: TypeAlias = NDArray[np.float64]
-ComplexArray: TypeAlias = NDArray[np.complex128]
+type FloatArray = NDArray[np.float64]
+type ComplexArray = NDArray[np.complex128]
 
 
 class PlaneWaveBlochSolver1D:
@@ -60,18 +57,11 @@ class PlaneWaveBlochSolver1D:
             Corresponding plane-wave coefficient vectors.
         """
         if not 1 <= number_of_bands <= self.hamiltonian.basis.size:
-            raise ValueError(
-                "number_of_bands must be between 1 and "
-                "the basis size."
-            )
+            raise ValueError("number_of_bands must be between 1 and the basis size.")
 
-        matrix = self.hamiltonian.construct_matrix(
-            bloch_wavevector
-        )
+        matrix = self.hamiltonian.construct_matrix(bloch_wavevector)
 
-        energies, eigenvectors = np.linalg.eigh(
-            matrix
-        )
+        energies, eigenvectors = np.linalg.eigh(matrix)
 
         return (
             energies[:number_of_bands],
@@ -119,9 +109,7 @@ class PlaneWaveBlochSolver1D:
             dtype=np.complex128,
         )
 
-        for k_index, bloch_wavevector in enumerate(
-            k_path.values
-        ):
+        for k_index, bloch_wavevector in enumerate(k_path.values):
             (
                 energies[k_index],
                 eigenvectors[k_index],
@@ -134,7 +122,5 @@ class PlaneWaveBlochSolver1D:
             k_points=k_path.values.copy(),
             energies=energies,
             eigenvectors=eigenvectors,
-            reciprocal_vectors=(
-                self.hamiltonian.basis.vectors.copy()
-            ),
+            reciprocal_vectors=(self.hamiltonian.basis.vectors.copy()),
         )

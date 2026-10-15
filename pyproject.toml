@@ -70,3 +70,16 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 [tool.ruff.lint.isort]
 known-first-party = ["projectkoios", "tests"]
 
+[tool.ruff.lint.per-file-ignores]
+"*.ipynb" = [
+  "E402", # Notebook cells may import after setup or explanatory expressions.
+  "E501", # Display strings and mathematical prose are not formatter-wrappable.
+  "F811", # Pedagogical notebooks intentionally refine definitions across cells.
+]
+"notebooks/sze_ch2_01_01_mobility.ipynb" = [
+  "F821", # Retained cross-notebook PN-junction excerpt depends on its source context.
+]
+"src/python/projectkoios/physkit/elements.py" = [
+  "UP031", # Percent formatting is retained for exact legacy text/SQL output.
+]
+

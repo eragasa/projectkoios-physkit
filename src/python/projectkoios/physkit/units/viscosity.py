@@ -16,6 +16,7 @@ Notes:
 - CGS unit: poise (P)
 - Common practical unit: centipoise (cP)
 """
+
 from enum import IntEnum
 
 
@@ -31,11 +32,11 @@ class Viscosity:
 
     class Units(IntEnum):
         # SI
-        Pa_s = 0          # pascal-second
+        Pa_s = 0  # pascal-second
 
         # CGS
-        Poise = 1         # P = g·cm⁻¹·s⁻¹
-        cPoise = 2        # centipoise
+        Poise = 1  # P = g·cm⁻¹·s⁻¹
+        cPoise = 2  # centipoise
 
     # ------------------------------------------------------------------
     # Unit scale factors to canonical Pa·s
@@ -44,16 +45,16 @@ class Viscosity:
     #   1 P  = 0.1 Pa·s
     #   1 cP = 1e-3 Pa·s
     _TO_Pa_s = (
-        1.0,        # Pa·s
-        1.0e-1,     # Poise
-        1.0e-3,     # centipoise
+        1.0,  # Pa·s
+        1.0e-1,  # Poise
+        1.0e-3,  # centipoise
     )
 
     # ------------------------------------------------------------------
     # Core conversion
     # ------------------------------------------------------------------
     @staticmethod
-    def convert(*, from_, to: "Viscosity.Units"):
+    def convert(*, from_, to: Viscosity.Units):
         """
         Convert dynamic viscosity values between units.
 
@@ -73,11 +74,11 @@ class Viscosity:
     # Internal canonical helpers
     # ------------------------------------------------------------------
     @staticmethod
-    def _to_canonical(value, unit: "Viscosity.Units"):
+    def _to_canonical(value, unit: Viscosity.Units):
         """Convert value to canonical unit (Pa·s)."""
         return value * Viscosity._TO_Pa_s[int(unit)]
 
     @staticmethod
-    def _from_canonical(value_Pa_s, unit: "Viscosity.Units"):
+    def _from_canonical(value_Pa_s, unit: Viscosity.Units):
         """Convert value from canonical unit (Pa·s)."""
         return value_Pa_s / Viscosity._TO_Pa_s[int(unit)]
