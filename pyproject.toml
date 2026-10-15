@@ -76,9 +76,6 @@ known-first-party = ["projectkoios", "tests"]
   "E501", # Display strings and mathematical prose are not formatter-wrappable.
   "F811", # Pedagogical notebooks intentionally refine definitions across cells.
 ]
-"notebooks/sze_ch2_01_01_mobility.ipynb" = [
-  "F821", # Retained cross-notebook PN-junction excerpt depends on its source context.
-]
 "src/python/projectkoios/physkit/elements.py" = [
   "UP031", # Percent formatting is retained for exact legacy text/SQL output.
 ]

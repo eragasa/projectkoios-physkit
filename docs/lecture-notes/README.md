@@ -60,6 +60,8 @@ or reuse the published image without taking ownership of the study.
 - [Two-dimensional checkerboard-potential Bloch bands](../lecturenotes/solidstate/bloch2d/checkerboard/index.md)
 - [Periodic primitive-cell free particle in two dimensions](../lecturenotes/solidstate/semiconductors/effmass_2d/index.md)
 - [Three-dimensional periodic primitive-cell effective-mass reference](../lecturenotes/solidstate/semiconductors/effmass_3d/index.md)
+- [Empirical semiconductor carrier mobility](solidstate/semiconductors/carrier-mobility/index.md)
+- [Nondegenerate abrupt p–n junction](solidstate/semiconductors/abrupt-pn-junction/index.md)
 - [Nonorthogonal lattice metric geometry](../lecturenotes/solidstate/lattices/nonorthogonal-metric-geometry/index.md)
 - [Kronig--Penney delta-comb dispersion](../lecturenotes/solidstate/electronic-structure/kronig-penney/delta-comb/index.md)
 - [Dimensionless periodic Cahn--Hilliard evolution](../lecturenotes/solidstate/phase-field/cahn-hilliard/index.md)

@@ -1,5 +1,14 @@
 # Semiconductor laboratories
 
+Core transport laboratories:
+
+- [`carrier-mobility.ipynb`](carrier-mobility.ipynb) evaluates empirical
+  lattice and ionized-impurity mobility and a deterministic relaxation-time
+  trajectory.
+- [`abrupt-pn-junction.ipynb`](abrupt-pn-junction.ipynb) evaluates the
+  nondegenerate abrupt-junction depletion model, band diagram, and carrier
+  profiles.
+
 Dimension-specific effective-mass ownership follows the package naming scheme:
 
 - `effmass_1d` has no maintained laboratory yet;

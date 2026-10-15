@@ -1,6 +1,12 @@
 # `projectkoios.physkit.solidstate.semiconductors`
 
 This package owns semiconductor-specific reduced physical models.
+
+- [`mobility`](mobility/index.md) owns empirical lattice and ionized-impurity
+  mobility contributions and a relaxation-time trajectory sampler.
+- [`junction`](junction/index.md) owns a nondegenerate abrupt p–n-junction
+  depletion model and its correlated equilibrium results.
+
 Dimension-specific effective-mass ownership is explicit:
 
 - `effmass_1d` is reserved for a future one-dimensional contract and currently
