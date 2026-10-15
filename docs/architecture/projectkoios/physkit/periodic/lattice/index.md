@@ -5,8 +5,8 @@
 The package owns physical direct-lattice records, direct-basis metric geometry,
 explicit ambient-3D/intrinsic-2D lattice adaptation, and reusable
 finite-periodic integer-domain mechanics. The finite-periodic slice
-includes boundary twists, integral symmetry operations, scalar hopping models,
-represented sparse operators, compatibility-gated composition, uniform-link
+includes boundary twists, integral symmetry operations, scalar and block hopping
+models, represented sparse operators, compatibility-gated composition, uniform-link
 construction, and explicit gauge bridges.
 
 ## Public contract
@@ -22,6 +22,7 @@ Defining modules remain the preferred import routes.
 - [Module `lattice3d`](lattice3d/index.md)
 - [Package `embedding`](embedding/index.md)
 - [Module `metric`](metric/index.md)
+- [Module `hopping`](hopping/index.md)
 - [Module `gauge_bridges`](gauge_bridges/index.md)
 - [Parent package](../index.md)
 - [Source provenance](../../../../../provenance/finite-periodic-lattice-source-mapping.md)

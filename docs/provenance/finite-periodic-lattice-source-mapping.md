@@ -25,28 +25,41 @@ policy, and independent quotient-seam construction.
 `projectkoios.physkit.solidstate.tb.diagnostics` was authored at the PhysKit
 destination against the extracted `ScalarHoppingModel` and
 `IntegralLatticeOperation` contracts. It does not claim exact implementation
-lineage from a donor module. The module owns raw tolerance-free Hermiticity and
-caller-supplied integral-operation comparisons.
+lineage from a donor module. The module owns raw tolerance-free scalar and block
+Hermiticity diagnostics plus displacement-correlated unit-aware block powers.
+
+`BlockHoppingTerm` and `BlockHoppingModel` generalize the destination hopping
+records to energy-unit-bearing square matrices with explicit ordered-basis and
+energy-reference identity. `projectkoios.physkit.solidstate.tb.truncation`
+selects a caller-supplied ordinary-integer-lattice conjugate-closed displacement
+inventory with a distinct retained-model identity, without owning a cyclic
+finite-mesh alias rule, range, cutoff, tolerance, normalization, or acceptance
+policy. These contracts
+were authored at the PhysKit destination in response to an internal KSD ownership
+handoff and do not claim copied implementation lineage from a donor module.
 
 `projectkoios.physkit.solidstate.tb.bloch` was also authored at the PhysKit
 destination. It owns the physics-semantic mapping from fractional reciprocal
-wave vectors and energy-unit-bearing scalar hopping coefficients to correlated
-Bloch values. Its positive-exponent convention agrees with the donor's hopping
-transform convention, but the adapter does not claim copied implementation
-lineage from that module.
+wave vectors and energy-unit-bearing scalar or block hopping coefficients to
+correlated Bloch values or matrices. Its positive-exponent convention agrees
+with the donor's hopping transform convention, but the adapters do not claim
+copied implementation lineage from that module.
 
 ## Numerics owner binding
 
-The generic ordered finite Fourier-series calculation is consumed from the
-`projectkoios-optimization` distribution at exact commit
-`bed0b2f9e8016353b42e5424871d81e5edf5762a`, tree
-`f10a72c6595cc1daec195bae62aefe3bc020a007`. The owning API is
-`projectkoios.numerics.finite_periodic.finite_series` and fixes
-$\sum_j c_j\exp(+2\pi i\,x\cdot m_j)$ without normalization.
+The generic ordered finite Fourier-series and Frobenius calculations are consumed
+from the `projectkoios-optimization` distribution at exact commit
+`cf551409872a621b4e47d2236ac4ffdc12c187c0`, tree
+`7e0c659f9aabaf8027504ae87d897d73bf775154`. The owning APIs are
+`projectkoios.numerics.finite_periodic.finite_series`, which fixes
+$\sum_j c_j\exp(+2\pi i\,x\cdot m_j)$ without normalization, and
+`projectkoios.numerics.linalg.frobenius`, which returns deterministic raw power
+and its square root for finite built-in complex tuple matrices.
 
-PhysKit passes only unit-free built-in coordinate, integer-mode, and coefficient
-tuples to that owner. Lattice interpretation, model identity, basis identity,
-energy reference, and energy unit remain in the PhysKit adapter and result.
+PhysKit passes only unit-free built-in coordinate, integer-mode, coefficient, and
+matrix tuples to those owners. Lattice interpretation, model identity, basis
+identity, energy reference, and energy or squared-energy units remain in the
+PhysKit adapters and results.
 
 ## Semantic adaptations
 
@@ -86,8 +99,8 @@ boundary phases, symmetry operations, hopping records, represented operators,
 compatibility-gated sparse addition, centered uniform-link construction, and
 site-diagonal gauge bridges. Tests under
 `tests/projectkoios/physkit/solidstate/tb/` cover destination-authored raw
-scalar hopping diagnostics and the physics-semantic adapter to the exact
-Numerics finite-series owner revision. The corresponding ksdft integration
+scalar and block hopping diagnostics and the physics-semantic adapters to the exact
+Numerics finite-series and Frobenius owner revision. The corresponding ksdft integration
 tests exercise its compatibility imports and independent seam-route
 reconciliation.
 

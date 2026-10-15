@@ -1,9 +1,9 @@
-"""Immutable scalar hopping models and localized lattice perturbations.
+"""Immutable scalar and block hopping models and localized perturbations.
 
-These records describe reduced scalar lattice Hamiltonian data independently of atomic
-crystal structures, DFT provenance, model-class fitting, or scientific acceptance.
-Energy units use PhysKit's Pint-backed unit records, and every model retains an explicit
-energy-reference identity.
+These records describe reduced lattice Hamiltonian data independently of atomic crystal
+structures, DFT provenance, model-class fitting, or scientific acceptance. Energy units
+use PhysKit's Pint-backed unit records, and every model retains explicit basis and
+energy-reference identities.
 
 This implementation preserves the represented behavior of
 ``ksdft2effmass.solid_state.lattice_models`` at donor revision
@@ -22,7 +22,11 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from projectkoios.physkit.units import PhysicalUnit, Unitless
+from projectkoios.physkit.units import (
+    ComplexMatrixQuantity,
+    PhysicalUnit,
+    Unitless,
+)
 
 from .finite_domain import LatticeCoordinate, LatticeDimension, LatticeDisplacement
 
@@ -119,6 +123,88 @@ class ScalarHoppingModel:
             raise ValueError("term displacements must be sorted and unique")
         if not isinstance(self.energy_unit, PhysicalUnit | Unitless):
             raise TypeError("energy_unit must be PhysicalUnit or Unitless")
+
+
+@dataclass(frozen=True, slots=True, eq=False)
+class BlockHoppingTerm:
+    """Represent one matrix-valued translation-invariant hopping coefficient.
+
+    ``coefficient`` carries the energy unit explicitly. Its rows and columns refer to
+    the same ordered primitive-cell basis declared by the owning model.
+    """
+
+    displacement: LatticeDisplacement
+    coefficient: ComplexMatrixQuantity
+
+    def __post_init__(self) -> None:
+        """Validate one finite immutable nonempty square coefficient block."""
+        if type(self.displacement) is not LatticeDisplacement:
+            raise TypeError("displacement must be LatticeDisplacement")
+        if type(self.coefficient) is not ComplexMatrixQuantity:
+            raise TypeError("coefficient must be ComplexMatrixQuantity")
+        row_count, column_count = self.coefficient.magnitude.shape
+        if row_count == 0 or row_count != column_count:
+            raise ValueError("coefficient must be a nonempty square matrix")
+
+
+@dataclass(frozen=True, slots=True, eq=False)
+class BlockHoppingModel:
+    """Represent one ordered matrix-valued lattice Hamiltonian.
+
+    The model owns displacement and coefficient order, lattice dimension, energy unit,
+    energy-reference identity, and ordered primitive-cell basis identity. It does not
+    infer Hermiticity, lattice symmetry, truncation policy, or scientific acceptance.
+    Displacements are ordinary integer-lattice translations; no cyclic representative
+    modulus or finite-DFT alias equivalence is implied.
+    """
+
+    identifier: str
+    dimension: LatticeDimension
+    terms: tuple[BlockHoppingTerm, ...]
+    energy_unit: SolidStateUnit
+    energy_reference: str
+    basis_identifier: str
+
+    def __post_init__(self) -> None:
+        """Validate identity, dimensions, common matrix shape, units, and order."""
+        for value, name in (
+            (self.identifier, "identifier"),
+            (self.energy_reference, "energy_reference"),
+            (self.basis_identifier, "basis_identifier"),
+        ):
+            if type(value) is not str:
+                raise TypeError(f"{name} must be a string")
+            if not value:
+                raise ValueError(f"{name} must be nonempty")
+        if type(self.dimension) is not LatticeDimension:
+            raise TypeError("dimension must be LatticeDimension")
+        if type(self.terms) is not tuple:
+            raise TypeError("terms must be a tuple")
+        if not self.terms:
+            raise ValueError("terms must be nonempty")
+        if any(type(term) is not BlockHoppingTerm for term in self.terms):
+            raise TypeError("terms must contain BlockHoppingTerm values")
+        if any(
+            term.displacement.dimension is not self.dimension for term in self.terms
+        ):
+            raise ValueError("term dimensions must match model dimension")
+        coefficient_shape = self.terms[0].coefficient.magnitude.shape
+        if any(
+            term.coefficient.magnitude.shape != coefficient_shape for term in self.terms
+        ):
+            raise ValueError("term coefficients must have one common square shape")
+        if not isinstance(self.energy_unit, PhysicalUnit | Unitless):
+            raise TypeError("energy_unit must be PhysicalUnit or Unitless")
+        if any(term.coefficient.unit != self.energy_unit for term in self.terms):
+            raise ValueError("term coefficient units must match model energy_unit")
+        displacements = tuple(term.displacement.components for term in self.terms)
+        if displacements != tuple(sorted(set(displacements))):
+            raise ValueError("term displacements must be sorted and unique")
+
+    @property
+    def basis_size(self) -> int:
+        """Return the row and column count of each coefficient block."""
+        return int(self.terms[0].coefficient.magnitude.shape[0])
 
 
 @dataclass(frozen=True, slots=True)

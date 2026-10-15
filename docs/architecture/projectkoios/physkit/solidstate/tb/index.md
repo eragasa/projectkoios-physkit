@@ -2,21 +2,26 @@
 
 ## Current responsibility
 
-The package owns reusable scalar tight-binding Bloch evaluation and diagnostics
-built from explicit hopping models, fractional reciprocal wave vectors, and
-caller-supplied lattice operations.
+The package owns reusable scalar and matrix-valued tight-binding Bloch evaluation,
+raw coefficient diagnostics, unit-aware block powers, and explicit
+conjugate-closed block-hopping selection. Inputs retain lattice displacement,
+ordered basis, model, energy-unit, and energy-reference identity.
 
-Its APIs follow the represented equations directly. Callers pass models,
-coordinates, and operations to small numerical actions; no workflow request,
-campaign state, symmetry inference, or scientific acceptance policy is owned
-here. The unit-free finite Fourier-series kernel belongs to
-`projectkoios.numerics`. PhysKit supplies the lattice meaning, hopping-model
-identity, and energy unit around that generic calculation.
+Its APIs follow represented equations directly. Callers supply models,
+coordinates, operations, and retained displacement inventories to small numerical
+actions; no workflow request, campaign state, inferred symmetry family, cutoff,
+tolerance, normalized locality measure, or scientific acceptance policy is owned
+here.
+
+Unit-free finite Fourier-series and complex-matrix Frobenius kernels belong to
+`projectkoios.numerics`. PhysKit delegates to those pinned owner APIs and supplies
+lattice, hopping, basis, and unit semantics around their calculations.
 
 ## Navigation
 
 - [Module `bloch`](bloch/index.md)
 - [Module `diagnostics`](diagnostics/index.md)
+- [Module `truncation`](truncation/index.md)
 - [Parent package](../index.md)
 
 ## Local mapping
