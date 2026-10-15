@@ -123,8 +123,7 @@ class FreeElectronBloch1DSpectrumEvaluator(
             dtype=np.float64,
         )
         wave_numbers = (
-            request.bloch_wave_number.magnitude
-            + reciprocal_basis.magnitude * indices
+            request.bloch_wave_number.magnitude + reciprocal_basis.magnitude * indices
         )
         mass = model.electron_mass
         hbar = model.cell.unit_system.hbar

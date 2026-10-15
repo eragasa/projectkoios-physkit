@@ -41,16 +41,13 @@ class BlochPeriodicLaplacian1DConstructionRequest(DataObject):
             f"1 / {self.grid.oriented_cell_length.unit.expression}"
         )
         if self.bloch_wave_number.unit != expected_unit:
-            raise ValueError(
-                "bloch_wave_number must use the inverse grid-length unit"
-            )
+            raise ValueError("bloch_wave_number must use the inverse grid-length unit")
 
     @property
     def seam_phase(self) -> complex:
         r"""Return $\exp(i k a)$ for the positive oriented seam."""
         phase_argument = (
-            self.bloch_wave_number.magnitude
-            * self.grid.oriented_cell_length.magnitude
+            self.bloch_wave_number.magnitude * self.grid.oriented_cell_length.magnitude
         )
         return complex(np.exp(1.0j * phase_argument))
 
@@ -81,9 +78,7 @@ class BlochPeriodicLaplacian1D(ResultsObject):
             self.represented_laplacian,
             ComplexSparseMatrixQuantity,
         ):
-            raise TypeError(
-                "represented_laplacian must be ComplexSparseMatrixQuantity"
-            )
+            raise TypeError("represented_laplacian must be ComplexSparseMatrixQuantity")
         point_count = self.request.grid.point_count
         if self.represented_laplacian.shape != (point_count, point_count):
             raise ValueError("represented_laplacian shape must match the grid")
@@ -125,9 +120,7 @@ class BlochPeriodicLaplacian1DConstructor(
         represented[0, -1] = np.conjugate(request.seam_phase)
         represented[-1, 0] = request.seam_phase
         represented = represented.tocsr() / request.grid.spacing.magnitude**2
-        unit = PhysicalUnit(
-            f"1 / ({request.grid.spacing.unit.expression}) ** 2"
-        )
+        unit = PhysicalUnit(f"1 / ({request.grid.spacing.unit.expression}) ** 2")
         return BlochPeriodicLaplacian1D(
             request=request,
             represented_laplacian=ComplexSparseMatrixQuantity.from_csr(

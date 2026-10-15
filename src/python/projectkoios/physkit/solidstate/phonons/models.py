@@ -29,12 +29,8 @@ class MonatomicChainModel1D:
         spring_constant: float,
     ) -> None:
         self.lattice = lattice
-        self.atomic_mass: float = float(
-            atomic_mass
-        )
-        self.spring_constant: float = float(
-            spring_constant
-        )
+        self.atomic_mass: float = float(atomic_mass)
+        self.spring_constant: float = float(spring_constant)
 
         self.check_args()
 
@@ -47,21 +43,13 @@ class MonatomicChainModel1D:
         None
         """
         if not np.isfinite(self.atomic_mass):
-            raise ValueError(
-                "atomic_mass must be finite."
-            )
+            raise ValueError("atomic_mass must be finite.")
 
         if self.atomic_mass <= 0.0:
-            raise ValueError(
-                "atomic_mass must be positive."
-            )
+            raise ValueError("atomic_mass must be positive.")
 
         if not np.isfinite(self.spring_constant):
-            raise ValueError(
-                "spring_constant must be finite."
-            )
+            raise ValueError("spring_constant must be finite.")
 
         if self.spring_constant <= 0.0:
-            raise ValueError(
-                "spring_constant must be positive."
-            )
+            raise ValueError("spring_constant must be positive.")

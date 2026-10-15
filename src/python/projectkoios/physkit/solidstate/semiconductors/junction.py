@@ -366,15 +366,13 @@ class AbruptPNJunction:
     ) -> CurrentProfiles:
         spacing = position[1] - position[0]
         electron_gradient = np.zeros_like(carriers.electron)
-        electron_gradient[1:-1] = (
-            carriers.electron[2:] - carriers.electron[:-2]
-        ) / (2.0 * spacing)
+        electron_gradient[1:-1] = (carriers.electron[2:] - carriers.electron[:-2]) / (
+            2.0 * spacing
+        )
         electron_gradient[0] = electron_gradient[1]
         electron_gradient[-1] = electron_gradient[-2]
         hole_gradient = np.zeros_like(carriers.hole)
-        hole_gradient[1:-1] = (
-            carriers.hole[2:] - carriers.hole[:-2]
-        ) / (2.0 * spacing)
+        hole_gradient[1:-1] = (carriers.hole[2:] - carriers.hole[:-2]) / (2.0 * spacing)
         hole_gradient[0] = hole_gradient[1]
         hole_gradient[-1] = hole_gradient[-2]
         electron_diffusivity = (

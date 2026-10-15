@@ -103,8 +103,6 @@ def cosine_product_fourier_coefficients(
     signs = mode_indices[coupled] / harmonic_array[np.newaxis, :]
     phase_array = np.asarray(phases, dtype=np.float64)
     coefficients[coupled] = (
-        amplitude
-        / (2.0 ** len(harmonics))
-        * np.exp(1j * (signs @ phase_array))
+        amplitude / (2.0 ** len(harmonics)) * np.exp(1j * (signs @ phase_array))
     )
     return coefficients

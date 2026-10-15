@@ -76,10 +76,7 @@ class TestFermiDiracThermalDensityOfStatesEvaluatorEvaluate:
             result.integrated_unoccupied_state_density.magnitude,
             0.5,
         )
-        assert (
-            result.integrated_occupied_state_density.unit
-            == reciprocal_length_unit
-        )
+        assert result.integrated_occupied_state_density.unit == reciprocal_length_unit
         occupied_plot = DensityOfStatesPlotData.from_thermal(
             result,
             component="occupied",
@@ -91,8 +88,7 @@ class TestFermiDiracThermalDensityOfStatesEvaluatorEvaluate:
         assert occupied_plot.energies is result.request.energies
         assert occupied_plot.density_of_states is result.occupied_density_of_states
         assert (
-            active_plot.density_of_states
-            is result.thermally_active_density_of_states
+            active_plot.density_of_states is result.thermally_active_density_of_states
         )
 
     def test__evaluate_supports_a_fully_nondimensional_model(self) -> None:

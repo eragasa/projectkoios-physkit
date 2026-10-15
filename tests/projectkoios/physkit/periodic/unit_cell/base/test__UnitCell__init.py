@@ -97,9 +97,7 @@ def test__UnitCell__init__recovers_metric_from_normalized_direct_basis(
             / (physical_lengths[0] * physical_lengths[1]),
         ]
     )
-    physical_angles = np.degrees(
-        np.arccos(np.clip(angle_cosines, -1.0, 1.0))
-    )
+    physical_angles = np.degrees(np.arccos(np.clip(angle_cosines, -1.0, 1.0)))
 
     assert cell.lattice_parameter is lattice_parameter
     np.testing.assert_allclose(

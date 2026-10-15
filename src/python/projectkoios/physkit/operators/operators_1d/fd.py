@@ -41,9 +41,7 @@ class SecondOrderCentralDifferenceLaplacian1D(UnitAwareMatrixOperator):
         if not isinstance(self.interval, DirichletInterval):
             raise TypeError("interval must be DirichletInterval")
         if not self.interval.boundary_condition.is_homogeneous:
-            raise ValueError(
-                "Laplacian matrix requires homogeneous Dirichlet data"
-            )
+            raise ValueError("Laplacian matrix requires homogeneous Dirichlet data")
 
     def matrix(self) -> SparseMatrixQuantity:
         """Return the sparse second-derivative matrix and inverse-area unit."""
@@ -52,9 +50,7 @@ class SecondOrderCentralDifferenceLaplacian1D(UnitAwareMatrixOperator):
         if isinstance(coordinate_unit, Unitless):
             unit: ModelSystemUnit = Unitless()
         else:
-            unit = PhysicalUnit(
-                f"1 / ({coordinate_unit.expression}) ** 2"
-            )
+            unit = PhysicalUnit(f"1 / ({coordinate_unit.expression}) ** 2")
         points = self.interval.grid.interior_point_count
         inverse_square_spacing = 1.0 / (spacing * spacing)
         diagonal = np.full(points, -2.0 * inverse_square_spacing)

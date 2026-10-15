@@ -142,8 +142,7 @@ class DensityOfStatesVisualizer:
         density = self.data.density_of_states.magnitude
         energy_label = f"Energy ({self.data.energies.unit.expression})"
         density_label = (
-            "Density of states "
-            f"({self.data.density_of_states.unit.expression})"
+            f"Density of states ({self.data.density_of_states.unit.expression})"
         )
         if orientation == "energy_horizontal":
             ax.plot(energies, density, label=label)

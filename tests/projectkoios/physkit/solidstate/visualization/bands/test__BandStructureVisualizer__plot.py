@@ -70,6 +70,4 @@ def test__plot__rejects_reference_with_mismatched_shape() -> None:
     )
 
     with pytest.raises(ValueError, match="match the primary band shape"):
-        BandStructureVisualizer(data=data).plot(
-            reference_band_energies=reference
-        )
+        BandStructureVisualizer(data=data).plot(reference_band_energies=reference)

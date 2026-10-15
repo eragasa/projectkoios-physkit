@@ -107,13 +107,9 @@ class BandStructureVisualizer:
     ) -> None:
         """Require reference bands in the primary energy representation."""
         if not isinstance(reference_band_energies, MatrixQuantity):
-            raise TypeError(
-                "reference_band_energies must be MatrixQuantity or None"
-            )
+            raise TypeError("reference_band_energies must be MatrixQuantity or None")
         if reference_band_energies.unit != self.data.band_energies.unit:
-            raise ValueError(
-                "reference_band_energies must use the primary energy unit"
-            )
+            raise ValueError("reference_band_energies must use the primary energy unit")
         if (
             reference_band_energies.magnitude.shape
             != self.data.band_energies.magnitude.shape

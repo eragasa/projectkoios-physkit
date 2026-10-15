@@ -42,18 +42,13 @@ class ElectronicBandStructureVisualizer:
             Axes containing the band-structure plot.
         """
         if ax is None:
-            _, ax = plt.subplots(
-                figsize=(8, 6)
-            )
+            _, ax = plt.subplots(figsize=(8, 6))
 
         normalized_k_points = (
-            self.result.k_points
-            / self.reciprocal_lattice.fundamental_vector
+            self.result.k_points / self.reciprocal_lattice.fundamental_vector
         )
 
-        for band_index in range(
-            self.result.number_of_bands
-        ):
+        for band_index in range(self.result.number_of_bands):
             ax.plot(
                 normalized_k_points,
                 self.result.energies[
@@ -77,17 +72,11 @@ class ElectronicBandStructureVisualizer:
             linewidth=1.0,
         )
 
-        ax.set_xlabel(
-            r"Bloch wavevector $k/G_0$"
-        )
+        ax.set_xlabel(r"Bloch wavevector $k/G_0$")
 
-        ax.set_ylabel(
-            r"Energy $E_n(k)$"
-        )
+        ax.set_ylabel(r"Energy $E_n(k)$")
 
-        ax.set_title(
-            "Electronic Band Structure"
-        )
+        ax.set_title("Electronic Band Structure")
 
         ax.grid(alpha=0.25)
 

@@ -95,15 +95,13 @@ class Piab1D(Piab):
 
         self.check_args()
 
-        self.boundary_conditions: AxisBoundaryConditions = (
-            AxisBoundaryConditions(
-                lower=DirichletBoundaryCondition(
-                    value=0.0,
-                ),
-                upper=DirichletBoundaryCondition(
-                    value=0.0,
-                ),
-            )
+        self.boundary_conditions: AxisBoundaryConditions = AxisBoundaryConditions(
+            lower=DirichletBoundaryCondition(
+                value=0.0,
+            ),
+            upper=DirichletBoundaryCondition(
+                value=0.0,
+            ),
         )
 
     def check_args(self) -> None:
@@ -119,27 +117,19 @@ class Piab1D(Piab):
             is not positive.
         """
         if self.x_upper <= self.x_lower:
-            raise ValueError(
-                "x_upper must be greater than x_lower."
-            )
+            raise ValueError("x_upper must be greater than x_lower.")
 
         if self.mass <= 0.0:
-            raise ValueError(
-                "mass must be positive."
-            )
+            raise ValueError("mass must be positive.")
 
         if not isinstance(self.constants, type):
-            raise TypeError(
-                "constants must be a constants class."
-            )
+            raise TypeError("constants must be a constants class.")
 
         if not issubclass(
             self.constants,
             Constants,
         ):
-            raise TypeError(
-                "constants must inherit from Constants."
-            )
+            raise TypeError("constants must inherit from Constants.")
 
     @property
     def length(self) -> float:

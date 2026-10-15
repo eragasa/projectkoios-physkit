@@ -31,17 +31,19 @@ class TestFermiDiracChemicalPotentialSolverSolveWeighted:
         )
         thermal_energy = ScalarQuantity(magnitude=0.5, unit=energy_unit)
         expected_mu = 0.3
-        expected_occupations = FermiDiracState(
-            thermal_energy=thermal_energy,
-            chemical_potential=ScalarQuantity(
-                magnitude=expected_mu,
-                unit=energy_unit,
-            ),
-        ).evaluate_occupations(energies=energies).occupations
+        expected_occupations = (
+            FermiDiracState(
+                thermal_energy=thermal_energy,
+                chemical_potential=ScalarQuantity(
+                    magnitude=expected_mu,
+                    unit=energy_unit,
+                ),
+            )
+            .evaluate_occupations(energies=energies)
+            .occupations
+        )
         target = ScalarQuantity(
-            magnitude=float(
-                np.dot(weights.magnitude, expected_occupations.magnitude)
-            ),
+            magnitude=float(np.dot(weights.magnitude, expected_occupations.magnitude)),
             unit=weight_unit,
         )
 
@@ -79,17 +81,19 @@ class TestFermiDiracChemicalPotentialSolverSolveWeighted:
         )
         thermal_energy = ScalarQuantity(magnitude=0.2, unit=energy_unit)
         expected_mu = 0.5
-        expected_occupations = FermiDiracState(
-            thermal_energy=thermal_energy,
-            chemical_potential=ScalarQuantity(
-                magnitude=expected_mu,
-                unit=energy_unit,
-            ),
-        ).evaluate_occupations(energies=energies).occupations
+        expected_occupations = (
+            FermiDiracState(
+                thermal_energy=thermal_energy,
+                chemical_potential=ScalarQuantity(
+                    magnitude=expected_mu,
+                    unit=energy_unit,
+                ),
+            )
+            .evaluate_occupations(energies=energies)
+            .occupations
+        )
         target = ScalarQuantity(
-            magnitude=float(
-                np.dot(weights.magnitude, expected_occupations.magnitude)
-            ),
+            magnitude=float(np.dot(weights.magnitude, expected_occupations.magnitude)),
             unit=weight_unit,
         )
 

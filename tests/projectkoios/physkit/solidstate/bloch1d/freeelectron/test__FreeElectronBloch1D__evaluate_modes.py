@@ -69,9 +69,7 @@ class TestFreeElectronBloch1D:
             ),
         )
         wave_number_si = 2.0 * np.pi / length * 1.0e10
-        expected_electron_volt = (
-            SI.hbar**2 * wave_number_si**2 / (2.0 * SI.me0 * SI.q)
-        )
+        expected_electron_volt = SI.hbar**2 * wave_number_si**2 / (2.0 * SI.me0 * SI.q)
 
         np.testing.assert_allclose(
             result.energies.magnitude[0],

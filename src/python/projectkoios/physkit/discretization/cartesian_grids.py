@@ -56,9 +56,7 @@ class UniformCartesianGrid1D:
                 value.unit,
                 self.lower_bound.unit,
             ):
-                raise ValueError(
-                    f"{name} has incompatible coordinate dimensions"
-                )
+                raise ValueError(f"{name} has incompatible coordinate dimensions")
         if self.upper_magnitude <= self.lower_magnitude:
             raise ValueError("upper_bound must be greater than lower_bound")
         if self.spacing_magnitude <= 0.0:
@@ -103,8 +101,7 @@ class UniformCartesianGrid1D:
         """Return the exact number of uniform intervals."""
         return int(
             round(
-                (self.upper_magnitude - self.lower_magnitude)
-                / self.spacing_magnitude
+                (self.upper_magnitude - self.lower_magnitude) / self.spacing_magnitude
             )
         )
 
@@ -121,9 +118,7 @@ class UniformCartesianGrid1D:
     @property
     def spacing(self) -> ScalarQuantity:
         """Return realized uniform spacing in the canonical unit."""
-        magnitude = (
-            self.upper_magnitude - self.lower_magnitude
-        ) / self.interval_count
+        magnitude = (self.upper_magnitude - self.lower_magnitude) / self.interval_count
         return ScalarQuantity(magnitude, self.coordinate_unit)
 
     def coordinates(self) -> VectorQuantity:
@@ -163,9 +158,7 @@ class UniformCartesianGrid2D:
             self.first_axis.coordinate_unit,
             self.second_axis.coordinate_unit,
         ):
-            raise ValueError(
-                "Cartesian axes must have compatible coordinate units"
-            )
+            raise ValueError("Cartesian axes must have compatible coordinate units")
 
     @property
     def shape(self) -> tuple[int, int]:

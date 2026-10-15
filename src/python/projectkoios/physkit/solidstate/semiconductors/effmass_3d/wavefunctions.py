@@ -68,9 +68,7 @@ class PeriodicPlaneWave3DSampling(ResultsObject):
     def _check_arg_cartesian_positions(self) -> None:
         if not isinstance(self.cartesian_positions, MatrixQuantity):
             raise TypeError("cartesian_positions must be MatrixQuantity")
-        expected_unit = (
-            self.request.spectrum.request.model.cell.primitive_basis.unit
-        )
+        expected_unit = self.request.spectrum.request.model.cell.primitive_basis.unit
         if self.cartesian_positions.unit != expected_unit:
             raise ValueError("cartesian_positions must use the model length unit")
         expected_shape = self.request.fractional_coordinates.magnitude.shape
@@ -87,9 +85,7 @@ class PeriodicPlaneWave3DSampling(ResultsObject):
         length_unit = (
             self.request.spectrum.request.model.cell.primitive_basis.unit.expression
         )
-        expected_unit = PhysicalUnit(
-            expression=f"1 / ({length_unit} ** 1.5)"
-        )
+        expected_unit = PhysicalUnit(expression=f"1 / ({length_unit} ** 1.5)")
         if self.amplitudes.unit != expected_unit:
             raise ValueError("amplitudes must use the normalized 3D wavefunction unit")
 
@@ -113,8 +109,7 @@ class PeriodicPlaneWave3DSampler(
         spectrum = request.spectrum
         cell = spectrum.request.model.cell
         positions = (
-            request.fractional_coordinates.magnitude
-            @ cell.primitive_basis.magnitude.T
+            request.fractional_coordinates.magnitude @ cell.primitive_basis.magnitude.T
         )
         phases = positions @ spectrum.wave_vectors.magnitude.T
         normalization = 1.0 / np.sqrt(cell.volume.magnitude)
@@ -128,8 +123,6 @@ class PeriodicPlaneWave3DSampler(
             ),
             amplitudes=ComplexMatrixQuantity(
                 magnitude=np.asarray(amplitudes, dtype=np.complex128),
-                unit=PhysicalUnit(
-                    expression=f"1 / ({length_unit} ** 1.5)"
-                ),
+                unit=PhysicalUnit(expression=f"1 / ({length_unit} ** 1.5)"),
             ),
         )

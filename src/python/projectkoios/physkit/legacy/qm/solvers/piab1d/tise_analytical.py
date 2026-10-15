@@ -100,9 +100,7 @@ class Piab1DAnalyticalTISEResult(
         )
 
         if not np.isrealobj(coordinates_input):
-            raise TypeError(
-                "coordinates must be real-valued."
-            )
+            raise TypeError("coordinates must be real-valued.")
 
         coordinates_array = np.asarray(
             coordinates_input,
@@ -110,55 +108,23 @@ class Piab1DAnalyticalTISEResult(
         )
 
         if coordinates_array.ndim != 1:
-            raise ValueError(
-                "coordinates must be one-dimensional."
-            )
+            raise ValueError("coordinates must be one-dimensional.")
 
-        if not np.all(
-            np.isfinite(coordinates_array)
-        ):
-            raise ValueError(
-                "coordinates must contain only finite values."
-            )
+        if not np.all(np.isfinite(coordinates_array)):
+            raise ValueError("coordinates must contain only finite values.")
 
-        if np.any(
-            coordinates_array
-            < self.model.x_lower
-        ):
-            raise ValueError(
-                "coordinates must not be less than "
-                "model.x_lower."
-            )
+        if np.any(coordinates_array < self.model.x_lower):
+            raise ValueError("coordinates must not be less than model.x_lower.")
 
-        if np.any(
-            coordinates_array
-            > self.model.x_upper
-        ):
-            raise ValueError(
-                "coordinates must not be greater than "
-                "model.x_upper."
-            )
+        if np.any(coordinates_array > self.model.x_upper):
+            raise ValueError("coordinates must not be greater than model.x_upper.")
 
-        relative_coordinates = (
-            coordinates_array
-            - self.model.x_lower
-        )
+        relative_coordinates = coordinates_array - self.model.x_lower
 
-        wave_numbers = (
-            np.pi
-            * self.quantum_numbers
-            / self.model.length
-        )
+        wave_numbers = np.pi * self.quantum_numbers / self.model.length
 
-        eigenfunctions = (
-            np.sqrt(
-                2.0
-                / self.model.length
-            )
-            * np.sin(
-                relative_coordinates[:, np.newaxis]
-                * wave_numbers[np.newaxis, :]
-            )
+        eigenfunctions = np.sqrt(2.0 / self.model.length) * np.sin(
+            relative_coordinates[:, np.newaxis] * wave_numbers[np.newaxis, :]
         )
 
         result = np.asarray(
@@ -201,39 +167,26 @@ class Piab1DAnalyticalTISEResult(
             If the requested quantum number is not contained in the
             result.
         """
-        if (
-            isinstance(
-                quantum_number,
-                (bool, np.bool_),
-            )
-            or not isinstance(
-                quantum_number,
-                (int, np.integer),
-            )
+        if isinstance(
+            quantum_number,
+            (bool, np.bool_),
+        ) or not isinstance(
+            quantum_number,
+            (int, np.integer),
         ):
-            raise TypeError(
-                "quantum_number must be an integer."
-            )
+            raise TypeError("quantum_number must be an integer.")
 
-        matching_indices = np.flatnonzero(
-            self.quantum_numbers
-            == quantum_number
-        )
+        matching_indices = np.flatnonzero(self.quantum_numbers == quantum_number)
 
         if matching_indices.size == 0:
             raise ValueError(
-                f"quantum_number={quantum_number} is not "
-                "contained in this result."
+                f"quantum_number={quantum_number} is not contained in this result."
             )
 
-        state_index = int(
-            matching_indices[0]
-        )
+        state_index = int(matching_indices[0])
 
-        eigenfunctions = (
-            self.evaluate_eigenfunctions(
-                coordinates=coordinates,
-            )
+        eigenfunctions = self.evaluate_eigenfunctions(
+            coordinates=coordinates,
         )
 
         eigenfunction = np.array(
@@ -250,9 +203,7 @@ class Piab1DAnalyticalTISEResult(
 
 
 class Piab1DAnalyticalTISESolver(
-    Piab1DTISESolver[
-        Piab1DAnalyticalTISEResult
-    ],
+    Piab1DTISESolver[Piab1DAnalyticalTISEResult],
 ):
     """
     Analytical TISE solver for a one-dimensional particle in a box.
@@ -285,14 +236,8 @@ class Piab1DAnalyticalTISESolver(
         energies = (
             hbar**2
             * np.pi**2
-            * quantum_numbers.astype(
-                np.float64
-            ) ** 2
-            / (
-                2.0
-                * mass
-                * length**2
-            )
+            * quantum_numbers.astype(np.float64) ** 2
+            / (2.0 * mass * length**2)
         )
 
         return Piab1DAnalyticalTISEResult(

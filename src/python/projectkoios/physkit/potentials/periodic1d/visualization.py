@@ -51,9 +51,7 @@ class PeriodicPotential1DVisualizer:
             evaluation.potential_values.magnitude,
         )
         ax.set_xlabel("Fractional coordinate $u$")
-        ax.set_ylabel(
-            f"Potential ({evaluation.potential_values.unit.expression})"
-        )
+        ax.set_ylabel(f"Potential ({evaluation.potential_values.unit.expression})")
         ax.set_title("Periodic potential on one unit cell")
         ax.grid(alpha=0.25)
         return ax

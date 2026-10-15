@@ -42,18 +42,13 @@ class PhononBandStructureVisualizer:
             Axes containing the phonon dispersion.
         """
         if ax is None:
-            _, ax = plt.subplots(
-                figsize=(8, 6)
-            )
+            _, ax = plt.subplots(figsize=(8, 6))
 
         normalized_q_points = (
-            self.result.q_points
-            / self.reciprocal_lattice.fundamental_vector
+            self.result.q_points / self.reciprocal_lattice.fundamental_vector
         )
 
-        for branch_index in range(
-            self.result.number_of_branches
-        ):
+        for branch_index in range(self.result.number_of_branches):
             ax.plot(
                 normalized_q_points,
                 self.result.angular_frequencies[
@@ -63,17 +58,11 @@ class PhononBandStructureVisualizer:
                 linewidth=2.0,
             )
 
-        ax.set_xlabel(
-            r"Phonon wavevector $q/G_0$"
-        )
+        ax.set_xlabel(r"Phonon wavevector $q/G_0$")
 
-        ax.set_ylabel(
-            r"Angular frequency $\omega_\nu(q)$"
-        )
+        ax.set_ylabel(r"Angular frequency $\omega_\nu(q)$")
 
-        ax.set_title(
-            "Phonon Dispersion"
-        )
+        ax.set_title("Phonon Dispersion")
 
         ax.grid(alpha=0.25)
 

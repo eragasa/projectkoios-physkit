@@ -51,8 +51,7 @@ class PeriodicPotentialToSampledDiagonalOperatorConversion(ResultsObject):
             PeriodicPotentialToSampledDiagonalOperatorRequest,
         ):
             raise TypeError(
-                "request must be "
-                "PeriodicPotentialToSampledDiagonalOperatorRequest"
+                "request must be PeriodicPotentialToSampledDiagonalOperatorRequest"
             )
         if not isinstance(self.represented_operator, SparseMatrixQuantity):
             raise TypeError("represented_operator must be SparseMatrixQuantity")
@@ -78,8 +77,7 @@ class PeriodicPotentialToSampledDiagonalOperatorConverter:
             PeriodicPotentialToSampledDiagonalOperatorRequest,
         ):
             raise TypeError(
-                "request must be "
-                "PeriodicPotentialToSampledDiagonalOperatorRequest"
+                "request must be PeriodicPotentialToSampledDiagonalOperatorRequest"
             )
         values = request.model.evaluate(
             fractional_coordinates=request.fractional_coordinates
@@ -128,16 +126,12 @@ class PeriodicPotentialToFourierOperatorConversion(ResultsObject):
             self.request,
             PeriodicPotentialToFourierOperatorRequest,
         ):
-            raise TypeError(
-                "request must be PeriodicPotentialToFourierOperatorRequest"
-            )
+            raise TypeError("request must be PeriodicPotentialToFourierOperatorRequest")
         if not isinstance(
             self.represented_operator,
             ComplexSparseMatrixQuantity,
         ):
-            raise TypeError(
-                "represented_operator must be ComplexSparseMatrixQuantity"
-            )
+            raise TypeError("represented_operator must be ComplexSparseMatrixQuantity")
         mode_count = len(self.request.mode_indices)
         if self.represented_operator.shape != (mode_count, mode_count):
             raise ValueError("represented_operator shape must match mode count")
@@ -156,9 +150,7 @@ class PeriodicPotentialToFourierOperatorConverter:
     ) -> PeriodicPotentialToFourierOperatorConversion:
         """Return the canonical sparse reciprocal-mode operator."""
         if not isinstance(request, PeriodicPotentialToFourierOperatorRequest):
-            raise TypeError(
-                "request must be PeriodicPotentialToFourierOperatorRequest"
-            )
+            raise TypeError("request must be PeriodicPotentialToFourierOperatorRequest")
         mode_count = len(request.mode_indices)
         support = request.model.fourier_support
         if support is None:

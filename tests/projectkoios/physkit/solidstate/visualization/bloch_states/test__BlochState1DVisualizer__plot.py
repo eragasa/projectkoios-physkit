@@ -70,9 +70,9 @@ def test__plot_cell_periodic_fourier_weights__removes_bloch_carrier() -> None:
     indices = data.reciprocal_indices.magnitude
     figure, axis = plt.subplots()
 
-    returned = BlochState1DVisualizer(
-        data=data
-    ).plot_cell_periodic_fourier_weights(ax=axis)
+    returned = BlochState1DVisualizer(data=data).plot_cell_periodic_fourier_weights(
+        ax=axis
+    )
 
     assert returned is axis
     assert np.isclose(np.sum(weights), 1.0)

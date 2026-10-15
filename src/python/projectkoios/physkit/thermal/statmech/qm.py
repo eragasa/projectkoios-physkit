@@ -426,9 +426,7 @@ class WeightedFermiDiracChemicalPotentialResult(ResultsObject):
                     1.0 - self.occupations.magnitude,
                 )
             )
-            expected_residual = (
-                total_weight - target_weight - expected_unoccupied
-            )
+            expected_residual = total_weight - target_weight - expected_unoccupied
         self._check_weight_scalar(
             value=self.state_weight_residual,
             name="state_weight_residual",
@@ -447,9 +445,13 @@ class WeightedFermiDiracChemicalPotentialResult(ResultsObject):
             raise TypeError(f"{name} must be ScalarQuantity")
         if value.unit != self.request.state_weights.unit:
             raise ValueError(f"{name} must use the state-weight unit")
-        tolerance = 32.0 * np.finfo(np.float64).eps * max(
-            1.0,
-            abs(expected_magnitude),
+        tolerance = (
+            32.0
+            * np.finfo(np.float64).eps
+            * max(
+                1.0,
+                abs(expected_magnitude),
+            )
         )
         if not np.isclose(
             value.magnitude,
@@ -638,10 +640,13 @@ class WeightedFermiDiracChemicalPotentialBisection:
         # Scale convergence by the smaller particle/hole population. A
         # binary64 floor prevents demanding resolution below roundoff.
         limiting_population = min(target_weight, total_weight - target_weight)
-        residual_tolerance = max(
-            request.solver.occupation_tolerance,
-            64.0 * np.finfo(np.float64).eps,
-        ) * limiting_population
+        residual_tolerance = (
+            max(
+                request.solver.occupation_tolerance,
+                64.0 * np.finfo(np.float64).eps,
+            )
+            * limiting_population
+        )
         midpoint = 0.5 * (lower + upper)
         occupations, occupied, residual = evaluate(midpoint)
         for _ in range(request.solver.maximum_iterations):

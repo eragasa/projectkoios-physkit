@@ -73,9 +73,9 @@ class TestBlochPeriodicLaplacian1DConstructor:
         spacing = length / point_count
         integer_modes = np.fft.fftfreq(point_count, d=1.0 / point_count)
         physical_wave_numbers = wave_number + 2.0 * np.pi * integer_modes / length
-        expected = -4.0 * np.sin(
-            0.5 * physical_wave_numbers * spacing
-        ) ** 2 / spacing**2
+        expected = (
+            -4.0 * np.sin(0.5 * physical_wave_numbers * spacing) ** 2 / spacing**2
+        )
 
         np.testing.assert_allclose(
             np.sort(observed),

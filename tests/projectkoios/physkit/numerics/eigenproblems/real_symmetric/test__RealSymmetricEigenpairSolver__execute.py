@@ -16,9 +16,7 @@ def test_returns_ordered_reconstructing_dense_eigenpairs() -> None:
 
     np.testing.assert_allclose(result.eigenvalues, [1.0, 3.0])
     np.testing.assert_allclose(
-        result.eigenvectors
-        @ np.diag(result.eigenvalues)
-        @ result.eigenvectors.T,
+        result.eigenvectors @ np.diag(result.eigenvalues) @ result.eigenvectors.T,
         operator,
         atol=8.0 * np.finfo(np.float64).eps,
     )
@@ -43,13 +41,9 @@ def test_solves_sparse_tridiagonal_without_densifying(
     result = RealSymmetricEigenpairSolver().execute(operator)
 
     reconstructed = (
-        result.eigenvectors
-        @ np.diag(result.eigenvalues)
-        @ result.eigenvectors.T
+        result.eigenvectors @ np.diag(result.eigenvalues) @ result.eigenvectors.T
     )
-    expected = np.array(
-        [[2.0, -1.0, 0.0], [-1.0, 2.0, -1.0], [0.0, -1.0, 2.0]]
-    )
+    expected = np.array([[2.0, -1.0, 0.0], [-1.0, 2.0, -1.0], [0.0, -1.0, 2.0]])
     np.testing.assert_allclose(
         reconstructed,
         expected,

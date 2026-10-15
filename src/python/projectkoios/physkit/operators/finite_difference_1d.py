@@ -104,9 +104,7 @@ class FiniteDifferenceLaplacian1D(DiscreteLinearOperator1D):
 
     def __init__(self, state_space: HomogeneousDirichletStateSpace1D) -> None:
         if not isinstance(state_space, HomogeneousDirichletStateSpace1D):
-            raise TypeError(
-                "state_space must be a HomogeneousDirichletStateSpace1D."
-            )
+            raise TypeError("state_space must be a HomogeneousDirichletStateSpace1D.")
 
         dimension = state_space.dimension
         main = -2.0 * np.ones(dimension, dtype=np.float64)
@@ -234,9 +232,7 @@ class FiniteDifferenceLaplacian1D(DiscreteLinearOperator1D):
         Omitted endpoint terms are the exact homogeneous zero boundary
         values; the input is never reshaped, clipped, or boundary-corrected.
         """
-        active = _validated_numeric_vector(
-            state, self._state_space.dimension, "state"
-        )
+        active = _validated_numeric_vector(state, self._state_space.dimension, "state")
         result = self._matrix @ active
         result_dtype = np.complex128 if np.iscomplexobj(active) else np.float64
         return np.array(result, dtype=result_dtype, order="C", copy=True)

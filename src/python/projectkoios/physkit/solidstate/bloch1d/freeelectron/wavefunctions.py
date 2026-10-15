@@ -114,8 +114,7 @@ class FreeElectronBloch1DWavefunctionSampler(
         spectrum = request.spectrum
         cell = spectrum.request.model.cell
         positions = (
-            request.fractional_coordinates.magnitude
-            * cell.oriented_length.magnitude
+            request.fractional_coordinates.magnitude * cell.oriented_length.magnitude
         )
         phases = np.outer(positions, spectrum.wave_numbers.magnitude)
         normalization = 1.0 / np.sqrt(cell.length.magnitude)

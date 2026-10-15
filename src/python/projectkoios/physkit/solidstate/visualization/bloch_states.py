@@ -115,9 +115,7 @@ class BlochState1DPlotData(DataObject):
             position_unit,
         ):
             raise ValueError("cell_length must use length units")
-        expected_wave_number_unit = PhysicalUnit(
-            f"1 / ({position_unit.expression})"
-        )
+        expected_wave_number_unit = PhysicalUnit(f"1 / ({position_unit.expression})")
         if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
             wave_number_unit,
             expected_wave_number_unit,
@@ -155,9 +153,7 @@ class BlochState1DPlotData(DataObject):
         if isinstance(self.amplitudes.unit, Unitless):
             density_unit: ModelSystemUnit = Unitless()
         else:
-            density_unit = PhysicalUnit(
-                f"({self.amplitudes.unit.expression}) ** 2"
-            )
+            density_unit = PhysicalUnit(f"({self.amplitudes.unit.expression}) ** 2")
         return VectorQuantity(
             magnitude=np.abs(self.amplitudes.magnitude) ** 2,
             unit=density_unit,
@@ -186,9 +182,7 @@ class BlochState1DPlotData(DataObject):
     def reciprocal_indices(self) -> VectorQuantity:
         """Return centered integer reciprocal-mode labels for the sampled grid."""
         sample_count = self.positions.magnitude.size
-        indices = np.fft.fftshift(
-            np.fft.fftfreq(sample_count, d=1.0 / sample_count)
-        )
+        indices = np.fft.fftshift(np.fft.fftfreq(sample_count, d=1.0 / sample_count))
         return VectorQuantity(
             magnitude=np.asarray(indices, dtype=np.float64),
             unit=Unitless(),

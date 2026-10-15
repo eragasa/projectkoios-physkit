@@ -42,9 +42,7 @@ class TiseKineticEnergy1D(UnitAwareMatrixOperator):
             self.laplacian,
             SecondOrderCentralDifferenceLaplacian1D,
         ):
-            raise TypeError(
-                "laplacian must be SecondOrderCentralDifferenceLaplacian1D"
-            )
+            raise TypeError("laplacian must be SecondOrderCentralDifferenceLaplacian1D")
         if not isinstance(self.hbar, ScalarQuantity):
             raise TypeError("hbar must be ScalarQuantity")
         if not isinstance(self.mass, ScalarQuantity):
@@ -57,9 +55,7 @@ class TiseKineticEnergy1D(UnitAwareMatrixOperator):
             raise ValueError("mass must be positive")
         nondimensional = isinstance(self.hbar.unit, Unitless)
         if nondimensional != isinstance(self.mass.unit, Unitless):
-            raise ValueError(
-                "hbar and mass must not mix unitless and physical units"
-            )
+            raise ValueError("hbar and mass must not mix unitless and physical units")
         if nondimensional != isinstance(self.energy_unit, Unitless):
             raise ValueError(
                 "kinetic parameters and energy unit must use the same unit mode"
@@ -69,9 +65,7 @@ class TiseKineticEnergy1D(UnitAwareMatrixOperator):
             Unitless,
         )
         if nondimensional != grid_is_nondimensional:
-            raise ValueError(
-                "kinetic parameters and grid must use the same unit mode"
-            )
+            raise ValueError("kinetic parameters and grid must use the same unit mode")
         if not nondimensional:
             if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
                 self.hbar.unit,
@@ -92,14 +86,12 @@ class TiseKineticEnergy1D(UnitAwareMatrixOperator):
     def matrix(self) -> SparseMatrixQuantity:
         """Return the represented sparse kinetic-energy matrix."""
         laplacian = self.laplacian.matrix()
-        scale = -(
-            self.hbar.magnitude * self.hbar.magnitude
-        ) / (2.0 * self.mass.magnitude)
+        scale = -(self.hbar.magnitude * self.hbar.magnitude) / (
+            2.0 * self.mass.magnitude
+        )
         if not isinstance(self.hbar.unit, Unitless):
             if not isinstance(laplacian.unit, PhysicalUnit):
-                raise TypeError(
-                    "physical kinetic energy requires a physical Laplacian"
-                )
+                raise TypeError("physical kinetic energy requires a physical Laplacian")
             source_energy_unit = PhysicalUnit(
                 f"({self.hbar.unit.expression}) ** 2 / "
                 f"({self.mass.unit.expression}) * "
@@ -127,24 +119,16 @@ class SampledPotential1D(UnitAwareMatrixOperator):
             raise TypeError("grid must be UniformCartesianGrid1D")
         if not isinstance(self.values, VectorQuantity):
             raise TypeError("values must be VectorQuantity")
-        if self.values.magnitude.shape != (
-            self.grid.interior_point_count,
-        ):
-            raise ValueError(
-                "values must match the grid interior-point count"
-            )
+        if self.values.magnitude.shape != (self.grid.interior_point_count,):
+            raise ValueError("values must match the grid interior-point count")
         if isinstance(self.grid.coordinate_unit, Unitless):
             if not isinstance(self.values.unit, Unitless):
-                raise ValueError(
-                    "a Unitless grid requires a Unitless potential"
-                )
+                raise ValueError("a Unitless grid requires a Unitless potential")
         elif not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
             self.values.unit,
             PhysicalUnit("joule"),
         ):
-            raise ValueError(
-                "physical potential values must have energy dimensions"
-            )
+            raise ValueError("physical potential values must have energy dimensions")
 
     def diagonal_operator(self) -> SparseMatrixQuantity:
         """Return the potential as an immutable sparse diagonal matrix."""
@@ -174,23 +158,17 @@ class FiniteDifferenceHamiltonian1D(UnitAwareMatrixOperator):
             self.kinetic_energy,
             TiseKineticEnergy1D,
         ):
-            raise TypeError(
-                "kinetic_energy must be TiseKineticEnergy1D"
-            )
+            raise TypeError("kinetic_energy must be TiseKineticEnergy1D")
         if not isinstance(self.potential, SampledPotential1D):
             raise TypeError("potential must be SampledPotential1D")
         kinetic_grid = self.kinetic_energy.laplacian.interval.grid
         if kinetic_grid != self.potential.grid:
-            raise ValueError(
-                "kinetic energy and potential must share the exact grid"
-            )
+            raise ValueError("kinetic energy and potential must share the exact grid")
         if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
             self.potential.values.unit,
             self.kinetic_energy.energy_unit,
         ):
-            raise ValueError(
-                "kinetic and potential energy units are incompatible"
-            )
+            raise ValueError("kinetic and potential energy units are incompatible")
 
     def matrix(self) -> SparseMatrixQuantity:
         """Return the compatible sparse kinetic-plus-potential Hamiltonian."""

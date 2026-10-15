@@ -130,9 +130,7 @@ class FermiDiracThermalDensityOfStates(ResultsObject):
     def __post_init__(self) -> None:
         """Check correlated thermal-DOS shapes, units, and integrals."""
         if not isinstance(self.request, FermiDiracThermalDensityOfStatesRequest):
-            raise TypeError(
-                "request must be FermiDiracThermalDensityOfStatesRequest"
-            )
+            raise TypeError("request must be FermiDiracThermalDensityOfStatesRequest")
         shape = self.request.energies.magnitude.shape
         self._check_vector(
             value=self.occupations,
@@ -265,9 +263,7 @@ class FermiDiracThermalDensityOfStatesEvaluator:
             Complete correlated thermal-DOS result.
         """
         if not isinstance(request, FermiDiracThermalDensityOfStatesRequest):
-            raise TypeError(
-                "request must be FermiDiracThermalDensityOfStatesRequest"
-            )
+            raise TypeError("request must be FermiDiracThermalDensityOfStatesRequest")
         # Reuse the maintained overflow-stable Fermi--Dirac implementation
         # rather than duplicating the exponential formula in the DOS package.
         occupations = request.state.evaluate_occupations(

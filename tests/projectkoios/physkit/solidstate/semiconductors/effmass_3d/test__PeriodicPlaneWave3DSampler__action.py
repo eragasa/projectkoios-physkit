@@ -69,9 +69,7 @@ class TestPeriodicPlaneWave3DSampler:
         spectrum = self._spectrum()
         axis = np.arange(16, dtype=np.float64) / 16.0
         u, v, w = np.meshgrid(axis, axis, axis, indexing="ij")
-        fractional_coordinates = np.column_stack(
-            (u.ravel(), v.ravel(), w.ravel())
-        )
+        fractional_coordinates = np.column_stack((u.ravel(), v.ravel(), w.ravel()))
 
         result = PeriodicPlaneWave3DSampler().action(
             request=PeriodicPlaneWave3DSamplingRequest(
@@ -83,14 +81,11 @@ class TestPeriodicPlaneWave3DSampler:
             )
         )
 
-        represented_norms = (
-            spectrum.request.model.cell.volume.magnitude
-            * np.mean(np.abs(result.amplitudes.magnitude) ** 2, axis=0)
+        represented_norms = spectrum.request.model.cell.volume.magnitude * np.mean(
+            np.abs(result.amplitudes.magnitude) ** 2, axis=0
         )
         np.testing.assert_allclose(represented_norms, np.ones(2), atol=1e-14)
-        assert result.amplitudes.unit == PhysicalUnit(
-            "1 / (angstrom ** 1.5)"
-        )
+        assert result.amplitudes.unit == PhysicalUnit("1 / (angstrom ** 1.5)")
 
     def test_primitive_translation_has_the_bloch_phase(self) -> None:
         spectrum = self._spectrum()
@@ -109,7 +104,5 @@ class TestPeriodicPlaneWave3DSampler:
         basis_vector = spectrum.request.model.cell.primitive_basis.magnitude[:, 0]
         bloch_vector = spectrum.request.bloch_wave_vector.magnitude
         expected_phase = np.exp(1.0j * float(bloch_vector @ basis_vector))
-        observed_phase = (
-            result.amplitudes.magnitude[1] / result.amplitudes.magnitude[0]
-        )
+        observed_phase = result.amplitudes.magnitude[1] / result.amplitudes.magnitude[0]
         np.testing.assert_allclose(observed_phase, expected_phase, atol=1e-14)

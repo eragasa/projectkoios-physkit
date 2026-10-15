@@ -78,11 +78,7 @@ class ReciprocalLattice1D:
         # The reciprocal primitive basis is derived from the direct primitive
         # basis. It must not be supplied independently because the two bases
         # are constrained by a_1 b_1 = 2 pi.
-        self.primitive_basis: float = (
-            2.0
-            * np.pi
-            / self.direct_lattice.lattice_constant
-        )
+        self.primitive_basis: float = 2.0 * np.pi / self.direct_lattice.lattice_constant
 
     def check_args(self) -> None:
         """
@@ -101,10 +97,7 @@ class ReciprocalLattice1D:
             self.direct_lattice,
             DirectLattice1D,
         ):
-            raise TypeError(
-                "direct_lattice must be a "
-                "DirectLattice1D instance."
-            )
+            raise TypeError("direct_lattice must be a DirectLattice1D instance.")
 
     def vector(
         self,
@@ -132,11 +125,6 @@ class ReciprocalLattice1D:
             mode,
             (int, np.integer),
         ):
-            raise TypeError(
-                "mode must be an integer."
-            )
+            raise TypeError("mode must be an integer.")
 
-        return (
-            float(mode)
-            * self.primitive_basis
-        )
+        return float(mode) * self.primitive_basis

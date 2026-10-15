@@ -75,9 +75,7 @@ class PeriodicPrimitiveCell2D(DataObject):
                 2.0 * np.pi * np.linalg.inv(self.primitive_basis.magnitude).T,
                 dtype=np.float64,
             ),
-            unit=PhysicalUnit(
-                expression=f"1 / {self.primitive_basis.unit.expression}"
-            ),
+            unit=PhysicalUnit(expression=f"1 / {self.primitive_basis.unit.expression}"),
         )
 
     @property

@@ -78,9 +78,8 @@ class TestPeriodicPlaneWave2DSampler:
             )
         )
 
-        represented_norms = (
-            spectrum.request.model.cell.area.magnitude
-            * np.mean(np.abs(result.amplitudes.magnitude) ** 2, axis=0)
+        represented_norms = spectrum.request.model.cell.area.magnitude * np.mean(
+            np.abs(result.amplitudes.magnitude) ** 2, axis=0
         )
         np.testing.assert_allclose(represented_norms, np.ones(2), atol=1e-14)
         assert result.amplitudes.unit == PhysicalUnit("1 / angstrom")
@@ -102,7 +101,5 @@ class TestPeriodicPlaneWave2DSampler:
         basis_vector = spectrum.request.model.cell.primitive_basis.magnitude[:, 0]
         bloch_vector = spectrum.request.bloch_wave_vector.magnitude
         expected_phase = np.exp(1.0j * float(bloch_vector @ basis_vector))
-        observed_phase = (
-            result.amplitudes.magnitude[1] / result.amplitudes.magnitude[0]
-        )
+        observed_phase = result.amplitudes.magnitude[1] / result.amplitudes.magnitude[0]
         np.testing.assert_allclose(observed_phase, expected_phase, atol=1e-14)

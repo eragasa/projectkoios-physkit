@@ -22,13 +22,9 @@ class DirichletInterval:
             self.boundary_condition,
             DirichletBoundaryCondition,
         ):
-            raise TypeError(
-                "boundary_condition must be DirichletBoundaryCondition"
-            )
+            raise TypeError("boundary_condition must be DirichletBoundaryCondition")
         if self.grid.interior_point_count <= 0:
-            raise ValueError(
-                "Dirichlet interval must contain an interior point"
-            )
+            raise ValueError("Dirichlet interval must contain an interior point")
 
     @property
     def interior_points(self) -> int:

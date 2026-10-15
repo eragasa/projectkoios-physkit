@@ -51,9 +51,7 @@ class BaseUniformBandDensityOfStates(DataObject, ABC):
         if measure.magnitude <= 0.0:
             raise ValueError("brillouin_zone_measure must be positive")
         if isinstance(measure.unit, PhysicalUnit):
-            expected_unit = PhysicalUnit(
-                f"1 / meter ** {self.dimension}"
-            )
+            expected_unit = PhysicalUnit(f"1 / meter ** {self.dimension}")
             if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
                 measure.unit,
                 expected_unit,
@@ -63,9 +61,7 @@ class BaseUniformBandDensityOfStates(DataObject, ABC):
                     "matching the model dimension"
                 )
         elif not isinstance(measure.unit, Unitless):
-            raise TypeError(
-                "brillouin_zone_measure must use PhysicalUnit or Unitless"
-            )
+            raise TypeError("brillouin_zone_measure must use PhysicalUnit or Unitless")
         degeneracy = self.state_degeneracy
         if type(degeneracy) is not float:
             raise TypeError("state_degeneracy must be a built-in float")
@@ -325,11 +321,7 @@ class GaussianBandDensityOfStatesEvaluator:
             chunk = energies[start : start + _GAUSSIAN_CHUNK_SIZE]
             offsets = (grid[:, np.newaxis] - chunk[np.newaxis, :]) / sigma
             kernel_sum += np.sum(np.exp(-0.5 * offsets**2), axis=1)
-        density = (
-            request.sample_state_density.magnitude
-            * kernel_sum
-            / normalization
-        )
+        density = request.sample_state_density.magnitude * kernel_sum / normalization
         integrated = float(np.trapezoid(density, grid))
         return GaussianBandDensityOfStates(
             request=request,

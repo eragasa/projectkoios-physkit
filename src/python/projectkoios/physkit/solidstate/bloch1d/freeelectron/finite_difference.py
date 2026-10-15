@@ -76,8 +76,7 @@ class FreeElectronBloch1DFiniteDifferenceHamiltonian(ResultsObject):
             FreeElectronBloch1DFiniteDifferenceHamiltonianRequest,
         ):
             raise TypeError(
-                "request must be "
-                "FreeElectronBloch1DFiniteDifferenceHamiltonianRequest"
+                "request must be FreeElectronBloch1DFiniteDifferenceHamiltonianRequest"
             )
 
     def _check_arg_grid(self) -> None:
@@ -121,8 +120,7 @@ class FreeElectronBloch1DFiniteDifferenceHamiltonianConstructor(
             FreeElectronBloch1DFiniteDifferenceHamiltonianRequest,
         ):
             raise TypeError(
-                "request must be "
-                "FreeElectronBloch1DFiniteDifferenceHamiltonianRequest"
+                "request must be FreeElectronBloch1DFiniteDifferenceHamiltonianRequest"
             )
         model = request.model
         grid = PeriodicFiniteDifferenceGrid1D(

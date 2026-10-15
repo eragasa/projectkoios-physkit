@@ -46,9 +46,7 @@ class ElectronicBlochModeVisualizer1D:
             Axes containing the plane-wave weights.
         """
         if ax is None:
-            _, ax = plt.subplots(
-                figsize=(8, 5)
-            )
+            _, ax = plt.subplots(figsize=(8, 5))
 
         weights = self.result.plane_wave_weights(
             k_index,
@@ -63,17 +61,11 @@ class ElectronicBlochModeVisualizer1D:
             edgecolor="black",
         )
 
-        ax.set_xlabel(
-            r"Reciprocal vector $G$"
-        )
+        ax.set_xlabel(r"Reciprocal vector $G$")
 
-        ax.set_ylabel(
-            r"Weight $|c_{nk}(G)|^2$"
-        )
+        ax.set_ylabel(r"Weight $|c_{nk}(G)|^2$")
 
-        ax.set_title(
-            "Plane-Wave Composition"
-        )
+        ax.set_title("Plane-Wave Composition")
 
         ax.grid(
             axis="y",
@@ -118,9 +110,7 @@ class ElectronicBlochModeVisualizer1D:
         ]
 
         plane_waves = np.exp(
-            1j
-            * self.result.reciprocal_vectors[:, None]
-            * coordinates[None, :]
+            1j * self.result.reciprocal_vectors[:, None] * coordinates[None, :]
         )
 
         return coefficients @ plane_waves

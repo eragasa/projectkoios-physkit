@@ -79,9 +79,7 @@ class TestPeriodicFreeParticle2D:
         assert model.cell.primitive_basis.unit == PhysicalUnit("angstrom")
 
     def test_gamma_spectrum_has_zero_mode_and_opposite_mode_degeneracy(self) -> None:
-        model = self._model(
-            basis=np.array([[5.43, 1.2], [0.0, 4.1]], dtype=np.float64)
-        )
+        model = self._model(basis=np.array([[5.43, 1.2], [0.0, 4.1]], dtype=np.float64))
 
         result = model.evaluate_modes(
             mode_indices=((0, 0), (1, -2), (-1, 2)),
@@ -107,9 +105,7 @@ class TestPeriodicFreeParticle2D:
 
     def test_metal_unit_energy_matches_independent_si_evaluation(self) -> None:
         length_angstrom = 5.43
-        model = self._model(
-            basis=np.eye(2, dtype=np.float64) * length_angstrom
-        )
+        model = self._model(basis=np.eye(2, dtype=np.float64) * length_angstrom)
 
         result = model.evaluate_modes(
             mode_indices=((1, 0),),
@@ -144,9 +140,7 @@ class TestPeriodicFreeParticle2D:
         mass_tensor = electron_mass * np.array([[0.7, 0.12], [0.12, 1.4]])
         model = self._model(basis=basis, mass_tensor=mass_tensor)
         rotated_mass_tensor = rotation @ mass_tensor @ rotation.T
-        rotated_mass_tensor = 0.5 * (
-            rotated_mass_tensor + rotated_mass_tensor.T
-        )
+        rotated_mass_tensor = 0.5 * (rotated_mass_tensor + rotated_mass_tensor.T)
         rotated_model = self._model(
             basis=rotation @ basis,
             mass_tensor=rotated_mass_tensor,

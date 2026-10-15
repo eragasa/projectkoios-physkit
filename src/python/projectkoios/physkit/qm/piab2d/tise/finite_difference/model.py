@@ -255,11 +255,8 @@ class ObliquePiab2DTiseFdSolver(
         # fastest, fixing the Kronecker-factor order below.
         laplacian = (
             inverse_metric[0, 0] * sparse.kron(second_0, identity_1, format="csr")
-            + inverse_metric[1, 1]
-            * sparse.kron(identity_0, second_1, format="csr")
-            + 2.0
-            * inverse_metric[0, 1]
-            * sparse.kron(first_0, first_1, format="csr")
+            + inverse_metric[1, 1] * sparse.kron(identity_0, second_1, format="csr")
+            + 2.0 * inverse_metric[0, 1] * sparse.kron(first_0, first_1, format="csr")
         )
         kinetic_prefactor = self._kinetic_prefactor(request.model)
         hamiltonian = sparse.csr_array(-kinetic_prefactor * laplacian)
@@ -287,9 +284,7 @@ class ObliquePiab2DTiseFdSolver(
 
         # The Jacobian is constant. Boundary samples vanish, so the rectangle
         # quadrature reduces to one equal physical area weight per unknown.
-        area_weight_magnitude = (
-            request.model.area.magnitude * spacings[0] * spacings[1]
-        )
+        area_weight_magnitude = request.model.area.magnitude * spacings[0] * spacings[1]
         eigenvectors /= np.sqrt(area_weight_magnitude)
         fractional_coordinates = self._fractional_coordinates(request)
         cartesian_coordinates = (

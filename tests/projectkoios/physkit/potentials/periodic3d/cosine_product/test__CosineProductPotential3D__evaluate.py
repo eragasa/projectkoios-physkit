@@ -16,9 +16,7 @@ def test__evaluate__matches_three_dimensional_cosine_product() -> None:
 
     values = potential.evaluate(
         fractional_coordinates=MatrixQuantity(
-            magnitude=np.asarray(
-                [[0.0, 0.0, 0.0], [0.5, 0.0, 0.0], [1.0, 1.0, 1.0]]
-            ),
+            magnitude=np.asarray([[0.0, 0.0, 0.0], [0.5, 0.0, 0.0], [1.0, 1.0, 1.0]]),
             unit=Unitless(),
         )
     ).potential_values

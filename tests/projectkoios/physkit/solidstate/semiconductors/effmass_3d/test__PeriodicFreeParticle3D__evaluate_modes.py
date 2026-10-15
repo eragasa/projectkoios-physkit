@@ -114,9 +114,7 @@ class TestPeriodicFreeParticle3D:
 
     def test_metal_unit_energy_matches_independent_si_evaluation(self) -> None:
         length_angstrom = 5.43
-        model = self._model(
-            basis=np.eye(3, dtype=np.float64) * length_angstrom
-        )
+        model = self._model(basis=np.eye(3, dtype=np.float64) * length_angstrom)
 
         result = model.evaluate_modes(
             mode_indices=((1, 0, 0),),
@@ -158,9 +156,7 @@ class TestPeriodicFreeParticle3D:
         )
         model = self._model(basis=basis, mass_tensor=mass_tensor)
         rotated_mass_tensor = rotation @ mass_tensor @ rotation.T
-        rotated_mass_tensor = 0.5 * (
-            rotated_mass_tensor + rotated_mass_tensor.T
-        )
+        rotated_mass_tensor = 0.5 * (rotated_mass_tensor + rotated_mass_tensor.T)
         rotated_model = self._model(
             basis=rotation @ basis,
             mass_tensor=rotated_mass_tensor,

@@ -164,9 +164,8 @@ class UniformGrid1D:
             raise TypeError("a must be a non-Boolean real scalar.")
         if isinstance(b, (bool, np.bool_)) or not isinstance(b, Real):
             raise TypeError("b must be a non-Boolean real scalar.")
-        if (
-            isinstance(num_points, (bool, np.bool_))
-            or not isinstance(num_points, Integral)
+        if isinstance(num_points, (bool, np.bool_)) or not isinstance(
+            num_points, Integral
         ):
             raise TypeError("num_points must be a non-Boolean integral scalar.")
 
@@ -191,9 +190,7 @@ class UniformGrid1D:
         object.__setattr__(self, "_a", a_value)
         object.__setattr__(self, "_b", b_value)
         object.__setattr__(self, "_num_points", point_count)
-        coordinates = np.linspace(
-            a_value, b_value, point_count, dtype=np.float64
-        )
+        coordinates = np.linspace(a_value, b_value, point_count, dtype=np.float64)
         object.__setattr__(self, "_coordinates", coordinates)
         object.__setattr__(self, "_frozen", True)
 

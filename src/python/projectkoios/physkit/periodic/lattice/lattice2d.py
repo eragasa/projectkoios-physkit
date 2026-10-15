@@ -83,7 +83,8 @@ class DirectLattice2D(DirectLattice):
     a2:
         Read-only second primitive direct-lattice vector.
     """
-    dimension=2
+
+    dimension = 2
 
     def __init__(
         self,
@@ -102,9 +103,7 @@ class DirectLattice2D(DirectLattice):
         # Primitive vectors are stored as columns:
         #
         #     A = [a1 a2].
-        self.A: FloatArray = (
-            np.column_stack((a1_array, a2_array))
-        )
+        self.A: FloatArray = np.column_stack((a1_array, a2_array))
         self.A.setflags(write=False)
 
     @property
@@ -117,7 +116,7 @@ class DirectLattice2D(DirectLattice):
         FloatArray
             Mutable view of the first column of ``A``.
         """
-        return self.A[:,0]
+        return self.A[:, 0]
 
     @property
     def a2(self) -> FloatArray:
@@ -129,7 +128,7 @@ class DirectLattice2D(DirectLattice):
         FloatArray
             Mutable view of the second column of ``A``.
         """
-        return self.A[:,1]
+        return self.A[:, 1]
 
     def check_primitive_vector(self, vector: FloatArray):
         """
@@ -150,9 +149,7 @@ class DirectLattice2D(DirectLattice):
         if vector.shape != (2,):
             raise ValueError("a1 must have shape (2,).")
         if not np.all(np.isfinite(vector)):
-            raise ValueError(
-                "primitive vectors must contain only finite values."
-            )
+            raise ValueError("primitive vectors must contain only finite values.")
 
     def check_primitive_vectors_linearly_independent(
         self,
@@ -251,13 +248,8 @@ class DirectLattice2D(DirectLattice):
             dtype=np.int64,
         )
 
-        if (
-            index_array.ndim == 0
-            or index_array.shape[-1] != 2
-        ):
-            raise ValueError(
-                "indices must have final dimension 2."
-            )
+        if index_array.ndim == 0 or index_array.shape[-1] != 2:
+            raise ValueError("indices must have final dimension 2.")
 
         return np.asarray(
             index_array @ self.A.T,
@@ -328,6 +320,7 @@ class ReciprocalLattice2D(ReciprocalLattice):
     b2:
         Read-only second primitive reciprocal-lattice vector.
     """
+
     dimension = 2
 
     def __init__(
@@ -346,18 +339,16 @@ class ReciprocalLattice2D(ReciprocalLattice):
         self.check_primitive_vectors_linearly_independent(b1_array, b2_array)
         # Reciprocal primitive vectors are stored as columns:
         #     B = [b1 b2].
-        self.B: FloatArray = (
-            np.column_stack((b1_array, b2_array))
-        )
+        self.B: FloatArray = np.column_stack((b1_array, b2_array))
         self.B.setflags(write=False)
 
     @property
     def b1(self) -> FloatArray:
-        return self.B[:,0]
+        return self.B[:, 0]
 
     @property
     def b2(self) -> FloatArray:
-        return self.B[:,1]
+        return self.B[:, 1]
 
     def check_primitive_vector(self, vector: FloatArray):
         """
@@ -378,15 +369,12 @@ class ReciprocalLattice2D(ReciprocalLattice):
         if vector.shape != (2,):
             raise ValueError("a1 must have shape (2,).")
         if not np.all(np.isfinite(vector)):
-            raise ValueError(
-                "primitive vectors must contain only finite values."
-            )
+            raise ValueError("primitive vectors must contain only finite values.")
 
     @staticmethod
     def check_primitive_vectors_linearly_independent(
-            b1: FloatArray,
-            b2: FloatArray
-        ) -> None:
+        b1: FloatArray, b2: FloatArray
+    ) -> None:
         """
         Validate that the primitive vectors are linearly independent.
 
@@ -405,10 +393,7 @@ class ReciprocalLattice2D(ReciprocalLattice):
         B = np.column_stack((b1, b2))
 
         if np.isclose(np.linalg.det(B), 0.0):
-            raise ValueError(
-                "a1 and a2 must be linearly independent."
-            )
-
+            raise ValueError("a1 and a2 must be linearly independent.")
 
     @classmethod
     def from_direct_lattice(
@@ -451,17 +436,14 @@ class ReciprocalLattice2D(ReciprocalLattice):
             If ``direct_lattice`` is not a ``DirectLattice2D`` instance.
         """
         if not isinstance(direct_lattice, DirectLattice2D):
-            raise TypeError(
-                "direct_lattice must be a DirectLattice2D instance."
-            )
+            raise TypeError("direct_lattice must be a DirectLattice2D instance.")
 
-        B: FloatArray = (2.0* np.pi*np.linalg.inv(direct_lattice.A).T)
+        B: FloatArray = 2.0 * np.pi * np.linalg.inv(direct_lattice.A).T
 
         return cls(
             b1=B[:, 0],
             b2=B[:, 1],
         )
-
 
     @property
     def primitive_basis(self) -> FloatArray:
@@ -512,17 +494,11 @@ class ReciprocalLattice2D(ReciprocalLattice):
             dtype=np.int64,
         )
 
-        if (
-            index_array.ndim == 0
-            or index_array.shape[-1] != 2
-        ):
-            raise ValueError(
-                "indices must have final dimension 2."
-            )
+        if index_array.ndim == 0 or index_array.shape[-1] != 2:
+            raise ValueError("indices must have final dimension 2.")
 
         return np.asarray(
-            index_array
-            @ self.primitive_basis.T,
+            index_array @ self.primitive_basis.T,
             dtype=np.float64,
         )
 
@@ -571,17 +547,11 @@ class WignerSeitzCell2D(WignerSeitzCell):
 
         self.check_args()
 
-        self.halfspaces: FloatArray = (
-            self.construct_halfspaces()
-        )
+        self.halfspaces: FloatArray = self.construct_halfspaces()
 
-        self.vertices: FloatArray = (
-            self.construct_vertices()
-        )
+        self.vertices: FloatArray = self.construct_vertices()
 
-        self._convex_hull = ConvexHull(
-            self.vertices
-        )
+        self._convex_hull = ConvexHull(self.vertices)
 
         self.halfspaces.setflags(write=False)
         self.vertices.setflags(write=False)
@@ -606,23 +576,16 @@ class WignerSeitzCell2D(WignerSeitzCell):
             self._lattice,
             DirectLattice2D,
         ):
-            raise TypeError(
-                "lattice must be a "
-                "DirectLattice2D instance."
-            )
+            raise TypeError("lattice must be a DirectLattice2D instance.")
 
         if not isinstance(
             self.neighbor_shell,
             (int, np.integer),
         ):
-            raise TypeError(
-                "neighbor_shell must be an integer."
-            )
+            raise TypeError("neighbor_shell must be an integer.")
 
         if self.neighbor_shell < 1:
-            raise ValueError(
-                "neighbor_shell must be at least 1."
-            )
+            raise ValueError("neighbor_shell must be at least 1.")
 
     @property
     def lattice(self) -> DirectLattice2D:
@@ -646,9 +609,7 @@ class WignerSeitzCell2D(WignerSeitzCell):
         float
             Area enclosed by the Wigner--Seitz polygon.
         """
-        return float(
-            self._convex_hull.volume
-        )
+        return float(self._convex_hull.volume)
 
     def construct_indices(self) -> IntArray:
         """
@@ -681,12 +642,10 @@ class WignerSeitzCell2D(WignerSeitzCell):
             indexing="ij",
         )
 
-        lattice_indices: IntArray = (
-            np.column_stack(
-                (
-                    n1_grid.ravel(),
-                    n2_grid.ravel(),
-                )
+        lattice_indices: IntArray = np.column_stack(
+            (
+                n1_grid.ravel(),
+                n2_grid.ravel(),
             )
         )
 
@@ -718,20 +677,15 @@ class WignerSeitzCell2D(WignerSeitzCell):
             Half-plane coefficients with shape
             ``(number_of_halfspaces, 3)``.
         """
-        lattice_indices = (
-            self.construct_indices()
-        )
+        lattice_indices = self.construct_indices()
 
         lattice_vectors = self.lattice.vector(
             indices=lattice_indices,
         )
 
-        offsets = (
-            -0.5
-            * np.sum(
-                lattice_vectors**2,
-                axis=1,
-            )
+        offsets = -0.5 * np.sum(
+            lattice_vectors**2,
+            axis=1,
         )
 
         return np.column_stack(
@@ -771,9 +725,7 @@ class WignerSeitzCell2D(WignerSeitzCell):
             vertices[:, 0],
         )
 
-        return vertices[
-            np.argsort(angles)
-        ]
+        return vertices[np.argsort(angles)]
 
     def contains(
         self,
@@ -803,21 +755,11 @@ class WignerSeitzCell2D(WignerSeitzCell):
         )
 
         if point_array.shape != (2,):
-            raise ValueError(
-                "point must have shape (2,)."
-            )
+            raise ValueError("point must have shape (2,).")
 
-        residuals = (
-            self.halfspaces[:, :2]
-            @ point_array
-            + self.halfspaces[:, 2]
-        )
+        residuals = self.halfspaces[:, :2] @ point_array + self.halfspaces[:, 2]
 
-        return bool(
-            np.all(
-                residuals <= 1.0e-12
-            )
-        )
+        return bool(np.all(residuals <= 1.0e-12))
 
 
 class FirstBrillouinZone2D(
@@ -845,9 +787,7 @@ class FirstBrillouinZone2D(
         *,
         neighbor_shell: int = 2,
     ) -> None:
-        self._reciprocal_lattice = (
-            reciprocal_lattice
-        )
+        self._reciprocal_lattice = reciprocal_lattice
 
         # The reciprocal lattice is the source lattice for the Wigner--Seitz
         # construction.
@@ -856,17 +796,11 @@ class FirstBrillouinZone2D(
 
         self.check_args()
 
-        self.halfspaces: FloatArray = (
-            self.construct_halfspaces()
-        )
+        self.halfspaces: FloatArray = self.construct_halfspaces()
 
-        self.vertices: FloatArray = (
-            self.construct_vertices()
-        )
+        self.vertices: FloatArray = self.construct_vertices()
 
-        self._convex_hull = ConvexHull(
-            self.vertices
-        )
+        self._convex_hull = ConvexHull(self.vertices)
 
         self.halfspaces.setflags(write=False)
         self.vertices.setflags(write=False)
@@ -893,22 +827,17 @@ class FirstBrillouinZone2D(
             ReciprocalLattice2D,
         ):
             raise TypeError(
-                "reciprocal_lattice must be a "
-                "ReciprocalLattice2D instance."
+                "reciprocal_lattice must be a ReciprocalLattice2D instance."
             )
 
         if not isinstance(
             self.neighbor_shell,
             (int, np.integer),
         ):
-            raise TypeError(
-                "neighbor_shell must be an integer."
-            )
+            raise TypeError("neighbor_shell must be an integer.")
 
         if self.neighbor_shell < 1:
-            raise ValueError(
-                "neighbor_shell must be at least 1."
-            )
+            raise ValueError("neighbor_shell must be at least 1.")
 
     @property
     def reciprocal_lattice(
@@ -976,9 +905,7 @@ class FirstBrillouinZone2D(
         )
 
         if wavevector_array.shape != (2,):
-            raise ValueError(
-                "wavevector must have shape (2,)."
-            )
+            raise ValueError("wavevector must have shape (2,).")
 
         # Estimate the nearest reciprocal index using fractional reciprocal
         # coordinates.
@@ -987,9 +914,7 @@ class FirstBrillouinZone2D(
             wavevector_array,
         )
 
-        central_indices = np.rint(
-            fractional_indices
-        ).astype(np.int64)
+        central_indices = np.rint(fractional_indices).astype(np.int64)
 
         # For a nonorthogonal reciprocal basis, componentwise rounding does not
         # always identify the nearest reciprocal point. Search nearby indices
@@ -1013,31 +938,19 @@ class FirstBrillouinZone2D(
             )
         )
 
-        candidate_indices = (
-            central_indices[None, :]
-            + index_offsets
+        candidate_indices = central_indices[None, :] + index_offsets
+
+        candidate_reciprocal_vectors = self.reciprocal_lattice.vector(
+            indices=candidate_indices,
         )
 
-        candidate_reciprocal_vectors = (
-            self.reciprocal_lattice.vector(
-                indices=candidate_indices,
-            )
-        )
-
-        reduced_candidates = (
-            wavevector_array[None, :]
-            - candidate_reciprocal_vectors
-        )
+        reduced_candidates = wavevector_array[None, :] - candidate_reciprocal_vectors
 
         candidate_norms_squared = np.sum(
             reduced_candidates**2,
             axis=1,
         )
 
-        nearest_index = np.argmin(
-            candidate_norms_squared
-        )
+        nearest_index = np.argmin(candidate_norms_squared)
 
-        return reduced_candidates[
-            nearest_index
-        ]
+        return reduced_candidates[nearest_index]

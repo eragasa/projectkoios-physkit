@@ -58,18 +58,10 @@ class PhononBlochSolver1D:
             dtype=np.complex128,
         )
 
-        for q_index, phonon_wavevector in enumerate(
-            q_path.values
-        ):
-            matrix = (
-                self.dynamical_matrix.construct_matrix(
-                    phonon_wavevector
-                )
-            )
+        for q_index, phonon_wavevector in enumerate(q_path.values):
+            matrix = self.dynamical_matrix.construct_matrix(phonon_wavevector)
 
-            squared_frequencies, eigenvectors = (
-                np.linalg.eigh(matrix)
-            )
+            squared_frequencies, eigenvectors = np.linalg.eigh(matrix)
 
             # Small negative eigenvalues may occur through floating-point
             # roundoff at an exact acoustic zero mode.
@@ -78,13 +70,9 @@ class PhononBlochSolver1D:
                 0.0,
             )
 
-            angular_frequencies[q_index] = np.sqrt(
-                squared_frequencies
-            )
+            angular_frequencies[q_index] = np.sqrt(squared_frequencies)
 
-            polarization_vectors[q_index] = (
-                eigenvectors
-            )
+            polarization_vectors[q_index] = eigenvectors
 
         return PhononBandStructureResult(
             q_points=q_path.values.copy(),

@@ -16,8 +16,7 @@ def test__coefficients__delegates_integer_mode_couplings() -> None:
 
     coefficients = potential.coefficients(
         np.asarray(
-            [-2.0 * fundamental, -fundamental, 0.5, fundamental,
-             2.0 * fundamental]
+            [-2.0 * fundamental, -fundamental, 0.5, fundamental, 2.0 * fundamental]
         )
     )
 

@@ -26,7 +26,8 @@ _NORMALIZED_VOLUME_ABS_TOLERANCE: float = 1.0e-8
 
 class DirectLattice3D(DirectLattice, Lattice3D):
     """Three-dimensional direct Bravais lattice."""
-    dimension=3
+
+    dimension = 3
 
     def __init__(
         self,
@@ -41,13 +42,9 @@ class DirectLattice3D(DirectLattice, Lattice3D):
         self.check_primitive_vector(a1_array)
         self.check_primitive_vector(a2_array)
         self.check_primitive_vector(a3_array)
-        self.check_primitive_vector_linearly_independent(
-            a1_array, a2_array, a3_array
-        )
+        self.check_primitive_vector_linearly_independent(a1_array, a2_array, a3_array)
 
-        self.A: FloatArray = np.column_stack(
-            (a1_array, a2_array, a3_array)
-        )
+        self.A: FloatArray = np.column_stack((a1_array, a2_array, a3_array))
         self.A.setflags(write=False)
 
     @classmethod
@@ -183,10 +180,7 @@ class DirectLattice3D(DirectLattice, Lattice3D):
         half_angle_sines = tuple(
             math.sin(argument) for argument in half_angle_arguments
         )
-        if any(
-            not math.isfinite(value) or value <= 0.0
-            for value in half_angle_sines
-        ):
+        if any(not math.isfinite(value) or value <= 0.0 for value in half_angle_sines):
             raise ValueError(
                 "lattice parameters must define positive volume with a "
                 "resolvable canonical direct basis"
@@ -203,11 +197,7 @@ class DirectLattice3D(DirectLattice, Lattice3D):
         x3_unit = cos_beta
         y3_unit = math.fma(-cos_beta, cos_gamma, cos_alpha) / sin_gamma
         z3_unit = sqrt_delta / sin_gamma
-        if (
-            not math.isfinite(y3_unit)
-            or not math.isfinite(z3_unit)
-            or z3_unit <= 0.0
-        ):
+        if not math.isfinite(y3_unit) or not math.isfinite(z3_unit) or z3_unit <= 0.0:
             raise ValueError(
                 "lattice parameters must define positive volume with a "
                 "resolvable canonical direct basis"
@@ -237,15 +227,15 @@ class DirectLattice3D(DirectLattice, Lattice3D):
 
     @property
     def a1(self) -> FloatArray:
-        return self.A[:,0]
+        return self.A[:, 0]
 
     @property
     def a2(self) -> FloatArray:
-        return self.A[:,1]
+        return self.A[:, 1]
 
     @property
     def a3(self) -> FloatArray:
-        return self.A[:,2]
+        return self.A[:, 2]
 
     def check_primitive_vector(self, vector: FloatArray) -> None:
         if vector.shape != (3,):
@@ -282,6 +272,7 @@ class DirectLattice3D(DirectLattice, Lattice3D):
             raise ValueError("modes must have final dimension 3.")
         return np.asarray(mode_array @ self.A.T, dtype=np.float64)
 
+
 class ReciprocalLattice3D(ReciprocalLattice, Lattice3D):
     """Three-dimensional reciprocal Bravais lattice."""
 
@@ -303,16 +294,16 @@ class ReciprocalLattice3D(ReciprocalLattice, Lattice3D):
         self.check_primitive_vector(b2_array)
         self.check_primitive_vector(b3_array)
         self.check_primitive_vectors_linearly_independent(
-            b1_array, b2_array, b3_array,
+            b1_array,
+            b2_array,
+            b3_array,
         )
 
         # Store the reciprocal primitive vectors as the columns of
         #     B = [b1  b2  b3].
 
         # Commit the completely validated state to the instance.
-        self.B: FloatArray = np.column_stack(
-            (b1_array, b2_array, b3_array)
-        )
+        self.B: FloatArray = np.column_stack((b1_array, b2_array, b3_array))
         self.B.setflags(write=False)
 
     @property
@@ -322,15 +313,15 @@ class ReciprocalLattice3D(ReciprocalLattice, Lattice3D):
 
     @property
     def b1(self) -> FloatArray:
-        return self.B[:,0]
+        return self.B[:, 0]
 
     @property
     def b2(self) -> FloatArray:
-        return self.B[:,1]
+        return self.B[:, 1]
 
     @property
     def b3(self) -> FloatArray:
-        return self.B[:,2]
+        return self.B[:, 2]
 
     @staticmethod
     def check_primitive_vector(
@@ -351,14 +342,11 @@ class ReciprocalLattice3D(ReciprocalLattice, Lattice3D):
             non-finite values.
         """
         if vector.shape != (3,):
-            raise ValueError(
-                "Each reciprocal primitive vector must have shape (3,)."
-            )
+            raise ValueError("Each reciprocal primitive vector must have shape (3,).")
 
         if not np.all(np.isfinite(vector)):
             raise ValueError(
-                "Reciprocal primitive vectors must contain only "
-                "finite values."
+                "Reciprocal primitive vectors must contain only finite values."
             )
 
     @staticmethod
@@ -387,9 +375,7 @@ class ReciprocalLattice3D(ReciprocalLattice, Lattice3D):
         B = np.column_stack((b1, b2, b3))
 
         if np.linalg.matrix_rank(B) < 3:
-            raise ValueError(
-                "b1, b2, and b3 must be linearly independent."
-            )
+            raise ValueError("b1, b2, and b3 must be linearly independent.")
 
     @classmethod
     def from_direct_lattice(
@@ -427,15 +413,13 @@ class ReciprocalLattice3D(ReciprocalLattice, Lattice3D):
             If ``direct_lattice`` is not a ``DirectLattice3D``.
         """
         if not isinstance(direct_lattice, DirectLattice3D):
-            raise TypeError(
-                "direct_lattice must be a DirectLattice3D instance."
-            )
+            raise TypeError("direct_lattice must be a DirectLattice3D instance.")
 
         # Compute the reciprocal primitive-basis matrix
         #
         #     B = 2π A^(-T).
         A = direct_lattice.A
-        B = (2.0 * np.pi * np.linalg.inv(A).T)
+        B = 2.0 * np.pi * np.linalg.inv(A).T
 
         # Delegate validation and immutable storage to the primary
         # constructor.
@@ -487,15 +471,12 @@ class ReciprocalLattice3D(ReciprocalLattice, Lattice3D):
         )
 
         if index_array.shape[-1:] != (3,):
-            raise ValueError(
-                "indices must have shape (3,) or (..., 3)."
-            )
+            raise ValueError("indices must have shape (3,) or (..., 3).")
 
         return np.asarray(
             index_array @ self.B.T,
             dtype=np.float64,
         )
-
 
 
 class WignerSeitzCell3D(WignerSeitzCell):
@@ -559,9 +540,7 @@ class WignerSeitzCell3D(WignerSeitzCell):
             raise ValueError("point must have shape (3,).")
         return bool(
             np.all(
-                self.halfspaces[:, :3] @ point_array
-                + self.halfspaces[:, 3]
-                <= 1.0e-12
+                self.halfspaces[:, :3] @ point_array + self.halfspaces[:, 3] <= 1.0e-12
             )
         )
 

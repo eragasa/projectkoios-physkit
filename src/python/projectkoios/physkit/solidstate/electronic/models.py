@@ -42,9 +42,7 @@ class PeriodicPotentialFourier1D(ABC):
         raise NotImplementedError
 
 
-class CosinePotentialFourier1D(
-    PeriodicPotentialFourier1D
-):
+class CosinePotentialFourier1D(PeriodicPotentialFourier1D):
     """
     Fourier representation of a cosine potential.
 
@@ -98,18 +96,14 @@ class CosinePotentialFourier1D(
             dtype=np.float64,
         )
 
-        fundamental_vector = (
-            2.0
-            * np.pi
-            / self.lattice.lattice_constant
-        )
+        fundamental_vector = 2.0 * np.pi / self.lattice.lattice_constant
 
         flattened_transfers = transfers.ravel()
         if flattened_transfers.size == 0:
             return np.zeros(transfers.shape, dtype=np.complex128)
-        nearest_modes = np.rint(
-            flattened_transfers / fundamental_vector
-        ).astype(np.int64)
+        nearest_modes = np.rint(flattened_transfers / fundamental_vector).astype(
+            np.int64
+        )
         reciprocal_modes = nearest_modes * fundamental_vector
         representable = np.isclose(flattened_transfers, reciprocal_modes)
         mode_indices = tuple((int(mode),) for mode in nearest_modes)
@@ -163,11 +157,7 @@ class PlaneWaveBlochModel1D:
         None
         """
         if self.mass <= 0.0:
-            raise ValueError(
-                "mass must be positive."
-            )
+            raise ValueError("mass must be positive.")
 
         if self.hbar <= 0.0:
-            raise ValueError(
-                "hbar must be positive."
-            )
+            raise ValueError("hbar must be positive.")

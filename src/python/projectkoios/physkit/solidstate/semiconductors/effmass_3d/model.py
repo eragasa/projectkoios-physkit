@@ -193,9 +193,7 @@ class PeriodicFreeParticle3D(
 
     def _check_arg_effective_mass(self) -> None:
         if not isinstance(self.effective_mass, CartesianEffectiveMassTensor3D):
-            raise TypeError(
-                "effective_mass must be CartesianEffectiveMassTensor3D"
-            )
+            raise TypeError("effective_mass must be CartesianEffectiveMassTensor3D")
         if self.effective_mass.unit_system is not self.cell.unit_system:
             raise ValueError("cell and effective_mass must use the same unit system")
 

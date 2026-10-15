@@ -82,9 +82,7 @@ class BasePeriodicPotential(DataObject, ABC):
             model=self,
             mode_indices=mode_indices,
         )
-        return PeriodicPotentialFourierCoefficientEvaluator().action(
-            request=request
-        )
+        return PeriodicPotentialFourierCoefficientEvaluator().action(request=request)
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
@@ -150,9 +148,7 @@ class PeriodicPotentialFourierCoefficientRequest(DataObject):
             if type(mode_index) is not tuple:
                 raise TypeError("each mode index must be a tuple")
             if len(mode_index) != self.model.dimension:
-                raise ValueError(
-                    "each mode index must match the potential dimension"
-                )
+                raise ValueError("each mode index must match the potential dimension")
             if any(type(component) is not int for component in mode_index):
                 raise TypeError("mode-index components must be built-in integers")
 

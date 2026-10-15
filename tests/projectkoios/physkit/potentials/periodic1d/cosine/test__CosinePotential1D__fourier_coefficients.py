@@ -22,8 +22,13 @@ def test__fourier_coefficients__returns_only_conjugate_harmonic_pair() -> None:
     )
 
     expected = np.asarray(
-        [2.0 * np.exp(-1j * np.pi / 3.0), 0.0, 0.0, 0.0,
-         2.0 * np.exp(1j * np.pi / 3.0)],
+        [
+            2.0 * np.exp(-1j * np.pi / 3.0),
+            0.0,
+            0.0,
+            0.0,
+            2.0 * np.exp(1j * np.pi / 3.0),
+        ],
         dtype=np.complex128,
     )
     assert evaluation.coefficients.unit == unit

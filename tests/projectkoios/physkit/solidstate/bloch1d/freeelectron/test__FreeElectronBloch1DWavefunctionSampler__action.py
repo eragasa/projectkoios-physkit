@@ -58,14 +58,11 @@ class TestFreeElectronBloch1DWavefunctionSampler:
             )
         )
 
-        represented_norms = (
-            spectrum.request.model.cell.length.magnitude
-            * np.mean(np.abs(result.amplitudes.magnitude) ** 2, axis=0)
+        represented_norms = spectrum.request.model.cell.length.magnitude * np.mean(
+            np.abs(result.amplitudes.magnitude) ** 2, axis=0
         )
         np.testing.assert_allclose(represented_norms, np.ones(2), atol=1e-14)
-        assert result.amplitudes.unit == PhysicalUnit(
-            "1 / (angstrom ** 0.5)"
-        )
+        assert result.amplitudes.unit == PhysicalUnit("1 / (angstrom ** 0.5)")
 
     def test_primitive_translation_has_the_bloch_phase(self) -> None:
         spectrum = self._spectrum()
@@ -85,7 +82,5 @@ class TestFreeElectronBloch1DWavefunctionSampler:
             * spectrum.request.bloch_wave_number.magnitude
             * spectrum.request.model.cell.oriented_length.magnitude
         )
-        observed_phase = (
-            result.amplitudes.magnitude[1] / result.amplitudes.magnitude[0]
-        )
+        observed_phase = result.amplitudes.magnitude[1] / result.amplitudes.magnitude[0]
         np.testing.assert_allclose(observed_phase, expected_phase, atol=1e-14)
