@@ -39,8 +39,8 @@ lineage from that module.
 
 The generic ordered finite Fourier-series calculation is consumed from the
 `projectkoios-optimization` distribution at exact commit
-`f6bdecc418e46240087d1dfb1c22dac396cdc455`, tree
-`1500a899734cb6284aa06b5d84d9448031a0fbe9`. The owning API is
+`bed0b2f9e8016353b42e5424871d81e5edf5762a`, tree
+`f10a72c6595cc1daec195bae62aefe3bc020a007`. The owning API is
 `projectkoios.numerics.finite_periodic.finite_series` and fixes
 $\sum_j c_j\exp(+2\pi i\,x\cdot m_j)$ without normalization.
 
