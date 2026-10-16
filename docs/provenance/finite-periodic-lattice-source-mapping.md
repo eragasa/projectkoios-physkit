@@ -45,21 +45,33 @@ correlated Bloch values or matrices. Its positive-exponent convention agrees
 with the donor's hopping transform convention, but the adapters do not claim
 copied implementation lineage from that module.
 
+`projectkoios.physkit.solidstate.tb.bands` was authored at the PhysKit destination
+as the unit-aware adapter from block Bloch matrices to complete ascending bands.
+Its public model, coordinate, tolerance, diagnostic, energy-unit, and backend-
+evidence records do not claim donor implementation lineage. Generic unit-free
+Hermiticity validation, Hermitian-representative construction, diagnostics, and
+complete spectra delegate directly to the exact pinned Numerics owner.
+
 ## Numerics owner binding
 
-The generic ordered finite Fourier-series and Frobenius calculations are consumed
-from the `projectkoios-optimization` distribution at exact commit
-`cf551409872a621b4e47d2236ac4ffdc12c187c0`, tree
-`7e0c659f9aabaf8027504ae87d897d73bf775154`. The owning APIs are
-`projectkoios.numerics.finite_periodic.finite_series`, which fixes
-$\sum_j c_j\exp(+2\pi i\,x\cdot m_j)$ without normalization, and
-`projectkoios.numerics.linalg.frobenius`, which returns deterministic raw power
-and its square root for finite built-in complex tuple matrices.
+The generic numerical calculations are consumed from the
+`projectkoios-optimization` distribution at exact commit
+`fff068dfe38309db05bf6de075bac53bb6597813`, tree
+`4ec1c3d6334d884e4443a779f40321eef7f76981`.
 
-PhysKit passes only unit-free built-in coordinate, integer-mode, coefficient, and
-matrix tuples to those owners. Lattice interpretation, model identity, basis
-identity, energy reference, and energy or squared-energy units remain in the
-PhysKit adapters and results.
+- `projectkoios.numerics.finite_periodic.finite_series` fixes
+  $\sum_j c_j\exp(+2\pi i\,x\cdot m_j)$ without normalization.
+- `projectkoios.numerics.linalg.frobenius` returns deterministic raw power and its
+  square root for finite built-in complex tuple matrices.
+- `projectkoios.numerics.linalg.hermitian_spectrum` owns normalized batch
+  definitions, tolerances, diagnostics, results, validation, and explicit
+  Hermitian representatives.
+- `projectkoios.numerics.linalg.numpy.hermitian_spectrum` owns the NumPy complete-
+  spectrum implementation and its single nonempty batched `eigvalsh` call.
+- PhysKit passes only unit-free built-in coordinates, integer modes, coefficients,
+  matrices, and numerical tolerances to those owners.
+- Lattice interpretation, model identity, basis identity, energy reference, and
+  energy or squared-energy units remain in PhysKit adapters and results.
 
 ## Semantic adaptations
 
@@ -100,7 +112,8 @@ compatibility-gated sparse addition, centered uniform-link construction, and
 site-diagonal gauge bridges. Tests under
 `tests/projectkoios/physkit/solidstate/tb/` cover destination-authored raw
 scalar and block hopping diagnostics and the physics-semantic adapters to the exact
-Numerics finite-series and Frobenius owner revision. The corresponding ksdft integration
+Numerics finite-series, Frobenius, and Hermitian-spectrum owner revision. The
+corresponding ksdft integration
 tests exercise its compatibility imports and independent seam-route
 reconciliation.
 

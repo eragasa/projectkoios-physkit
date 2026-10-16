@@ -1,51 +1,49 @@
 # Module `projectkoios.physkit.solidstate.tb.bloch`
 
+This page defines the physics-semantic bridge from hopping models to Bloch values.
+
 ## Current responsibility
 
-The module owns physics-semantic bridges from ordered `ScalarHoppingModel` and
-`BlockHoppingModel` records to scalar or matrix-valued Bloch Hamiltonians. For
-unitless fractional reciprocal coordinates $\mathbf q$ and integer direct-lattice
-displacements $\mathbf R$, it evaluates
+The module evaluates scalar and matrix-valued Bloch Hamiltonians for unitless
+fractional reciprocal coordinates $\mathbf q$ and integer displacements $\mathbf R$.
 
-$$
-h(\mathbf q)=\sum_{\mathbf R} t_{\mathbf R}
-\exp\!\left(+2\pi i\,\mathbf q\cdot\mathbf R\right)
-$$
-
-or the entrywise block analogue with $t_{\mathbf R}$ replaced by
-$T_{\mathbf R}$.
-
-The positive exponent, factor of $2\pi$, supplied hopping-term order, and absence
-of normalization are fixed conventions. Models own coefficient order, energy
-unit, energy-reference identity, and basis identity. Supplied wave vectors are
-rows of a unitless `MatrixQuantity` with width equal to the model dimension.
-
-Results remain complex because hopping models do not impose Hermiticity. The
-block result retains one immutable energy-unit-bearing `ComplexMatrixQuantity`
-per supplied reciprocal point. Diagonalization, diagnostics, tolerances,
-acceptance, and interpretation remain separate responsibilities.
+- Scalar models evaluate
+  $h(\mathbf q)=\sum_{\mathbf R}t_{\mathbf R}\exp(+2\pi i\,\mathbf q\cdot\mathbf R)$.
+- Block models apply the same finite series entrywise to $T_{\mathbf R}$.
+- The positive exponent and factor of $2\pi$ are fixed conventions.
+- Hopping-term order is preserved and no normalization is applied.
+- Models retain coefficient order, energy unit, energy reference, and basis identity.
+- Coordinates are rows of a unitless `MatrixQuantity` whose width is the lattice
+  dimension.
+- Results remain complex because hopping models do not impose Hermiticity.
+- Diagnostics, tolerances, diagonalization, acceptance, and interpretation remain
+  separate responsibilities.
 
 ## Numerics boundary
 
-The scalar adapter creates one `FiniteFourierSeriesEvaluationDefinition`; the
-block adapter creates one definition per matrix entry using shared coordinates
-and displacements. Each calls a nominal `FiniteFourierSeriesEvaluator` and wraps
-the returned built-in complex values in the model energy unit. The dependency is
-bound to exact Numerics owner commit
-`cf551409872a621b4e47d2236ac4ffdc12c187c0`.
+The adapters surround the pinned unit-free finite-series owner with lattice,
+hopping, basis, and unit semantics.
 
-The upstream Numerics operation remains unit-free and does not receive lattice,
-hopping, Bloch, basis, energy-reference, or acceptance meaning. PhysKit is not a
-pass-through facade: these adapters restore physical semantics around the generic
-finite-series calculation.
-
-The default adapters construct the reviewed ordered NumPy backend through the
-Numerics factory. A nominal evaluator may be injected for verification or a
-separately reviewed implementation. Empty wave-vector matrices of shape
-`(0, dimension)` produce an empty scalar vector or empty block matrix inventory.
-Numerics validation and numerical failures propagate without broad translation.
+- The exact owner revision is commit
+  `fff068dfe38309db05bf6de075bac53bb6597813`, tree
+  `4ec1c3d6334d884e4443a779f40321eef7f76981`.
+- The scalar adapter constructs one `FiniteFourierSeriesEvaluationDefinition`.
+- The block adapter constructs one definition per matrix entry with shared
+  coordinates and displacements.
+- Each adapter calls a nominal `FiniteFourierSeriesEvaluator`.
+- Returned built-in complex values regain the model energy unit.
+- The Numerics owner receives no lattice, hopping, Bloch, basis, energy-reference,
+  or acceptance meaning.
+- Default adapters use the reviewed ordered NumPy backend through the Numerics
+  factory.
+- Nominal evaluator injection supports verification or another reviewed backend.
+- Empty coordinate shape `(0, dimension)` produces an empty scalar vector or block
+  matrix inventory.
+- Numerics validation and numerical failures propagate without broad translation.
 
 ## Public classes
+
+The public records and evaluators distinguish scalar and block ownership.
 
 - [`ScalarHoppingBlochEvaluator`](ScalarHoppingBlochEvaluator/index.md)
 - [`ScalarHoppingBlochEvaluation`](ScalarHoppingBlochEvaluation/index.md)
@@ -53,6 +51,8 @@ Numerics validation and numerical failures propagate without broad translation.
 - [`BlockHoppingBlochEvaluation`](BlockHoppingBlochEvaluation/index.md)
 
 ## Local mapping
+
+The implementation and mapped tests share one module boundary.
 
 - Code: `src/python/projectkoios/physkit/solidstate/tb/bloch.py`
 - Tests: `tests/projectkoios/physkit/solidstate/tb/bloch/`
