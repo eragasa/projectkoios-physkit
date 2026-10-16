@@ -7,6 +7,11 @@ from typing import Any, cast
 import numpy as np
 import pytest
 
+from projectkoios.numerics.finite_periodic.batched_finite_series import (
+    BatchedFiniteFourierSeriesEvaluationDefinition,
+    BatchedFiniteFourierSeriesEvaluationResult,
+    BatchedFiniteFourierSeriesEvaluator,
+)
 from projectkoios.numerics.finite_periodic.finite_series import (
     FiniteFourierSeriesEvaluationDefinition,
     FiniteFourierSeriesEvaluationResult,
@@ -53,6 +58,37 @@ def _model() -> BlockHoppingModel:
         energy_reference="common zero",
         basis_identifier="ordered basis: a, b",
     )
+
+
+class _RecordingBatchedEvaluator(BatchedFiniteFourierSeriesEvaluator):
+    """Record one shared-grid definition and expose channel order in values."""
+
+    __slots__ = ("definitions",)
+
+    def __init__(self) -> None:
+        self.definitions: list[BatchedFiniteFourierSeriesEvaluationDefinition] = []
+
+    def _evaluate_validated(
+        self,
+        definition: BatchedFiniteFourierSeriesEvaluationDefinition,
+        /,
+    ) -> BatchedFiniteFourierSeriesEvaluationResult:
+        self.definitions.append(definition)
+        return BatchedFiniteFourierSeriesEvaluationResult(
+            definition.dimension,
+            definition.point_count,
+            definition.term_count,
+            definition.channel_count,
+            tuple(
+                tuple(
+                    complex(10 * point + channel + 1)
+                    for channel in range(definition.channel_count)
+                )
+                for point in range(definition.point_count)
+            ),
+            "test.matmul",
+            "1",
+        )
 
 
 class _RecordingEvaluator(FiniteFourierSeriesEvaluator):
@@ -115,6 +151,90 @@ def test__evaluate__maps_each_matrix_entry_to_the_unit_free_owner() -> None:
         result.bloch_matrices[1].magnitude,
         np.array([[10.0, 11.0], [12.0, 13.0]], dtype=np.complex128),
     )
+
+
+def test__evaluate_family__uses_one_shared_grid_and_preserves_model_order() -> None:
+    source = _model()
+    retained = BlockHoppingModel(
+        identifier="onsite truncation",
+        dimension=source.dimension,
+        terms=(source.terms[1],),
+        energy_unit=source.energy_unit,
+        energy_reference=source.energy_reference,
+        basis_identifier=source.basis_identifier,
+    )
+    wave_vectors = MatrixQuantity(np.array([[0.125], [0.75]]), Unitless())
+    owner = _RecordingBatchedEvaluator()
+
+    results = BlockHoppingBlochEvaluator(
+        batched_finite_series_evaluator=owner,
+    ).evaluate_family((source, retained), wave_vectors)
+
+    assert len(owner.definitions) == 1
+    definition = owner.definitions[0]
+    assert definition.coordinates == ((0.125,), (0.75,))
+    assert definition.integer_modes == ((-1,), (0,), (1,))
+    assert definition.channel_count == 8
+    assert definition.coefficient_channels[4] == (0.0j, 0.5 + 0.0j, 0.0j)
+    assert results[0].model is source
+    assert results[1].model is retained
+    assert all(result.fractional_wave_vectors is wave_vectors for result in results)
+    np.testing.assert_array_equal(
+        results[0].bloch_matrices[0].magnitude,
+        np.array([[1.0, 2.0], [3.0, 4.0]]),
+    )
+    np.testing.assert_array_equal(
+        results[1].bloch_matrices[0].magnitude,
+        np.array([[5.0, 6.0], [7.0, 8.0]]),
+    )
+    np.testing.assert_array_equal(
+        results[1].bloch_matrices[1].magnitude,
+        np.array([[15.0, 16.0], [17.0, 18.0]]),
+    )
+
+
+def test__evaluate_family__rejects_empty_or_incompatible_models() -> None:
+    source = _model()
+    coordinates = MatrixQuantity(np.zeros((1, 1)), Unitless())
+    evaluator = BlockHoppingBlochEvaluator()
+    incompatible = BlockHoppingModel(
+        identifier="incompatible basis",
+        dimension=source.dimension,
+        terms=source.terms,
+        energy_unit=source.energy_unit,
+        energy_reference=source.energy_reference,
+        basis_identifier="different basis",
+    )
+
+    with pytest.raises(TypeError, match="tuple of BlockHoppingModel"):
+        evaluator.evaluate_family(cast(Any, [source]), coordinates)
+    with pytest.raises(ValueError, match="nonempty"):
+        evaluator.evaluate_family((), coordinates)
+    with pytest.raises(ValueError, match="basis identifiers"):
+        evaluator.evaluate_family((source, incompatible), coordinates)
+
+
+@pytest.mark.integration
+def test__evaluate__uses_one_dense_channel_reduction(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import projectkoios.numerics.finite_periodic.numpy.batched_finite_series as module
+
+    original_matmul = module.np.matmul
+    calls: list[tuple[tuple[int, ...], tuple[int, ...]]] = []
+
+    def recording_matmul(left: np.ndarray, right: np.ndarray) -> np.ndarray:
+        calls.append((left.shape, right.shape))
+        return original_matmul(left, right)
+
+    monkeypatch.setattr(module.np, "matmul", recording_matmul)
+
+    BlockHoppingBlochEvaluator().evaluate(
+        _model(),
+        MatrixQuantity(np.array([[0.0], [0.25]]), Unitless()),
+    )
+
+    assert calls == [((2, 3), (3, 4))]
 
 
 @pytest.mark.integration

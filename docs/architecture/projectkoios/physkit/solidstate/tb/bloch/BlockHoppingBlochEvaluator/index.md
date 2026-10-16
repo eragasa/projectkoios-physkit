@@ -1,21 +1,54 @@
 # Class `BlockHoppingBlochEvaluator`
 
-## Ownership
+This page defines unit-aware Bloch matrices for one block model or a compatible model
+family.
 
-`BlockHoppingBlochEvaluator` evaluates one `BlockHoppingModel` at supplied
-fractional reciprocal wave vectors. It maps every ordered matrix-entry
-coefficient series to the generic Numerics finite-series owner and reconstructs
-one immutable energy-unit-bearing Bloch matrix per coordinate row.
+## Current contract
 
-The constructor accepts a nominal `FiniteFourierSeriesEvaluator`; omission selects
-the ordered `NUMPY_DENSE` backend through the Numerics factory. Coordinates must
-be unitless and have one column per model dimension. Matrix-entry evaluation is
-row-major and shares exact coordinate and displacement order.
+The evaluator maps ordered matrix-entry coefficient series to correlated Bloch
+matrices without adding spectral or truncation policy.
 
-The adapter does not diagonalize matrices, infer Hermiticity, select a basis or
-wave-vector path, truncate hoppings, choose tolerances, or assign acceptance.
+- `evaluate(...)` returns one `BlockHoppingBlochEvaluation`.
+- `evaluate_family(...)` returns one evaluation per model in supplied order.
+- Every family result retains the exact shared coordinate object.
+- Models share lattice dimension, basis size and identity, energy unit, and energy
+  reference.
+- Displacement inventories may differ.
+- Empty coordinates return every requested model with an empty matrix tuple.
+
+## Accelerated default
+
+The maintained default delegates to one shared-grid Numerics operation.
+
+- The displacement union is sorted lexicographically.
+- Coefficient channels are ordered by model, basis row, and basis column.
+- Missing model terms become exact complex zeros on union modes.
+- Owner output shape `P × (F n²)` reshapes deterministically to `F × P × n × n`.
+- One NumPy phase matrix and one dense matrix multiplication serve the full family.
+- Dense mode reduction is tolerance-equivalent rather than bitwise identical to the
+  ordered scalar backend.
+
+## Compatibility path
+
+Existing nominal scalar evaluator injection remains supported.
+
+- Supplying `finite_series_evaluator` without a batched evaluator selects entrywise
+  ordered evaluation.
+- Supplying `batched_finite_series_evaluator` selects the shared-grid owner.
+- The scalar and batched properties expose the retained nominal collaborators.
+- Both paths preserve the public physical convention, shapes, units, and ordering.
+
+## Exclusions
+
+The adapter performs only Bloch assembly.
+
+- No diagonalization or Hermiticity decision is performed.
+- No retained inventory is selected.
+- No distance, cutoff, error, normalization, or acceptance result is produced.
 
 ## Mapping
+
+The implementation and focused tests are maintained together.
 
 - Code: `src/python/projectkoios/physkit/solidstate/tb/bloch.py::BlockHoppingBlochEvaluator`
 - Constructor tests: `tests/projectkoios/physkit/solidstate/tb/bloch/test__BlockHoppingBlochEvaluator__init.py`

@@ -56,11 +56,15 @@ complete spectra delegate directly to the exact pinned Numerics owner.
 
 The generic numerical calculations are consumed from the
 `projectkoios-optimization` distribution at exact commit
-`fff068dfe38309db05bf6de075bac53bb6597813`, tree
-`4ec1c3d6334d884e4443a779f40321eef7f76981`.
+`7ac5376bcb97e29f6927dda4d4ef714ed2e32140`, tree
+`c3c9cd2aff915b168375a4c5f0aaac903079cc71`.
 
 - `projectkoios.numerics.finite_periodic.finite_series` fixes
   $\sum_j c_j\exp(+2\pi i\,x\cdot m_j)$ without normalization.
+- `projectkoios.numerics.finite_periodic.batched_finite_series` evaluates ordered
+  coefficient channels on one shared coordinate/mode grid with point-major output.
+- `projectkoios.numerics.finite_periodic.numpy.batched_finite_series` owns one dense
+  shared-phase NumPy reduction and its backend evidence.
 - `projectkoios.numerics.linalg.frobenius` returns deterministic raw power and its
   square root for finite built-in complex tuple matrices.
 - `projectkoios.numerics.linalg.hermitian_spectrum` owns normalized batch
@@ -112,10 +116,9 @@ compatibility-gated sparse addition, centered uniform-link construction, and
 site-diagonal gauge bridges. Tests under
 `tests/projectkoios/physkit/solidstate/tb/` cover destination-authored raw
 scalar and block hopping diagnostics and the physics-semantic adapters to the exact
-Numerics finite-series, Frobenius, and Hermitian-spectrum owner revision. The
-corresponding ksdft integration
-tests exercise its compatibility imports and independent seam-route
-reconciliation.
+Numerics scalar and batched finite-series, Frobenius, and Hermitian-spectrum owner
+revision. The corresponding ksdft integration tests exercise its compatibility
+imports and independent seam-route reconciliation.
 
 These tests establish only their documented software and bounded numerical
 requirements. They do not establish physical-model adequacy, semiconductor

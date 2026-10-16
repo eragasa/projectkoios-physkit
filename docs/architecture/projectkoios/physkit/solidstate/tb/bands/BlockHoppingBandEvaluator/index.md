@@ -1,48 +1,58 @@
 # Class `BlockHoppingBandEvaluator`
 
-This page defines the unit-aware action from Bloch matrices to complete bands.
+This page defines unit-aware complete-band evaluation for one model or a compatible
+ordered family.
 
 ## Current contract
 
-`BlockHoppingBandEvaluator` adapts block Bloch matrices to complete unit-aware
-energy bands under caller-supplied numerical tolerances.
+The evaluator adapts block Bloch matrices to complete ascending energy bands under a
+caller-supplied numerical tolerance.
 
-- `evaluate_bloch(bloch_evaluation, tolerance)` is the primitive action.
-- The primitive retains and reuses the exact supplied Bloch evaluation.
-- `evaluate(model, fractional_wave_vectors, tolerance)` evaluates Bloch matrices
-  once and delegates to the primitive.
-- A strictly excessive defect rejects the whole batch before diagonalization.
-- Accepted matrices produce the explicit representative $(A+A^\dagger)/2$.
-- Every representative satisfies the exact-Hermitian postcondition.
-- Every accepted nonempty batch uses one batched complete-spectrum call.
-- Empty batches return without invoking linear algebra.
+- `evaluate_bloch(...)` retains one exact supplied Bloch evaluation.
+- `evaluate(...)` evaluates one model's Bloch matrices once.
+- `evaluate_bloch_family(...)` concatenates compatible existing Bloch results.
+- `evaluate_family(...)` requests one shared Bloch family before diagonalization.
+- Family methods preserve model order and exact shared-coordinate identity.
+- A strictly excessive defect rejects the whole matrix batch before diagonalization.
+- Accepted matrices use $(A+A^\dagger)/2$ and satisfy exact Hermiticity.
+- Every accepted nonempty family uses one complete-spectrum batch call.
+- Empty shared coordinates return all model results without invoking linear algebra.
+
+## Compatibility requirements
+
+One family represents models in a common physical and numerical space.
+
+- Lattice dimensions agree.
+- Ordered-basis sizes and identifiers agree.
+- Energy units and energy-reference identifiers agree.
+- Every Bloch result retains the exact same coordinate record.
+- One tolerance object applies independently to every matrix.
 
 ## Failure semantics
 
-Failure classes distinguish malformed inputs, rejected numerical inputs, invalid
-floating-point results, and backend nonconvergence.
+Failure classes distinguish malformed inputs, rejected numerical inputs, arithmetic
+failures, and backend nonconvergence.
 
-- `TypeError` identifies wrong nominal input ownership.
-- `ValueError` identifies incompatible units or a defect above its applied cutoff.
-- `FloatingPointError` identifies nonfinite arithmetic/output or failure of the
-  exact-Hermitian postcondition.
+- `TypeError` identifies wrong nominal ownership.
+- `ValueError` identifies incompatible family metadata, units, correlation, or a
+  defect above its cutoff.
+- `FloatingPointError` identifies nonfinite arithmetic or a failed exact-Hermitian
+  postcondition.
 - `RuntimeError` identifies complete-spectrum solver nonconvergence.
 - Exact exception messages remain implementation details.
 
 ## Numerical backend
 
-The default implementation delegates directly to the pinned canonical Numerics
-complete-spectrum contract.
+The implementation delegates directly to the pinned canonical Numerics complete-
+spectrum contract.
 
-- `BatchedHermitianSpectrumDefinition` represents nonempty batches.
-- `BatchedHermitianSpectrumDefinition.empty` represents empty batches with an
-  explicit basis size.
-- `BatchedHermitianSpectrumTolerance` receives unit-stripped tolerances.
+- Evaluation-major concatenation gives each model one contiguous point block.
+- `BatchedHermitianSpectrumDefinition.empty` retains basis size for empty points.
+- `BatchedHermitianSpectrumTolerance` receives unit-stripped values.
 - `NumpyBatchedHermitianSpectrumSolver` is the selected nominal solver.
 - The backend identifier is `numpy.linalg.eigvalsh`.
-- The backend version is `numpy.__version__`.
-- `UPLO="L"` is explicit for nonempty solves.
-- PhysKit restores physical units and Bloch-result correlation.
+- Per-model energies and diagnostics are partitioned deterministically.
+- PhysKit restores physical units and exact Bloch-result correlation.
 
 ## Mapping
 

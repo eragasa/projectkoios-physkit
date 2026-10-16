@@ -1,6 +1,7 @@
 # Module `projectkoios.physkit.solidstate.tb.bloch`
 
-This page defines the physics-semantic bridge from hopping models to Bloch values.
+This page defines physics-semantic bridges from hopping models to Bloch values and
+matrices.
 
 ## Current responsibility
 
@@ -9,37 +10,42 @@ fractional reciprocal coordinates $\mathbf q$ and integer displacements $\mathbf
 
 - Scalar models evaluate
   $h(\mathbf q)=\sum_{\mathbf R}t_{\mathbf R}\exp(+2\pi i\,\mathbf q\cdot\mathbf R)$.
-- Block models apply the same finite series entrywise to $T_{\mathbf R}$.
-- The positive exponent and factor of $2\pi$ are fixed conventions.
-- Hopping-term order is preserved and no normalization is applied.
+- Block models apply the same finite series to every ordered matrix entry.
+- The positive exponent and absence of normalization are fixed conventions.
 - Models retain coefficient order, energy unit, energy reference, and basis identity.
-- Coordinates are rows of a unitless `MatrixQuantity` whose width is the lattice
-  dimension.
 - Results remain complex because hopping models do not impose Hermiticity.
 - Diagnostics, tolerances, diagonalization, acceptance, and interpretation remain
   separate responsibilities.
 
-## Numerics boundary
+## Scalar Numerics boundary
 
-The adapters surround the pinned unit-free finite-series owner with lattice,
-hopping, basis, and unit semantics.
+The scalar adapter preserves the exact ordered finite-series contract.
+
+- It constructs one `FiniteFourierSeriesEvaluationDefinition`.
+- The default scalar evaluator uses the reviewed ordered NumPy backend.
+- Point, term, and coordinate-component reduction order remain observable.
+- Empty coordinate shape `(0, dimension)` produces an empty complex vector.
+
+## Block and family Numerics boundary
+
+The default block adapter uses the pinned shared-grid batched finite-Fourier owner.
 
 - The exact owner revision is commit
-  `fff068dfe38309db05bf6de075bac53bb6597813`, tree
-  `4ec1c3d6334d884e4443a779f40321eef7f76981`.
-- The scalar adapter constructs one `FiniteFourierSeriesEvaluationDefinition`.
-- The block adapter constructs one definition per matrix entry with shared
-  coordinates and displacements.
-- Each adapter calls a nominal `FiniteFourierSeriesEvaluator`.
-- Returned built-in complex values regain the model energy unit.
-- The Numerics owner receives no lattice, hopping, Bloch, basis, energy-reference,
-  or acceptance meaning.
-- Default adapters use the reviewed ordered NumPy backend through the Numerics
-  factory.
-- Nominal evaluator injection supports verification or another reviewed backend.
-- Empty coordinate shape `(0, dimension)` produces an empty scalar vector or block
-  matrix inventory.
-- Numerics validation and numerical failures propagate without broad translation.
+  `7ac5376bcb97e29f6927dda4d4ef714ed2e32140`, tree
+  `c3c9cd2aff915b168375a4c5f0aaac903079cc71`.
+- `evaluate(...)` maps one model to `basis_size²` coefficient channels.
+- `evaluate_family(...)` maps models in supplied order to one combined channel set.
+- Compatible families share dimension, ordered basis, energy unit, and energy
+  reference.
+- The sorted displacement union is the shared integer-mode inventory.
+- Exact complex zeros represent modes absent from one family member.
+- `NumpyBatchedFiniteFourierSeriesEvaluator` forms one point-mode phase matrix and
+  performs one dense channel reduction.
+- Dense reduction may differ from the scalar ordered path by binary64 rounding.
+- Supplying only a scalar evaluator retains the previous entrywise compatibility
+  path.
+- PhysKit restores each model's exact identity, coordinate object, matrix shape, and
+  energy unit.
 
 ## Public classes
 

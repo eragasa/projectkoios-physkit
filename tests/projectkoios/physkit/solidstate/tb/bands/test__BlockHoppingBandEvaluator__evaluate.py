@@ -150,6 +150,70 @@ def test__evaluate__uses_bloch_evaluator_and_one_symmetrized_batch_call(
     assert result.backend_version == np.__version__
 
 
+def test__evaluate_bloch_family__uses_one_concatenated_spectrum_call(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    unit = PhysicalUnit("electron_volt")
+    source = _model(unit)
+    retained = BlockHoppingModel(
+        "retained model",
+        source.dimension,
+        source.terms,
+        source.energy_unit,
+        source.energy_reference,
+        source.basis_identifier,
+    )
+    wave_vectors = MatrixQuantity(np.array([[0.0], [0.25]]), Unitless())
+    bloch_evaluations = BlockHoppingBlochEvaluator().evaluate_family(
+        (source, retained),
+        wave_vectors,
+    )
+    original_eigvalsh = np.linalg.eigvalsh
+    calls: list[tuple[int, ...]] = []
+
+    def recording_eigvalsh(values: np.ndarray, UPLO: str = "L") -> np.ndarray:
+        calls.append(values.shape)
+        return original_eigvalsh(values, UPLO=UPLO)
+
+    monkeypatch.setattr(
+        numpy_hermitian_spectrum.np.linalg,
+        "eigvalsh",
+        recording_eigvalsh,
+    )
+
+    results = BlockHoppingBandEvaluator().evaluate_bloch_family(
+        bloch_evaluations,
+        BlockHoppingBandTolerance(ScalarQuantity(0.1, unit), 0.0),
+    )
+
+    assert calls == [(4, 2, 2)]
+    assert tuple(result.model for result in results) == (source, retained)
+    assert all(result.fractional_wave_vectors is wave_vectors for result in results)
+    assert all(len(result.point_diagnostics) == 2 for result in results)
+    np.testing.assert_allclose(
+        results[0].band_energies.magnitude,
+        results[1].band_energies.magnitude,
+    )
+
+
+def test__evaluate_bloch_family__requires_exact_shared_coordinates() -> None:
+    unit = PhysicalUnit("electron_volt")
+    source = _model(unit)
+    coordinates = MatrixQuantity(np.array([[0.0]]), Unitless())
+    first = BlockHoppingBlochEvaluator().evaluate(source, coordinates)
+    second = BlockHoppingBlochEvaluator().evaluate(
+        source,
+        MatrixQuantity(np.array([[0.0]]), Unitless()),
+    )
+    tolerance = BlockHoppingBandTolerance(ScalarQuantity(0.1, unit), 0.0)
+
+    with pytest.raises(ValueError, match="exact shared coordinates"):
+        BlockHoppingBandEvaluator().evaluate_bloch_family(
+            (first, second),
+            tolerance,
+        )
+
+
 def test__evaluate_bloch__reuses_exact_existing_bloch_evaluation() -> None:
     unit = PhysicalUnit("electron_volt")
     model = _model(unit)

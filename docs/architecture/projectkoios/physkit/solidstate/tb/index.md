@@ -8,14 +8,17 @@ The package owns reusable tight-binding representations, numerical adapters, and
 raw diagnostics with explicit physics semantics.
 
 - Scalar and matrix-valued hopping models retain lattice-displacement identity.
-- Bloch evaluation retains fractional-coordinate and energy-unit conventions.
+- Bloch evaluation retains fractional-coordinate and energy-unit conventions while
+  sharing point-mode phases across matrix entries and compatible model families.
 - Complete block-band evaluation retains ordered-basis and backend evidence.
+- Explicit source-and-truncation range families share Bloch and spectrum batches
+  without choosing a cutoff policy.
 - Hermiticity and power diagnostics report raw numerical facts.
 - Conjugate-closed truncation preserves explicit model and term identity.
 - Workflow state, campaign policy, scientific tolerances, cutoffs, normalized
   locality metrics, and acceptance decisions remain outside the package.
-- Unit-free finite-series, Frobenius, and batched Hermitian-spectrum kernels belong
-  to `projectkoios.numerics`.
+- Unit-free scalar and batched finite-series, Frobenius, and batched Hermitian-
+  spectrum kernels belong to `projectkoios.numerics`.
 - Published pinned Numerics APIs own all integrated generic kernels.
 - Complete block-band evaluation delegates directly to the canonical batched
   Hermitian-spectrum definition, tolerance, diagnostics, result, and NumPy solver.
