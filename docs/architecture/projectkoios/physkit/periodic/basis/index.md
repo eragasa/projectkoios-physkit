@@ -2,61 +2,72 @@
 
 ## Current responsibility
 
-The module owns the finite ordered reciprocal-mode basis for one-dimensional periodic
-fields.
+The module owns ordered finite reciprocal-mode bases for periodic fields.
 
-- `ReciprocalModeBasis1D` retains the canonical public
-  `periodic.lattice.ReciprocalLattice1D` by identity.
-- An explicit nonempty inventory of unique integer modes fixes basis ordering.
-- Reciprocal vectors are obtained through the lattice's `vector(...)` operation.
-- `from_mode_limit(...)` constructs the symmetric inventory `-M, ..., M`.
-- Shifted wave vectors represent `k + G_m` or `q + G_m` without assigning a field.
+- `ReciprocalModeBasis1D` correlates an explicit integer sequence with the canonical
+  `periodic.lattice.ReciprocalLattice1D`.
+- [`ReciprocalModeBasis3D`](ReciprocalModeBasis3D/index.md) correlates an explicit
+  inventory of integer triplets with the canonical 3D reciprocal lattice.
+- Reciprocal vectors are obtained through each lattice's `vector(...)` operation.
+- Explicit construction preserves caller order and rejects duplicate modes.
+- Symmetric-cutoff factories provide deterministic finite inventories.
 
 ## Nominal identity
 
-The basis has one reciprocal-lattice owner.
+Each basis accepts exactly one reciprocal-lattice owner for its dimension.
 
-- The supported identity is defined in `periodic.lattice.lattice1d` and exported from
-  both `periodic.lattice` and `periodic`.
-- The legacy class in `periodic.reciprocal` is not accepted as a second nominal owner.
-- The legacy module remains untouched in this tranche so compatibility disposition can
-  be decided separately.
-- Mode and vector arrays are copied into immutable binary64 or integer storage.
+- Supported lattice identities are defined in `periodic.lattice` and exported from the
+  package façade.
+- The legacy 1D class in `periodic.reciprocal` is not accepted as a second owner.
+- The 3D basis requires `periodic.lattice.ReciprocalLattice3D` exactly.
+- Mode and vector arrays are copied into immutable integer and binary64 storage.
+- The 1D and 3D basis identities are exported deliberately from `periodic`.
 
 ## Data flow
 
-The canonical lattice operation supplies vectors to modes and electronic operators.
+Canonical lattice operations supply vectors to represented modes and consumers.
 
 - Direct-to-reciprocal construction precedes finite mode selection.
-- Both field modes and plane-wave Hamiltonians consume the same basis identity.
+- Every physical vector retains the declared integer-mode order.
 
 ```mermaid
 flowchart LR
-    D[DirectLattice1D] -->|from_direct_lattice| R[Canonical ReciprocalLattice1D]
-    R -->|vector of modes| B[ReciprocalModeBasis1D]
-    B --> M[BlochMode1D]
-    B --> H[PlaneWaveBlochHamiltonian1D]
-    H --> S[PlaneWaveBlochSolver1D]
+    D1[DirectLattice1D] --> R1[ReciprocalLattice1D]
+    R1 --> B1[ReciprocalModeBasis1D]
+    B1 --> M1[BlochMode1D]
+    B1 --> H1[PlaneWaveBlochHamiltonian1D]
+    D3[DirectLattice3D] --> R3[ReciprocalLattice3D]
+    R3 --> B3[ReciprocalModeBasis3D]
 ```
+
+## Three-dimensional ordering
+
+The 3D factory exposes one stable tensor-product convention.
+
+- Cutoff `M` represents every triplet in `[-M, M]^3`.
+- The first index is outermost, the second is middle, and the third is innermost.
+- Cutoff zero represents the single reciprocal origin.
+- Explicit construction may use any unique order needed by a consumer.
+- Shifted wave vectors add one finite Cartesian three-vector to every basis vector.
 
 ## Exclusions
 
-This repair deliberately leaves broader representation decisions open.
+This tranche remains limited to represented basis identity.
 
-- Lattice values remain dimensionless under the existing lattice contract.
-- No KSD quantity, reciprocal mesh, sewing map, frame, or hopping transform is added.
-- No two- or three-dimensional mode basis is implied.
-- No completeness, cutoff convergence, material interpretation, or scientific
-  validation is claimed.
+- Lattice values retain the existing dimensionless lattice semantics.
+- No 2D mode basis, reciprocal mesh, sewing map, Hamiltonian, frame, or hopping
+  transform is introduced.
+- The legacy 1D module remains untouched for separate compatibility disposition.
+- Cutoff choice, convergence, material interpretation, and scientific validation remain
+  outside the basis contract.
 
 ## Local mapping
 
-Maintained source, consumers, and focused evidence are explicit.
+Maintained source, consumers, and evidence remain explicit.
 
 - Code: `src/python/projectkoios/physkit/periodic/basis.py`
-- Mode consumer: `src/python/projectkoios/physkit/periodic/modes.py`
+- 1D mode consumer: `src/python/projectkoios/physkit/periodic/modes.py`
 - Electronic consumers: `src/python/projectkoios/physkit/solidstate/electronic/`
-- Tests: `tests/projectkoios/physkit/periodic/basis/`
-- Mode tests: `tests/projectkoios/physkit/periodic/modes/`
-- Electronic tests: `tests/projectkoios/physkit/solidstate/electronic/`
+- Basis tests: `tests/projectkoios/physkit/periodic/basis/`
+- Façade tests: `tests/projectkoios/physkit/periodic/test__periodic_reciprocal_basis_public_api.py`
 - [Parent package](../index.md)

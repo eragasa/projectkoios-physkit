@@ -1,5 +1,9 @@
 """Public lattice-geometry API for :mod:`projectkoios.physkit.periodic`."""
 
+from projectkoios.physkit.periodic.basis import (
+    ReciprocalModeBasis1D,
+    ReciprocalModeBasis3D,
+)
 from projectkoios.physkit.periodic.kpoints import (
     KPointPath1D,
     KPointPath2D,
@@ -52,6 +56,8 @@ __all__ = [
     "ReciprocalLattice1D",
     "ReciprocalLattice2D",
     "ReciprocalLattice3D",
+    "ReciprocalModeBasis1D",
+    "ReciprocalModeBasis3D",
     "WignerSeitzCell",
     "WignerSeitzCell1D",
     "WignerSeitzCell2D",
