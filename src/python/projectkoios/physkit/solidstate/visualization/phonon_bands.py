@@ -5,15 +5,21 @@ from __future__ import annotations
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 
-from projectkoios.physkit.periodic.reciprocal import ReciprocalLattice1D
+from projectkoios.physkit.periodic.lattice import ReciprocalLattice1D
 from projectkoios.physkit.solidstate.phonons.results import (
     PhononBandStructureResult,
 )
 
 
 class PhononBandStructureVisualizer:
-    """
-    Visualizer for a one-dimensional phonon dispersion.
+    """Render a one-dimensional phonon dispersion.
+
+    Parameters
+    ----------
+    result
+        Phonon band result to render.
+    reciprocal_lattice
+        Canonical reciprocal lattice used to normalize the wave-vector axis.
     """
 
     def __init__(
@@ -21,6 +27,8 @@ class PhononBandStructureVisualizer:
         result: PhononBandStructureResult,
         reciprocal_lattice: ReciprocalLattice1D,
     ) -> None:
+        if type(reciprocal_lattice) is not ReciprocalLattice1D:
+            raise TypeError("reciprocal_lattice must be ReciprocalLattice1D")
         self.result = result
         self.reciprocal_lattice = reciprocal_lattice
 
@@ -33,7 +41,7 @@ class PhononBandStructureVisualizer:
 
         Parameters
         ----------
-        ax:
+        ax
             Existing Matplotlib axes. If omitted, new axes are created.
 
         Returns
@@ -44,9 +52,7 @@ class PhononBandStructureVisualizer:
         if ax is None:
             _, ax = plt.subplots(figsize=(8, 6))
 
-        normalized_q_points = (
-            self.result.q_points / self.reciprocal_lattice.fundamental_vector
-        )
+        normalized_q_points = self.result.q_points / self.reciprocal_lattice.b1
 
         for branch_index in range(self.result.number_of_branches):
             ax.plot(
