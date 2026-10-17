@@ -1,4 +1,4 @@
-# Module `projectkoios.physkit.periodic.lattice.deformation_paths`
+# Module `projectkoios.physkit.periodic.lattice.bain.path`
 
 ## Current responsibility
 
@@ -8,8 +8,11 @@ The module owns reusable crystallographic deformation-path representations and l
   FCC-to-BCC Bain convention in a body-centered-tetragonal primitive basis.
 - [`UnitVolumeBainPathPoint3D`](UnitVolumeBainPathPoint3D/index.md) retains correlated
   scalar and direct-lattice evidence at one path parameter.
-- The package façade deliberately exports both identities.
-- Later named crystallographic paths remain separate bounded contracts.
+- [`DiamondDecoratedBainPath3D`](DiamondDecoratedBainPath3D/index.md) carries a
+  species-neutral two-site diamond fractional basis along that Bravais path.
+- [`DiamondDecoratedBainPathPoint3D`](DiamondDecoratedBainPathPoint3D/index.md) retains
+  the correlated Bravais and decorated-basis representations.
+- The package façade deliberately exports all four identities.
 
 ## Bain convention
 
@@ -37,6 +40,8 @@ flowchart LR
     P --> R[UnitVolumeBainPathPoint3D]
     R --> L[DirectLattice3D]
     R --> M[DirectLatticeMetric]
+    R --> D[DiamondDecoratedBainPathPoint3D]
+    B[FccBainCoordinateBridge3D] --> D
 ```
 
 ## Ownership boundary
@@ -51,22 +56,29 @@ Crystallographic mechanics and scientific use remain distinct.
 - The path is a represented crystallographic model, not evidence of a material phase
   transition or transformation mechanism.
 
+## Decorated structure
+
+The diamond decoration is physical geometry rather than an electronic response model.
+
+- Bain-basis fractional offsets are `(0, 0, 0)` and `(1/2, -1/4, 1/4)`.
+- The exact FCC--Bain coordinate bridge restores `(1/4, 1/4, 1/4)` at the FCC endpoint.
+- Cartesian offsets follow affinely from the current Bain direct basis.
+- No atomic species, physical scale, Hamiltonian, or material endpoint is attached.
+
 ## Deferred crystallography
 
 Related owner work remains intentionally separate.
 
-- The diamond-decorated fractional basis and FCC-to-Bain coordinate bridge are a later
-  structure-level tranche.
 - The area-preserving triangular-to-square rhombic path is a later 2D tranche.
 - Generic homogeneous-deformation records require explicit active/passive and
   left/right-action conventions before introduction.
-- Completion of this path authorizes none of those successors.
+- Completion of this decorated path authorizes none of those successors.
 
 ## Local mapping
 
 Source, tests, and provenance remain explicit.
 
-- Code: `src/python/projectkoios/physkit/periodic/lattice/deformation_paths.py`
-- Tests: `tests/projectkoios/physkit/periodic/lattice/deformation_paths/`
+- Code: `src/python/projectkoios/physkit/periodic/lattice/bain/path.py`
+- Tests: `tests/projectkoios/physkit/periodic/lattice/bain/path/`
 - [Parent package](../index.md)
-- [Extraction provenance](../../../../../../provenance/ksdft2effmass-crystallographic-paths.md)
+- [Extraction provenance](../../../../../../../provenance/ksdft2effmass-crystallographic-paths.md)

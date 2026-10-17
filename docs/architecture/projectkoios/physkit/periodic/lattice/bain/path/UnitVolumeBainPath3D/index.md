@@ -1,4 +1,4 @@
-# Class `projectkoios.physkit.periodic.lattice.deformation_paths.UnitVolumeBainPath3D`
+# Class `projectkoios.physkit.periodic.lattice.bain.path.UnitVolumeBainPath3D`
 
 ## Current contract
 
@@ -35,6 +35,6 @@ Evaluation establishes represented geometry only.
 
 Source and tests remain adjacent to the module owner.
 
-- Code: `src/python/projectkoios/physkit/periodic/lattice/deformation_paths.py::UnitVolumeBainPath3D`
-- Tests: `tests/projectkoios/physkit/periodic/lattice/deformation_paths/test__UnitVolumeBainPath3D__evaluate.py`
+- Code: `src/python/projectkoios/physkit/periodic/lattice/bain/path.py::UnitVolumeBainPath3D`
+- Tests: `tests/projectkoios/physkit/periodic/lattice/bain/path/test__UnitVolumeBainPath3D__evaluate.py`
 - [Parent module](../index.md)

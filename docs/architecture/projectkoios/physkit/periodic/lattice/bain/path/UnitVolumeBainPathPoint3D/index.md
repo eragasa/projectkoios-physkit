@@ -1,4 +1,4 @@
-# Class `projectkoios.physkit.periodic.lattice.deformation_paths.UnitVolumeBainPathPoint3D`
+# Class `projectkoios.physkit.periodic.lattice.bain.path.UnitVolumeBainPathPoint3D`
 
 ## Current contract
 
@@ -34,6 +34,6 @@ Invalid or ambiguous point state is rejected at construction.
 
 Source and tests remain adjacent to the module owner.
 
-- Code: `src/python/projectkoios/physkit/periodic/lattice/deformation_paths.py::UnitVolumeBainPathPoint3D`
-- Tests: `tests/projectkoios/physkit/periodic/lattice/deformation_paths/test__UnitVolumeBainPathPoint3D__contract.py`
+- Code: `src/python/projectkoios/physkit/periodic/lattice/bain/path.py::UnitVolumeBainPathPoint3D`
+- Tests: `tests/projectkoios/physkit/periodic/lattice/bain/path/test__UnitVolumeBainPathPoint3D__contract.py`
 - [Parent module](../index.md)

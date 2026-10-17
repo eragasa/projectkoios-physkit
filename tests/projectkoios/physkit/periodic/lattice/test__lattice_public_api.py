@@ -5,7 +5,12 @@ from __future__ import annotations
 import numpy as np
 
 import projectkoios.physkit.periodic.lattice as lattice
-from projectkoios.physkit.periodic.lattice.deformation_paths import (
+from projectkoios.physkit.periodic.lattice.bain.bridge import (
+    FccBainCoordinateBridge3D,
+)
+from projectkoios.physkit.periodic.lattice.bain.path import (
+    DiamondDecoratedBainPath3D,
+    DiamondDecoratedBainPathPoint3D,
     UnitVolumeBainPath3D,
     UnitVolumeBainPathPoint3D,
 )
@@ -20,11 +25,14 @@ class TestLatticePublicApi:
         assert lattice.__all__ == [
             "BravaisLattice",
             "BravaisLatticeKind",
+            "DiamondDecoratedBainPath3D",
+            "DiamondDecoratedBainPathPoint3D",
             "DirectLattice",
             "DirectLattice1D",
             "DirectLattice2D",
             "DirectLattice3D",
             "DirectLatticeMetric",
+            "FccBainCoordinateBridge3D",
             "FirstBrillouinZone",
             "FirstBrillouinZone1D",
             "FirstBrillouinZone2D",
@@ -43,9 +51,14 @@ class TestLatticePublicApi:
             "WignerSeitzCell3D",
         ]
 
-    def test__exports_bain_path_with_defining_module_identity(self) -> None:
+    def test__exports_bain_crystallography_with_defining_module_identity(self) -> None:
         assert lattice.UnitVolumeBainPath3D is UnitVolumeBainPath3D
         assert lattice.UnitVolumeBainPathPoint3D is UnitVolumeBainPathPoint3D
+        assert lattice.DiamondDecoratedBainPath3D is DiamondDecoratedBainPath3D
+        assert (
+            lattice.DiamondDecoratedBainPathPoint3D is DiamondDecoratedBainPathPoint3D
+        )
+        assert lattice.FccBainCoordinateBridge3D is FccBainCoordinateBridge3D
 
     def test__composes_exported_two_dimensional_lattice_and_metric(self) -> None:
         direct_lattice = lattice.DirectLattice2D(

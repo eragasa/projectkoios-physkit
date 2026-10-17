@@ -19,6 +19,12 @@ The first bounded path tranche adapts frozen KSD donor evidence into its PhysKit
   `05ceefbcb1e7ee47b248e096a859dfa2b58faccd84588f0f5868271e446d0e68`
 - Donor test path:
   `python/tests/software_verification/ksdft2effmass/analysis/model_adequacy/band_equivalence_locality/test__BainPath.py`
+- Donor bridge/decoration test working-tree blob:
+  `49141506ea851d10d8e928198f8abe104aea8035`
+- Donor bridge/decoration test SHA-256:
+  `fcc1f8da6bbed91a5ac3c182477973edf2a13ecd2e036f0ab639545e8c6d3118`
+- Donor bridge/decoration test path:
+  `python/tests/software_verification/ksdft2effmass/analysis/model_adequacy/band_equivalence_locality/test__SyntheticStrainGaugeLocality.py`
 
 ## Extracted behavior
 
@@ -44,14 +50,17 @@ PhysKit names and validates the convention as an independent owner contract.
   copy.
 - Public exports, architecture pages, and isolated-wheel evidence are destination-owned.
 
-## Deferred donor evidence
+## Decorated-basis and coordinate-bridge extraction
 
-No successor path or decorated structure is bundled into this tranche.
+A second bounded tranche adapts the frozen crystallographic constants into typed owner
+records.
 
-- `BAIN_DIAMOND_BASIS_OFFSETS` remains frozen donor evidence for a later
-  diamond-decorated structure path.
-- `BAIN_FCC_UNIMODULAR_MAP` remains frozen donor evidence for a later exact coordinate
-  bridge.
+- `BAIN_FCC_UNIMODULAR_MAP` maps to `FccBainCoordinateBridge3D` with its exact inverse,
+  integer/fractional actions, and finite-quotient evidence.
+- `BAIN_DIAMOND_BASIS_OFFSETS` maps to the immutable, explicitly unitless basis owned by
+  `DiamondDecoratedBainPathPoint3D`.
+- `DiamondDecoratedBainPath3D` composes the decoration with the previously owned Bravais
+  path without attaching species, scale, or electronic response.
 - The area-preserving rhombic path remains a separate 2D owner tranche.
 - Synthetic strain diagnostics, electronic response models, selected bonds, Fourier
   calculations, thresholds, artifacts, and interpretations remain KSD-owned.
