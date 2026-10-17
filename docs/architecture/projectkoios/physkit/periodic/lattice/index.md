@@ -29,6 +29,7 @@ interfaces are intentionally limited to one, two, and three dimensions.
 The architecture pages follow the package's owned modules and subpackages.
 
 - [Package `bain`](bain/index.md)
+- [Package `rhombic`](rhombic/index.md)
 - [Module `lattice2d`](lattice2d/index.md)
 - [Module `lattice3d`](lattice3d/index.md)
 - [Package `embedding`](embedding/index.md)

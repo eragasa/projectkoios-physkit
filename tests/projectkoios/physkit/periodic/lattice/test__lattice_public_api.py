@@ -15,6 +15,10 @@ from projectkoios.physkit.periodic.lattice.bain.path import (
     UnitVolumeBainPathPoint3D,
 )
 from projectkoios.physkit.periodic.lattice.metric import DirectLatticeMetric
+from projectkoios.physkit.periodic.lattice.rhombic.path import (
+    UnitAreaRhombicPath2D,
+    UnitAreaRhombicPathPoint2D,
+)
 
 
 class TestLatticePublicApi:
@@ -43,6 +47,8 @@ class TestLatticePublicApi:
             "ReciprocalLattice1D",
             "ReciprocalLattice2D",
             "ReciprocalLattice3D",
+            "UnitAreaRhombicPath2D",
+            "UnitAreaRhombicPathPoint2D",
             "UnitVolumeBainPath3D",
             "UnitVolumeBainPathPoint3D",
             "WignerSeitzCell",
@@ -59,6 +65,10 @@ class TestLatticePublicApi:
             lattice.DiamondDecoratedBainPathPoint3D is DiamondDecoratedBainPathPoint3D
         )
         assert lattice.FccBainCoordinateBridge3D is FccBainCoordinateBridge3D
+
+    def test__exports_rhombic_path_with_defining_module_identity(self) -> None:
+        assert lattice.UnitAreaRhombicPath2D is UnitAreaRhombicPath2D
+        assert lattice.UnitAreaRhombicPathPoint2D is UnitAreaRhombicPathPoint2D
 
     def test__composes_exported_two_dimensional_lattice_and_metric(self) -> None:
         direct_lattice = lattice.DirectLattice2D(

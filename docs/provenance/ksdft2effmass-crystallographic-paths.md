@@ -61,9 +61,23 @@ records.
   `DiamondDecoratedBainPathPoint3D`.
 - `DiamondDecoratedBainPath3D` composes the decoration with the previously owned Bravais
   path without attaching species, scale, or electronic response.
-- The area-preserving rhombic path remains a separate 2D owner tranche.
 - Synthetic strain diagnostics, electronic response models, selected bonds, Fourier
   calculations, thresholds, artifacts, and interpretations remain KSD-owned.
+
+## Rhombic-path extraction
+
+A third bounded tranche restores the donor's area-preserving metric as an explicit
+owner-native direct-lattice path.
+
+- Donor angle interpolation `pi/3 + t*pi/6` is retained exactly.
+- The destination constructs a canonical positive-angle basis whose common scale is
+  `1/sqrt(sin(angle))`.
+- Its metric is exactly the donor convention
+  `[[1, cos(angle)], [cos(angle), 1]] / sin(angle)` subject to binary64 evaluation.
+- Unit area, triangular and square endpoints, lattice ownership, and metric correlation
+  receive focused PhysKit tests.
+- The destination adds no synthetic electronic response, selected bonds, campaign scan,
+  or material-transition interpretation.
 
 ## Evidence limits
 

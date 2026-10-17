@@ -38,6 +38,10 @@ from projectkoios.physkit.periodic.lattice.lattice3d import (
     WignerSeitzCell3D,
 )
 from projectkoios.physkit.periodic.lattice.metric import DirectLatticeMetric
+from projectkoios.physkit.periodic.lattice.rhombic import (
+    UnitAreaRhombicPath2D,
+    UnitAreaRhombicPathPoint2D,
+)
 
 __all__ = [
     "BravaisLattice",
@@ -60,6 +64,8 @@ __all__ = [
     "ReciprocalLattice1D",
     "ReciprocalLattice2D",
     "ReciprocalLattice3D",
+    "UnitAreaRhombicPath2D",
+    "UnitAreaRhombicPathPoint2D",
     "UnitVolumeBainPath3D",
     "UnitVolumeBainPathPoint3D",
     "WignerSeitzCell",

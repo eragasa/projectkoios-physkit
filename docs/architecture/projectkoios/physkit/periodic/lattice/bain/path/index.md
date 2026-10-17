@@ -65,14 +65,15 @@ The diamond decoration is physical geometry rather than an electronic response m
 - Cartesian offsets follow affinely from the current Bain direct basis.
 - No atomic species, physical scale, Hamiltonian, or material endpoint is attached.
 
-## Deferred crystallography
+## Related crystallography
 
-Related owner work remains intentionally separate.
+Other path families remain separate owner contracts.
 
-- The area-preserving triangular-to-square rhombic path is a later 2D tranche.
+- The area-preserving triangular-to-square path is owned by the sibling `rhombic`
+  package rather than generalized through this Bain module.
 - Generic homogeneous-deformation records require explicit active/passive and
   left/right-action conventions before introduction.
-- Completion of this decorated path authorizes none of those successors.
+- Completion of either named path does not authorize a generic successor.
 
 ## Local mapping
 
