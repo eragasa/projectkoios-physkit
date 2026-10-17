@@ -29,8 +29,8 @@ from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.periodic.lattice.lattice2d import DirectLattice2D
 from projectkoios.physkit.periodic.lattice.metric import DirectLatticeMetric
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     MatrixQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     Unitless,
 )
@@ -146,7 +146,7 @@ class EmbeddedDirectLattice2D(DataObject):
         if not isinstance(self.ambient_basis.unit, PhysicalUnit | Unitless):
             raise TypeError("ambient_basis unit must be PhysicalUnit or Unitless")
         if isinstance(self.ambient_basis.unit, PhysicalUnit) and not (
-            MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+            ModelSystemUnitConverter.compatible(
                 self.ambient_basis.unit,
                 _METRE,
             )

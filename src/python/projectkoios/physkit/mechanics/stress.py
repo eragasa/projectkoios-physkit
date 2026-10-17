@@ -8,8 +8,8 @@ from enum import StrEnum
 import numpy as np
 
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     MatrixQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
 )
@@ -42,7 +42,7 @@ class StressTensor:
             raise ValueError("stress tensor components must have shape (3, 3)")
         if type(self.components.unit) is not PhysicalUnit:
             raise TypeError("stress tensor components require a physical unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.components.unit,
             _SI_STRESS_UNIT,
         ):
@@ -55,7 +55,7 @@ class StressTensor:
         if type(unit) is not PhysicalUnit:
             raise TypeError("unit must be a PhysicalUnit")
         return StressTensor(
-            components=MODEL_SYSTEM_UNIT_CONVERTER.convert_matrix(
+            components=ModelSystemUnitConverter.convert_matrix(
                 self.components,
                 unit,
             ),

@@ -12,7 +12,7 @@ from projectkoios.physkit.solidstate.interatomic_potentials.pair.lennard_jones_1
     LennardJonesPotential,
 )
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     VectorQuantity,
 )
@@ -35,7 +35,7 @@ class LennardJonesPotentialEvaluator:
             raise TypeError("request model must be LennardJonesPotential")
         parameters = model.parameters
         distance_unit = parameters.zero_crossing_distance.unit
-        distances = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        distances = ModelSystemUnitConverter.convert_vector(
             request.distances,
             distance_unit,
         )
@@ -58,14 +58,14 @@ class LennardJonesPotentialEvaluator:
         )
         return RadialPairPotentialEvaluation(
             request=request,
-            potential_energies=MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+            potential_energies=ModelSystemUnitConverter.convert_vector(
                 VectorQuantity(
                     magnitude=np.asarray(energies, dtype=np.float64),
                     unit=parameters.well_depth.unit,
                 ),
                 request.energy_unit,
             ),
-            radial_forces=MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+            radial_forces=ModelSystemUnitConverter.convert_vector(
                 VectorQuantity(
                     magnitude=np.asarray(forces, dtype=np.float64),
                     unit=native_force_unit,

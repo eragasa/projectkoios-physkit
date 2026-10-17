@@ -10,9 +10,9 @@ from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.qm.sampled_states import SampledQuantumState1D
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     ComplexMatrixQuantity,
     ComplexVectorQuantity,
+    ModelSystemUnitConverter,
     ScalarQuantity,
     Unitless,
     VectorQuantity,
@@ -169,7 +169,7 @@ class SampledEigenfunctionBasisProjectionAnalyzer:
             f"({basis.unit.expression}) * ({state.amplitudes.unit.expression}) * "
             f"({quadrature_weights.unit.expression})"
         )
-        product_unit = MODEL_SYSTEM_UNIT_CONVERTER.registry.Unit(product_expression)
+        product_unit = ModelSystemUnitConverter.registry.Unit(product_expression)
         if not product_unit.dimensionless:
             raise ValueError(
                 "eigenfunctions, state, and quadrature weights must form "

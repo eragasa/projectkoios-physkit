@@ -22,7 +22,7 @@ from projectkoios.physkit.periodic.lattice.lattice2d import DirectLattice2D
 from projectkoios.physkit.periodic.lattice.lattice3d import DirectLattice3D
 from projectkoios.physkit.periodic.lattice.metric import DirectLatticeMetric
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     Unitless,
 )
@@ -315,7 +315,7 @@ def test__action__preserves_physical_scale_across_length_units() -> None:
         twist,
         unit=PhysicalUnit("nanometer"),
     )
-    converted = MODEL_SYSTEM_UNIT_CONVERTER.convert_complex_sparse_matrix(
+    converted = ModelSystemUnitConverter.convert_complex_sparse_matrix(
         nanometer.represented_laplacian,
         PhysicalUnit("1 / angstrom ** 2"),
     )

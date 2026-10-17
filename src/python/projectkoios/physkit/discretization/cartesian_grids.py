@@ -7,8 +7,8 @@ from dataclasses import dataclass
 import numpy as np
 
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     ModelSystemUnit,
+    ModelSystemUnitConverter,
     ScalarQuantity,
     Unitless,
     VectorQuantity,
@@ -52,7 +52,7 @@ class UniformCartesianGrid1D:
                 "grid coordinates must not mix unitless and physical units"
             )
         for name, value in values[1:]:
-            if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+            if not ModelSystemUnitConverter.compatible(
                 value.unit,
                 self.lower_bound.unit,
             ):
@@ -83,7 +83,7 @@ class UniformCartesianGrid1D:
     @property
     def upper_magnitude(self) -> float:
         """Return the upper coordinate in the canonical coordinate unit."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             self.upper_bound,
             self.coordinate_unit,
         ).magnitude
@@ -91,7 +91,7 @@ class UniformCartesianGrid1D:
     @property
     def spacing_magnitude(self) -> float:
         """Return requested spacing in the canonical coordinate unit."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             self.requested_spacing,
             self.coordinate_unit,
         ).magnitude
@@ -154,7 +154,7 @@ class UniformCartesianGrid2D:
             raise TypeError("first_axis must be UniformCartesianGrid1D")
         if not isinstance(self.second_axis, UniformCartesianGrid1D):
             raise TypeError("second_axis must be UniformCartesianGrid1D")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.first_axis.coordinate_unit,
             self.second_axis.coordinate_unit,
         ):

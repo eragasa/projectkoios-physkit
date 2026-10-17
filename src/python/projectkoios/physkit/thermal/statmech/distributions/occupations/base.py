@@ -12,7 +12,7 @@ from projectkoios.physkit.constants import SI
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -58,7 +58,7 @@ class IdealOccupationEvaluationRequest(DataObject):
             raise TypeError("energies must be VectorQuantity")
         if not isinstance(self.energies.unit, PhysicalUnit):
             raise TypeError("energies must use a physical energy unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(self.energies.unit, _JOULE):
+        if not ModelSystemUnitConverter.compatible(self.energies.unit, _JOULE):
             raise ValueError("energies must use units compatible with energy")
         if self.energies.magnitude.size == 0:
             raise ValueError("energies must be nonempty")
@@ -69,7 +69,7 @@ class IdealOccupationEvaluationRequest(DataObject):
             raise TypeError("chemical_potential must be ScalarQuantity")
         if not isinstance(self.chemical_potential.unit, PhysicalUnit):
             raise TypeError("chemical_potential must use a physical energy unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.chemical_potential.unit,
             _JOULE,
         ):
@@ -81,7 +81,7 @@ class IdealOccupationEvaluationRequest(DataObject):
             raise TypeError("temperature must be ScalarQuantity")
         if not isinstance(self.temperature.unit, PhysicalUnit):
             raise TypeError("temperature must use a physical temperature unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.temperature.unit,
             _KELVIN,
         ):
@@ -98,7 +98,7 @@ class IdealOccupationEvaluationRequest(DataObject):
     @property
     def energies_in_joule(self) -> VectorQuantity:
         """Return represented energies in joules."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        return ModelSystemUnitConverter.convert_vector(
             quantity=self.energies,
             target=_JOULE,
         )
@@ -106,7 +106,7 @@ class IdealOccupationEvaluationRequest(DataObject):
     @property
     def chemical_potential_in_joule(self) -> ScalarQuantity:
         """Return chemical potential in joules."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.chemical_potential,
             target=_JOULE,
         )
@@ -114,7 +114,7 @@ class IdealOccupationEvaluationRequest(DataObject):
     @property
     def temperature_in_kelvin(self) -> ScalarQuantity:
         """Return absolute temperature in kelvin."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.temperature,
             target=_KELVIN,
         )

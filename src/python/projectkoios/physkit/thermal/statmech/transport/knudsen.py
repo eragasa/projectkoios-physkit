@@ -10,7 +10,7 @@ from projectkoios.physkit.core.actions import ActionizedDataObject
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -43,7 +43,7 @@ class KnudsenNumberEvaluationRequest(DataObject):
             raise TypeError("mean_free_paths must be VectorQuantity")
         if not isinstance(self.mean_free_paths.unit, PhysicalUnit):
             raise TypeError("mean_free_paths must use a physical length unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.mean_free_paths.unit,
             _METRE,
         ):
@@ -97,7 +97,7 @@ class KnudsenNumberEvaluator:
         """Return the ratio of each mean free path to characteristic length."""
         if not isinstance(request, KnudsenNumberEvaluationRequest):
             raise TypeError("request must be KnudsenNumberEvaluationRequest")
-        mean_free_paths = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        mean_free_paths = ModelSystemUnitConverter.convert_vector(
             quantity=request.mean_free_paths,
             target=request.model.characteristic_length.unit,
         )
@@ -140,7 +140,7 @@ class KnudsenNumberModel(
             raise TypeError("characteristic_length must be ScalarQuantity")
         if not isinstance(self.characteristic_length.unit, PhysicalUnit):
             raise TypeError("characteristic_length must use a physical length unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.characteristic_length.unit,
             _METRE,
         ):

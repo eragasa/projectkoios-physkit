@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
 )
@@ -31,7 +31,7 @@ class LennardJonesPotentialParameters(DataObject):
             raise TypeError("well_depth must be ScalarQuantity")
         if not isinstance(self.well_depth.unit, PhysicalUnit):
             raise TypeError("well_depth must use a physical energy unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.well_depth.unit,
             _JOULE,
         ):
@@ -45,7 +45,7 @@ class LennardJonesPotentialParameters(DataObject):
             raise TypeError("zero_crossing_distance must be ScalarQuantity")
         if not isinstance(self.zero_crossing_distance.unit, PhysicalUnit):
             raise TypeError("zero_crossing_distance must use a physical length unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.zero_crossing_distance.unit,
             _METRE,
         ):

@@ -14,7 +14,7 @@ from projectkoios.physkit.solidstate.bloch1d.cell import (
     BlochPrimitiveCell1D,
 )
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     VectorQuantity,
@@ -132,7 +132,7 @@ class FreeElectronBloch1DSpectrumEvaluator(
             f"(({mass.unit.expression}) * "
             f"({model.cell.length.unit.expression}) ** 2)"
         )
-        conversion_factor = MODEL_SYSTEM_UNIT_CONVERTER.conversion_factor(
+        conversion_factor = ModelSystemUnitConverter.conversion_factor(
             represented_energy_unit,
             model.cell.unit_system.energy_unit,
         )
@@ -187,7 +187,7 @@ class FreeElectronBloch1D(
     @property
     def electron_mass(self) -> ScalarQuantity:
         """Return the bare electron mass in the selected unit system."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             ScalarQuantity(SI.me0, PhysicalUnit("kilogram")),
             self.cell.unit_system.mass_unit,
         )

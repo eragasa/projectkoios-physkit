@@ -12,7 +12,7 @@ from projectkoios.physkit.core.actions import ActionizedDataObject
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     VectorQuantity,
@@ -51,7 +51,7 @@ class IdealGasPressureEvaluationRequest(DataObject):
             raise TypeError("volumes must be VectorQuantity")
         if not isinstance(self.volumes.unit, PhysicalUnit):
             raise TypeError("volumes must use a physical volume unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.volumes.unit,
             _CUBIC_METRE,
         ):
@@ -67,7 +67,7 @@ class IdealGasPressureEvaluationRequest(DataObject):
             raise TypeError("temperature must be ScalarQuantity")
         if not isinstance(self.temperature.unit, PhysicalUnit):
             raise TypeError("temperature must use a physical temperature unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.temperature.unit,
             _KELVIN,
         ):
@@ -79,7 +79,7 @@ class IdealGasPressureEvaluationRequest(DataObject):
         """Require an explicit physical output pressure unit."""
         if not isinstance(self.pressure_unit, PhysicalUnit):
             raise TypeError("pressure_unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.pressure_unit,
             _PASCAL,
         ):
@@ -88,7 +88,7 @@ class IdealGasPressureEvaluationRequest(DataObject):
     @property
     def volumes_in_cubic_metres(self) -> VectorQuantity:
         """Return represented volumes in cubic metres."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        return ModelSystemUnitConverter.convert_vector(
             quantity=self.volumes,
             target=_CUBIC_METRE,
         )
@@ -96,7 +96,7 @@ class IdealGasPressureEvaluationRequest(DataObject):
     @property
     def temperature_in_kelvin(self) -> ScalarQuantity:
         """Return absolute temperature in kelvin, including affine conversion."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.temperature,
             target=_KELVIN,
         )
@@ -164,7 +164,7 @@ class IdealGasPressureEvaluator:
         )
         return IdealGasPressureEvaluation(
             request=request,
-            pressures=MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+            pressures=ModelSystemUnitConverter.convert_vector(
                 quantity=pressure_pascal,
                 target=request.pressure_unit,
             ),
@@ -198,7 +198,7 @@ class IdealGasIsothermsEvaluationRequest(DataObject):
             raise TypeError("volumes must be VectorQuantity")
         if not isinstance(self.volumes.unit, PhysicalUnit):
             raise TypeError("volumes must use a physical volume unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.volumes.unit,
             _CUBIC_METRE,
         ):
@@ -214,14 +214,14 @@ class IdealGasIsothermsEvaluationRequest(DataObject):
             raise TypeError("temperatures must be VectorQuantity")
         if not isinstance(self.temperatures.unit, PhysicalUnit):
             raise TypeError("temperatures must use a physical temperature unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.temperatures.unit,
             _KELVIN,
         ):
             raise ValueError("temperatures must use units compatible with temperature")
         if self.temperatures.magnitude.size == 0:
             raise ValueError("temperatures must be nonempty")
-        converted = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        converted = ModelSystemUnitConverter.convert_vector(
             quantity=self.temperatures,
             target=_KELVIN,
         )
@@ -232,7 +232,7 @@ class IdealGasIsothermsEvaluationRequest(DataObject):
         """Require an explicit physical output pressure unit."""
         if not isinstance(self.pressure_unit, PhysicalUnit):
             raise TypeError("pressure_unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.pressure_unit,
             _PASCAL,
         ):
@@ -366,7 +366,7 @@ class IdealGasEquationOfState(
             raise TypeError("amount must be ScalarQuantity")
         if not isinstance(self.amount.unit, PhysicalUnit):
             raise TypeError("amount must use a physical amount unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(self.amount.unit, _MOLE):
+        if not ModelSystemUnitConverter.compatible(self.amount.unit, _MOLE):
             raise ValueError(
                 "amount must use units compatible with amount of substance"
             )
@@ -376,7 +376,7 @@ class IdealGasEquationOfState(
     @property
     def amount_in_moles(self) -> ScalarQuantity:
         """Return amount of substance in moles."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.amount,
             target=_MOLE,
         )

@@ -8,7 +8,7 @@ import numpy as np
 
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     UnitSystem,
@@ -34,7 +34,7 @@ class BlochPrimitiveCell1D(DataObject):
             raise TypeError("oriented_length must be ScalarQuantity")
         if not isinstance(self.oriented_length.unit, PhysicalUnit):
             raise TypeError("oriented_length must use a physical unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.oriented_length.unit,
             _METRE,
         ):

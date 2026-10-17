@@ -15,7 +15,7 @@ from projectkoios.physkit.core.actions import ActionizedDataObject
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     VectorQuantity,
@@ -52,7 +52,7 @@ class BoltzmannExponentialEnergyEvaluationRequest(DataObject):
             raise TypeError("energies must be VectorQuantity")
         if not isinstance(self.energies.unit, PhysicalUnit):
             raise TypeError("energies must use a physical energy unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.energies.unit,
             _JOULE,
         ):
@@ -121,7 +121,7 @@ class BoltzmannExponentialEnergyEvaluator:
             raise TypeError(
                 "request must be BoltzmannExponentialEnergyEvaluationRequest"
             )
-        thermal_energy = MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        thermal_energy = ModelSystemUnitConverter.convert_scalar(
             quantity=request.distribution.thermal_energy,
             target=request.energies.unit,
         )
@@ -167,7 +167,7 @@ class BoltzmannExponentialEnergyDistribution(
             raise TypeError("thermal_energy must be ScalarQuantity")
         if not isinstance(self.thermal_energy.unit, PhysicalUnit):
             raise TypeError("thermal_energy must use a physical energy unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.thermal_energy.unit,
             _JOULE,
         ):

@@ -16,8 +16,8 @@ from projectkoios.physkit.solidstate.semiconductors.effmass_2d.tensor import (
     CartesianEffectiveMassTensor2D,
 )
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     MatrixQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     VectorQuantity,
 )
@@ -143,7 +143,7 @@ class PeriodicFreeParticle2DSpectrumEvaluator(
                 f"({model.cell.primitive_basis.unit.expression}) ** 2)"
             )
         )
-        conversion_factor = MODEL_SYSTEM_UNIT_CONVERTER.conversion_factor(
+        conversion_factor = ModelSystemUnitConverter.conversion_factor(
             represented_energy_unit,
             model.cell.unit_system.energy_unit,
         )

@@ -10,7 +10,7 @@ from projectkoios.physkit.core.actions import ActionizedDataObject
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -39,7 +39,7 @@ class AntoineTemperatureRange(DataObject):
             raise TypeError("lower must be ScalarQuantity")
         if not isinstance(self.lower.unit, PhysicalUnit):
             raise TypeError("lower must use a physical temperature unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(self.lower.unit, _KELVIN):
+        if not ModelSystemUnitConverter.compatible(self.lower.unit, _KELVIN):
             raise ValueError("lower must use units compatible with temperature")
         if self.lower_in_kelvin.magnitude <= 0.0:
             raise ValueError("lower must be above absolute zero")
@@ -50,7 +50,7 @@ class AntoineTemperatureRange(DataObject):
             raise TypeError("upper must be ScalarQuantity")
         if not isinstance(self.upper.unit, PhysicalUnit):
             raise TypeError("upper must use a physical temperature unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(self.upper.unit, _KELVIN):
+        if not ModelSystemUnitConverter.compatible(self.upper.unit, _KELVIN):
             raise ValueError("upper must use units compatible with temperature")
         lower_kelvin = self.lower_in_kelvin.magnitude
         upper_kelvin = self.upper_in_kelvin.magnitude
@@ -60,7 +60,7 @@ class AntoineTemperatureRange(DataObject):
     @property
     def lower_in_kelvin(self) -> ScalarQuantity:
         """Return the inclusive lower bound in kelvin."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.lower,
             target=_KELVIN,
         )
@@ -68,7 +68,7 @@ class AntoineTemperatureRange(DataObject):
     @property
     def upper_in_kelvin(self) -> ScalarQuantity:
         """Return the inclusive upper bound in kelvin."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.upper,
             target=_KELVIN,
         )
@@ -101,7 +101,7 @@ class AntoineVaporPressureEvaluationRequest(DataObject):
             raise TypeError("temperatures must be VectorQuantity")
         if not isinstance(self.temperatures.unit, PhysicalUnit):
             raise TypeError("temperatures must use a physical temperature unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.temperatures.unit,
             _KELVIN,
         ):
@@ -115,9 +115,9 @@ class AntoineVaporPressureEvaluationRequest(DataObject):
         """Return requested temperatures converted to a compatible unit."""
         if not isinstance(unit, PhysicalUnit):
             raise TypeError("unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(unit, _KELVIN):
+        if not ModelSystemUnitConverter.compatible(unit, _KELVIN):
             raise ValueError("unit must be compatible with temperature")
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        return ModelSystemUnitConverter.convert_vector(
             quantity=self.temperatures,
             target=unit,
         )
@@ -126,7 +126,7 @@ class AntoineVaporPressureEvaluationRequest(DataObject):
         """Require the requested physical pressure unit."""
         if not isinstance(self.pressure_unit, PhysicalUnit):
             raise TypeError("pressure_unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.pressure_unit,
             _PASCAL,
         ):
@@ -215,7 +215,7 @@ class AntoineVaporPressureEvaluator:
             magnitude=native_pressure_magnitudes,
             unit=request.model.coefficient_pressure_unit,
         )
-        pressures = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        pressures = ModelSystemUnitConverter.convert_vector(
             quantity=native_pressures,
             target=request.pressure_unit,
         )
@@ -291,7 +291,7 @@ class AntoineVaporPressureModel(
         """Require the physical temperature unit used by the coefficient table."""
         if not isinstance(self.coefficient_temperature_unit, PhysicalUnit):
             raise TypeError("coefficient_temperature_unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.coefficient_temperature_unit,
             _KELVIN,
         ):
@@ -303,7 +303,7 @@ class AntoineVaporPressureModel(
         """Require the physical pressure unit produced by the coefficient table."""
         if not isinstance(self.coefficient_pressure_unit, PhysicalUnit):
             raise TypeError("coefficient_pressure_unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.coefficient_pressure_unit,
             _PASCAL,
         ):

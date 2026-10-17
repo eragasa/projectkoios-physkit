@@ -9,8 +9,8 @@ from matplotlib.axes import Axes
 
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     MatrixQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     Unitless,
     VectorQuantity,
@@ -35,7 +35,7 @@ class BandStructurePlotData(DataObject):
         if self.path_coordinates.magnitude.size == 0:
             raise ValueError("path_coordinates must be nonempty")
         if isinstance(self.band_energies.unit, PhysicalUnit) and not (
-            MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+            ModelSystemUnitConverter.compatible(
                 self.band_energies.unit,
                 _ENERGY_UNIT,
             )

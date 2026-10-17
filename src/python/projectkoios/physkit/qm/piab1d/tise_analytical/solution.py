@@ -18,8 +18,8 @@ from projectkoios.physkit.qm.eigenfunctions import (
     SampledEigenfunctions1D,
 )
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     ComplexVectorQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -81,7 +81,7 @@ class Piab1DAnalyticalResults(ResultsObject):
         """Evaluate all represented normalized stationary eigenvectors."""
         if not isinstance(coordinates, VectorQuantity):
             raise TypeError("coordinates must be VectorQuantity")
-        selected = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        selected = ModelSystemUnitConverter.convert_vector(
             coordinates,
             self.model.unit_system.length_unit,
         )
@@ -169,7 +169,7 @@ class Piab1DAnalyticalSolution:
                 f"({length.unit.expression}) ** 2"
             )
             energy_unit = self.model.unit_system.energy_unit
-            energies *= MODEL_SYSTEM_UNIT_CONVERTER.conversion_factor(
+            energies *= ModelSystemUnitConverter.conversion_factor(
                 source_unit,
                 energy_unit,
             )

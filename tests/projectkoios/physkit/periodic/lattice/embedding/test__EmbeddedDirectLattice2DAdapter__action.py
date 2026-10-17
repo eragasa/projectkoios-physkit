@@ -25,8 +25,8 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
 from projectkoios.physkit.periodic.lattice.lattice2d import DirectLattice2D
 from projectkoios.physkit.periodic.lattice.metric import DirectLatticeMetric
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     MatrixQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     Unitless,
 )
@@ -263,23 +263,21 @@ def test__action__preserves_physical_scale_and_unitless_support() -> None:
     nanometer = _adapt(basis_angstrom / 10.0, PhysicalUnit("nanometer"))
     unitless = _adapt(basis_angstrom, Unitless())
 
-    basis_nm_to_angstrom = MODEL_SYSTEM_UNIT_CONVERTER.convert_matrix(
+    basis_nm_to_angstrom = ModelSystemUnitConverter.convert_matrix(
         nanometer.request.embedded_lattice.ambient_basis,
         PhysicalUnit("angstrom"),
     )
-    metric_nm_to_angstrom = MODEL_SYSTEM_UNIT_CONVERTER.convert_matrix(
+    metric_nm_to_angstrom = ModelSystemUnitConverter.convert_matrix(
         nanometer.induced_metric,
         PhysicalUnit("angstrom ** 2"),
     )
-    dual_nm_to_angstrom = MODEL_SYSTEM_UNIT_CONVERTER.convert_matrix(
+    dual_nm_to_angstrom = ModelSystemUnitConverter.convert_matrix(
         nanometer.dual_reciprocal_basis,
         PhysicalUnit("1 / angstrom"),
     )
-    laplacian_nm_to_angstrom = (
-        MODEL_SYSTEM_UNIT_CONVERTER.convert_complex_sparse_matrix(
-            _laplacian(nanometer).represented_laplacian,
-            PhysicalUnit("1 / angstrom ** 2"),
-        )
+    laplacian_nm_to_angstrom = ModelSystemUnitConverter.convert_complex_sparse_matrix(
+        _laplacian(nanometer).represented_laplacian,
+        PhysicalUnit("1 / angstrom ** 2"),
     )
 
     np.testing.assert_allclose(

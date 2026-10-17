@@ -20,8 +20,8 @@ from .length import Length
 from .mass import Mass
 from .pressure import Pressure
 from .quantities import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     ModelSystemUnit,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -99,7 +99,7 @@ class UnitSystem(StrEnum):
             1.054_571_817e-34,
             PhysicalUnit("joule * second"),
         )
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             hbar_si,
             self.action_unit,
         )

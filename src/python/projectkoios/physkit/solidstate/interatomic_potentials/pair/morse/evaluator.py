@@ -12,7 +12,7 @@ from projectkoios.physkit.solidstate.interatomic_potentials.pair.morse.potential
     MorsePotential,
 )
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     VectorQuantity,
 )
@@ -35,14 +35,14 @@ class MorsePotentialEvaluator:
             raise TypeError("request model must be MorsePotential")
         parameters = model.parameters
         distance_unit = parameters.equilibrium_distance.unit
-        distances = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        distances = ModelSystemUnitConverter.convert_vector(
             request.distances,
             distance_unit,
         )
         inverse_distance_unit = PhysicalUnit(
             expression=f"1 / ({distance_unit.expression})"
         )
-        inverse_range = MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        inverse_range = ModelSystemUnitConverter.convert_scalar(
             parameters.inverse_range,
             inverse_distance_unit,
         )
@@ -68,14 +68,14 @@ class MorsePotentialEvaluator:
         )
         return RadialPairPotentialEvaluation(
             request=request,
-            potential_energies=MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+            potential_energies=ModelSystemUnitConverter.convert_vector(
                 VectorQuantity(
                     magnitude=np.asarray(energies, dtype=np.float64),
                     unit=parameters.dissociation_energy.unit,
                 ),
                 request.energy_unit,
             ),
-            radial_forces=MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+            radial_forces=ModelSystemUnitConverter.convert_vector(
                 VectorQuantity(
                     magnitude=np.asarray(forces, dtype=np.float64),
                     unit=native_force_unit,

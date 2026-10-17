@@ -13,9 +13,9 @@ from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.qm.piab2d.oblique import ObliquePiab2D
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     MatrixQuantity,
     ModelSystemUnit,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     SparseMatrixQuantity,
@@ -354,7 +354,7 @@ class ObliquePiab2DTiseFdSolver(
             f"(({model.mass.unit.expression}) * "
             f"({model.direct_basis.unit.expression}) ** 2)"
         )
-        return magnitude * MODEL_SYSTEM_UNIT_CONVERTER.conversion_factor(
+        return magnitude * ModelSystemUnitConverter.conversion_factor(
             represented_unit,
             model.unit_system.energy_unit,
         )

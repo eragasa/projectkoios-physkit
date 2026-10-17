@@ -22,6 +22,23 @@ from projectkoios.physkit.numerics.typing.numpy.arrays import (
 )
 from projectkoios.physkit.numerics.typing.scipy.sparse import SparseMatrix
 
+__all__ = [
+    "MODEL_SYSTEM_PINT_REGISTRY",
+    "ModelSystemUnitConverter",
+    "ComplexMatrixQuantity",
+    "ComplexSparseMatrixQuantity",
+    "ComplexVectorQuantity",
+    "MatrixQuantity",
+    "ModelSystemQuantity",
+    "ModelSystemUnit",
+    "PhysicalUnit",
+    "PintUnitConverter",
+    "ScalarQuantity",
+    "SparseMatrixQuantity",
+    "Unitless",
+    "VectorQuantity",
+]
+
 MODEL_SYSTEM_PINT_REGISTRY = pint.UnitRegistry()
 """Fixed Pint registry used by public model-system unit records and actions."""
 
@@ -426,7 +443,7 @@ class PintUnitConverter:
     registry: pint.UnitRegistry
 
     def __init__(self) -> None:
-        """Construct an isolated registry using Pint's maintained definitions."""
+        """Use the one fixed registry that owns model-system conversions."""
         self.registry = MODEL_SYSTEM_PINT_REGISTRY
 
     def validate(self, unit: ModelSystemUnit) -> None:
@@ -455,12 +472,19 @@ class PintUnitConverter:
         Raises
         ------
         ValueError
-            If the units have incompatible dimensionality.
+            If the units have incompatible dimensionality or the conversion has a
+            nonzero affine offset. Scalar and real-vector conversion methods remain the
+            explicit boundaries for affine conversions.
         """
         self.validate(source)
         self.validate(target)
         if not self.compatible(source, target):
             raise ValueError("source and target units are dimensionally incompatible")
+        zero = self.registry.Quantity(0.0, source.expression).to(target.expression)
+        if float(zero.magnitude) != 0.0:
+            raise ValueError(
+                "conversion_factor requires a conversion with zero affine offset"
+            )
         quantity = self.registry.Quantity(1.0, source.expression)
         return float(quantity.to(target.expression).magnitude)
 
@@ -509,7 +533,7 @@ class PintUnitConverter:
     def convert_matrix(
         self, quantity: MatrixQuantity, target: ModelSystemUnit
     ) -> MatrixQuantity:
-        """Convert one dense matrix quantity to a compatible target unit."""
+        """Convert one dense real matrix through a multiplicative unit factor."""
         if not isinstance(quantity, MatrixQuantity):
             raise TypeError("quantity must be MatrixQuantity")
         factor = self.conversion_factor(quantity.unit, target)
@@ -518,7 +542,7 @@ class PintUnitConverter:
     def convert_complex_vector(
         self, quantity: ComplexVectorQuantity, target: ModelSystemUnit
     ) -> ComplexVectorQuantity:
-        """Convert one complex vector quantity to a compatible target unit."""
+        """Convert one complex vector through a multiplicative unit factor."""
         if not isinstance(quantity, ComplexVectorQuantity):
             raise TypeError("quantity must be ComplexVectorQuantity")
         factor = self.conversion_factor(quantity.unit, target)
@@ -527,7 +551,7 @@ class PintUnitConverter:
     def convert_complex_matrix(
         self, quantity: ComplexMatrixQuantity, target: ModelSystemUnit
     ) -> ComplexMatrixQuantity:
-        """Convert one dense complex matrix quantity to a compatible target unit."""
+        """Convert one dense complex matrix through a multiplicative unit factor."""
         if not isinstance(quantity, ComplexMatrixQuantity):
             raise TypeError("quantity must be ComplexMatrixQuantity")
         factor = self.conversion_factor(quantity.unit, target)
@@ -536,7 +560,7 @@ class PintUnitConverter:
     def convert_sparse_matrix(
         self, quantity: SparseMatrixQuantity, target: ModelSystemUnit
     ) -> SparseMatrixQuantity:
-        """Convert one sparse matrix quantity to a compatible target unit."""
+        """Convert one sparse real matrix through a multiplicative unit factor."""
         if not isinstance(quantity, SparseMatrixQuantity):
             raise TypeError("quantity must be SparseMatrixQuantity")
         factor = self.conversion_factor(quantity.unit, target)
@@ -545,12 +569,12 @@ class PintUnitConverter:
     def convert_complex_sparse_matrix(
         self, quantity: ComplexSparseMatrixQuantity, target: ModelSystemUnit
     ) -> ComplexSparseMatrixQuantity:
-        """Convert one sparse complex matrix to a compatible target unit."""
+        """Convert one sparse complex matrix through a multiplicative unit factor."""
         if not isinstance(quantity, ComplexSparseMatrixQuantity):
             raise TypeError("quantity must be ComplexSparseMatrixQuantity")
         factor = self.conversion_factor(quantity.unit, target)
         return ComplexSparseMatrixQuantity.from_csr(quantity.to_csr() * factor, target)
 
 
-MODEL_SYSTEM_UNIT_CONVERTER = PintUnitConverter()
+ModelSystemUnitConverter = PintUnitConverter()
 """Shared converter using one fixed Pint registry for model-system operations."""

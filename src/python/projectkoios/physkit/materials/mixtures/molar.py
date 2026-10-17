@@ -9,7 +9,7 @@ import numpy as np
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -52,7 +52,7 @@ class MolarMixture(DataObject):
             raise TypeError("mole_amounts must be VectorQuantity")
         if not isinstance(self.mole_amounts.unit, PhysicalUnit):
             raise TypeError("mole_amounts must use a physical amount unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.mole_amounts.unit,
             _MOLE,
         ):
@@ -70,7 +70,7 @@ class MolarMixture(DataObject):
             raise TypeError("molar_masses must be VectorQuantity")
         if not isinstance(self.molar_masses.unit, PhysicalUnit):
             raise TypeError("molar_masses must use a physical unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.molar_masses.unit,
             _KILOGRAM_PER_MOLE,
         ):
@@ -143,7 +143,7 @@ class MassMixture(DataObject):
             raise TypeError("mass_amounts must be VectorQuantity")
         if not isinstance(self.mass_amounts.unit, PhysicalUnit):
             raise TypeError("mass_amounts must use a physical mass unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.mass_amounts.unit,
             _KILOGRAM,
         ):
@@ -161,7 +161,7 @@ class MassMixture(DataObject):
             raise TypeError("molar_masses must be VectorQuantity")
         if not isinstance(self.molar_masses.unit, PhysicalUnit):
             raise TypeError("molar_masses must use a physical unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.molar_masses.unit,
             _KILOGRAM_PER_MOLE,
         ):
@@ -225,7 +225,7 @@ class MolarToMassMixtureConversionRequest(DataObject):
         """Require a physical mass unit."""
         if not isinstance(self.target_mass_unit, PhysicalUnit):
             raise TypeError("target_mass_unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.target_mass_unit,
             _KILOGRAM,
         ):
@@ -278,7 +278,7 @@ class MassToMolarMixtureConversionRequest(DataObject):
         """Require a physical amount unit."""
         if not isinstance(self.target_amount_unit, PhysicalUnit):
             raise TypeError("target_amount_unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.target_amount_unit,
             _MOLE,
         ):
@@ -322,15 +322,15 @@ class MixtureCompositionConverter:
         """Convert species mole amounts to masses in the requested unit."""
         if not isinstance(request, MolarToMassMixtureConversionRequest):
             raise TypeError("request must be MolarToMassMixtureConversionRequest")
-        mole_amounts = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        mole_amounts = ModelSystemUnitConverter.convert_vector(
             request.mixture.mole_amounts,
             _MOLE,
         )
-        molar_masses = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        molar_masses = ModelSystemUnitConverter.convert_vector(
             request.mixture.molar_masses,
             _KILOGRAM_PER_MOLE,
         )
-        masses = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        masses = ModelSystemUnitConverter.convert_vector(
             VectorQuantity(
                 magnitude=np.asarray(
                     mole_amounts.magnitude * molar_masses.magnitude,
@@ -357,15 +357,15 @@ class MixtureCompositionConverter:
         """Convert species masses to mole amounts in the requested unit."""
         if not isinstance(request, MassToMolarMixtureConversionRequest):
             raise TypeError("request must be MassToMolarMixtureConversionRequest")
-        masses = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        masses = ModelSystemUnitConverter.convert_vector(
             request.mixture.mass_amounts,
             _KILOGRAM,
         )
-        molar_masses = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        molar_masses = ModelSystemUnitConverter.convert_vector(
             request.mixture.molar_masses,
             _KILOGRAM_PER_MOLE,
         )
-        mole_amounts = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        mole_amounts = ModelSystemUnitConverter.convert_vector(
             VectorQuantity(
                 magnitude=np.asarray(
                     masses.magnitude / molar_masses.magnitude,

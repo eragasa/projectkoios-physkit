@@ -18,8 +18,8 @@ from projectkoios.physkit.operators.operators_1d.fd import (
     UnitAwareMatrixOperator,
 )
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     ModelSystemUnit,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     SparseMatrixQuantity,
@@ -67,17 +67,17 @@ class TiseKineticEnergy1D(UnitAwareMatrixOperator):
         if nondimensional != grid_is_nondimensional:
             raise ValueError("kinetic parameters and grid must use the same unit mode")
         if not nondimensional:
-            if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+            if not ModelSystemUnitConverter.compatible(
                 self.hbar.unit,
                 PhysicalUnit("joule * second"),
             ):
                 raise ValueError("hbar has incompatible action dimensions")
-            if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+            if not ModelSystemUnitConverter.compatible(
                 self.mass.unit,
                 PhysicalUnit("kilogram"),
             ):
                 raise ValueError("mass has incompatible mass dimensions")
-            if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+            if not ModelSystemUnitConverter.compatible(
                 self.energy_unit,
                 PhysicalUnit("joule"),
             ):
@@ -97,7 +97,7 @@ class TiseKineticEnergy1D(UnitAwareMatrixOperator):
                 f"({self.mass.unit.expression}) * "
                 f"({laplacian.unit.expression})"
             )
-            scale *= MODEL_SYSTEM_UNIT_CONVERTER.conversion_factor(
+            scale *= ModelSystemUnitConverter.conversion_factor(
                 source_energy_unit,
                 self.energy_unit,
             )
@@ -124,7 +124,7 @@ class SampledPotential1D(UnitAwareMatrixOperator):
         if isinstance(self.grid.coordinate_unit, Unitless):
             if not isinstance(self.values.unit, Unitless):
                 raise ValueError("a Unitless grid requires a Unitless potential")
-        elif not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        elif not ModelSystemUnitConverter.compatible(
             self.values.unit,
             PhysicalUnit("joule"),
         ):
@@ -164,7 +164,7 @@ class FiniteDifferenceHamiltonian1D(UnitAwareMatrixOperator):
         kinetic_grid = self.kinetic_energy.laplacian.interval.grid
         if kinetic_grid != self.potential.grid:
             raise ValueError("kinetic energy and potential must share the exact grid")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.potential.values.unit,
             self.kinetic_energy.energy_unit,
         ):
@@ -173,7 +173,7 @@ class FiniteDifferenceHamiltonian1D(UnitAwareMatrixOperator):
     def matrix(self) -> SparseMatrixQuantity:
         """Return the compatible sparse kinetic-plus-potential Hamiltonian."""
         kinetic = self.kinetic_energy.matrix()
-        potential = MODEL_SYSTEM_UNIT_CONVERTER.convert_sparse_matrix(
+        potential = ModelSystemUnitConverter.convert_sparse_matrix(
             self.potential.diagonal_operator(),
             kinetic.unit,
         )

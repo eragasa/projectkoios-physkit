@@ -12,9 +12,9 @@ from projectkoios.physkit.qm.sampled_states import (
     SampledQuantumStateEvolution1D,
 )
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     ComplexMatrixQuantity,
     ComplexVectorQuantity,
+    ModelSystemUnitConverter,
     ScalarQuantity,
     Unitless,
     VectorQuantity,
@@ -27,7 +27,7 @@ from ..tise_analytical import Piab1DAnalyticalResults
 def _selected_times(model: Piab1D, times: VectorQuantity) -> VectorQuantity:
     if not isinstance(times, VectorQuantity):
         raise TypeError("times must be VectorQuantity")
-    selected = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+    selected = ModelSystemUnitConverter.convert_vector(
         times,
         model.unit_system.time_unit,
     )

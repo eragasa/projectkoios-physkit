@@ -30,8 +30,8 @@ from projectkoios.physkit.operators.qm import (
     TiseKineticEnergy1D,
 )
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     MatrixQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     SparseMatrixQuantity,
@@ -142,7 +142,7 @@ class Piab1dTiseFdResults(ResultsObject):
                 f"({spacing.unit.expression}) ** 2"
             )
             energy_unit = self.model.unit_system.energy_unit
-            energies *= MODEL_SYSTEM_UNIT_CONVERTER.conversion_factor(
+            energies *= ModelSystemUnitConverter.conversion_factor(
                 source_unit,
                 energy_unit,
             )

@@ -18,8 +18,8 @@ from projectkoios.physkit.solidstate.semiconductors.effmass_2d.wavefunctions imp
     PeriodicPlaneWave2DSamplingRequest,
 )
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     MatrixQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -33,7 +33,7 @@ class TestPeriodicPlaneWave2DSampler:
 
     @staticmethod
     def _spectrum() -> PeriodicFreeParticle2DSpectrum:
-        electron_mass = MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        electron_mass = ModelSystemUnitConverter.convert_scalar(
             ScalarQuantity(SI.me0, PhysicalUnit("kilogram")),
             UnitSystem.METAL.mass_unit,
         ).magnitude

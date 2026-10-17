@@ -8,8 +8,8 @@ from projectkoios.physkit.core.actions import ActionizedDataObject
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     MatrixQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     Unitless,
     VectorQuantity,
@@ -172,11 +172,11 @@ class Piab2DAnalyticalEigenfunctionEvaluator:
             )
         eigenfunction = request.eigenfunction
         model = eigenfunction.model
-        selected_x = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        selected_x = ModelSystemUnitConverter.convert_vector(
             request.coordinates_x,
             model.unit_system.length_unit,
         )
-        selected_y = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        selected_y = ModelSystemUnitConverter.convert_vector(
             request.coordinates_y,
             model.unit_system.length_unit,
         )

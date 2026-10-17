@@ -14,8 +14,8 @@ from projectkoios.physkit.core.actions import ActionizedDataObject
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     ComplexVectorQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -356,11 +356,11 @@ class GaussianWavePacket1DInitialStateEvaluator:
             )
         model = request.model
         coordinates = request.coordinates
-        selected_center = MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        selected_center = ModelSystemUnitConverter.convert_scalar(
             model.center,
             coordinates.unit,
         )
-        selected_width = MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        selected_width = ModelSystemUnitConverter.convert_scalar(
             model.width,
             coordinates.unit,
         )
@@ -372,7 +372,7 @@ class GaussianWavePacket1DInitialStateEvaluator:
             expected_wavenumber_unit = PhysicalUnit(
                 expression=f"({coordinates.unit.expression}) ** -1"
             )
-        selected_wavenumber = MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        selected_wavenumber = ModelSystemUnitConverter.convert_scalar(
             model.wavenumber,
             expected_wavenumber_unit,
         )

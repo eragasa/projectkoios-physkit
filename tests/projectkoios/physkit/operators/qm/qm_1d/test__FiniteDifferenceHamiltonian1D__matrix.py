@@ -16,7 +16,7 @@ from projectkoios.physkit.operators.qm import (
     TiseKineticEnergy1D,
 )
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -87,7 +87,7 @@ def test_converts_potential_to_selected_energy_unit() -> None:
     )
 
     matrix = FiniteDifferenceHamiltonian1D(kinetic, potential).matrix()
-    expected = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+    expected = ModelSystemUnitConverter.convert_vector(
         potential.values,
         PhysicalUnit("electron_volt"),
     ).magnitude

@@ -3,14 +3,14 @@
 import numpy as np
 
 from projectkoios.physkit.units.quantities import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     ComplexVectorQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
 )
 
 
 def test_converts_compatible_complex_vector() -> None:
-    converted = MODEL_SYSTEM_UNIT_CONVERTER.convert_complex_vector(
+    converted = ModelSystemUnitConverter.convert_complex_vector(
         ComplexVectorQuantity(
             np.array([100.0 + 50.0j]),
             PhysicalUnit("centimeter"),

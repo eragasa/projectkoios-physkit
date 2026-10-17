@@ -10,7 +10,7 @@ from projectkoios.physkit.core.actions import ActionizedDataObject
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -72,7 +72,7 @@ class PlanarDiskSource3DProfileEvaluationRequest(DataObject):
             raise TypeError("lateral_offsets must be VectorQuantity")
         if not isinstance(self.lateral_offsets.unit, PhysicalUnit):
             raise TypeError("lateral_offsets must use a physical length unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.lateral_offsets.unit,
             _METRE,
         ):
@@ -90,7 +90,7 @@ class PlanarDiskSource3DProfileEvaluationRequest(DataObject):
     @property
     def dimensionless_lateral_offsets(self) -> np.ndarray:
         """Return lateral offsets divided by source-plane separation."""
-        offsets = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        offsets = ModelSystemUnitConverter.convert_vector(
             self.lateral_offsets,
             self.model.source_to_substrate_distance.unit,
         )
@@ -269,7 +269,7 @@ class PlanarDiskSource3DDepositionModel(
             raise TypeError(f"{argument_name} must be ScalarQuantity")
         if not isinstance(quantity.unit, PhysicalUnit):
             raise TypeError(f"{argument_name} must use a physical length unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(quantity.unit, _METRE):
+        if not ModelSystemUnitConverter.compatible(quantity.unit, _METRE):
             raise ValueError(f"{argument_name} must use units compatible with length")
         if quantity.magnitude <= 0.0:
             raise ValueError(f"{argument_name} must be positive")
@@ -277,7 +277,7 @@ class PlanarDiskSource3DDepositionModel(
     @property
     def dimensionless_source_radius(self) -> float:
         """Return source radius divided by source-plane separation."""
-        radius = MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        radius = ModelSystemUnitConverter.convert_scalar(
             self.source_radius,
             self.source_to_substrate_distance.unit,
         )

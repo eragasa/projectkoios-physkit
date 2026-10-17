@@ -9,8 +9,8 @@ from projectkoios.physkit.core.actions import ActionizedDataObject
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     MatrixQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -284,15 +284,15 @@ class Piab3DAnalyticalEigenfunctionPlaneSliceEvaluator:
         eigenfunction = request.eigenfunction
         model = eigenfunction.model
         length_unit = model.unit_system.length_unit
-        selected_u = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        selected_u = ModelSystemUnitConverter.convert_vector(
             request.coordinates_u,
             length_unit,
         )
-        selected_v = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        selected_v = ModelSystemUnitConverter.convert_vector(
             request.coordinates_v,
             length_unit,
         )
-        selected_fixed = MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        selected_fixed = ModelSystemUnitConverter.convert_scalar(
             request.fixed_coordinate,
             length_unit,
         )

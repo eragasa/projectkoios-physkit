@@ -10,9 +10,9 @@ from matplotlib.axes import Axes
 
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     ComplexVectorQuantity,
     ModelSystemUnit,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -105,18 +105,18 @@ class BlochState1DPlotData(DataObject):
         expected_amplitude_unit = PhysicalUnit(
             f"1 / ({position_unit.expression}) ** 0.5"
         )
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             amplitude_unit,
             expected_amplitude_unit,
         ):
             raise ValueError("amplitudes must use inverse-square-root-length units")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.cell_length.unit,
             position_unit,
         ):
             raise ValueError("cell_length must use length units")
         expected_wave_number_unit = PhysicalUnit(f"1 / ({position_unit.expression})")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             wave_number_unit,
             expected_wave_number_unit,
         ):
@@ -127,7 +127,7 @@ class BlochState1DPlotData(DataObject):
         if isinstance(self.positions.unit, Unitless):
             length = self.cell_length.magnitude
         else:
-            length = MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+            length = ModelSystemUnitConverter.convert_scalar(
                 self.cell_length,
                 self.positions.unit,
             ).magnitude
@@ -168,7 +168,7 @@ class BlochState1DPlotData(DataObject):
             if not isinstance(self.positions.unit, PhysicalUnit):
                 raise TypeError("physical conversion requires PhysicalUnit positions")
             target_unit = PhysicalUnit(f"1 / ({self.positions.unit.expression})")
-            wave_number = MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+            wave_number = ModelSystemUnitConverter.convert_scalar(
                 self.bloch_wave_number,
                 target_unit,
             ).magnitude

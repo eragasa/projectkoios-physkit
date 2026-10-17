@@ -12,7 +12,7 @@ from projectkoios.physkit.core.actions import ActionizedDataObject
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -50,7 +50,7 @@ class ThermalDeBroglieWavelengthEvaluationRequest(DataObject):
             raise TypeError("temperatures must be VectorQuantity")
         if not isinstance(self.temperatures.unit, PhysicalUnit):
             raise TypeError("temperatures must use a physical temperature unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.temperatures.unit,
             _KELVIN,
         ):
@@ -65,7 +65,7 @@ class ThermalDeBroglieWavelengthEvaluationRequest(DataObject):
         """Require an explicit physical length output unit."""
         if not isinstance(self.wavelength_unit, PhysicalUnit):
             raise TypeError("wavelength_unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.wavelength_unit,
             _METRE,
         ):
@@ -74,7 +74,7 @@ class ThermalDeBroglieWavelengthEvaluationRequest(DataObject):
     @property
     def temperatures_in_kelvin(self) -> VectorQuantity:
         """Return represented absolute temperatures in kelvin."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        return ModelSystemUnitConverter.convert_vector(
             quantity=self.temperatures,
             target=_KELVIN,
         )
@@ -144,7 +144,7 @@ class ThermalDeBroglieWavelengthEvaluator:
         )
         return ThermalDeBroglieWavelengthEvaluation(
             request=request,
-            wavelengths=MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+            wavelengths=ModelSystemUnitConverter.convert_vector(
                 quantity=wavelength_metres,
                 target=request.wavelength_unit,
             ),
@@ -178,7 +178,7 @@ class ThermalDegeneracyParameterEvaluationRequest(DataObject):
             raise TypeError("number_density must be ScalarQuantity")
         if not isinstance(self.number_density.unit, PhysicalUnit):
             raise TypeError("number_density must use a physical unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.number_density.unit,
             _NUMBER_DENSITY_SI,
         ):
@@ -192,7 +192,7 @@ class ThermalDegeneracyParameterEvaluationRequest(DataObject):
             raise TypeError("temperature must be ScalarQuantity")
         if not isinstance(self.temperature.unit, PhysicalUnit):
             raise TypeError("temperature must use a physical temperature unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.temperature.unit,
             _KELVIN,
         ):
@@ -204,7 +204,7 @@ class ThermalDegeneracyParameterEvaluationRequest(DataObject):
         """Require an explicit physical length output unit."""
         if not isinstance(self.wavelength_unit, PhysicalUnit):
             raise TypeError("wavelength_unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.wavelength_unit,
             _METRE,
         ):
@@ -213,7 +213,7 @@ class ThermalDegeneracyParameterEvaluationRequest(DataObject):
     @property
     def temperature_in_kelvin(self) -> ScalarQuantity:
         """Return absolute temperature in kelvin."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.temperature,
             target=_KELVIN,
         )
@@ -221,7 +221,7 @@ class ThermalDegeneracyParameterEvaluationRequest(DataObject):
     @property
     def number_density_in_si(self) -> ScalarQuantity:
         """Return number density in reciprocal cubic metres."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.number_density,
             target=_NUMBER_DENSITY_SI,
         )
@@ -301,7 +301,7 @@ class ThermalDegeneracyParameterEvaluator:
             magnitude=float(wavelength_evaluation.wavelengths.magnitude[0]),
             unit=request.wavelength_unit,
         )
-        wavelength_metres = MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        wavelength_metres = ModelSystemUnitConverter.convert_scalar(
             quantity=wavelength,
             target=_METRE,
         )
@@ -351,7 +351,7 @@ class ThermalDeBroglieWavelengthModel(
             raise TypeError("particle_mass must be ScalarQuantity")
         if not isinstance(self.particle_mass.unit, PhysicalUnit):
             raise TypeError("particle_mass must use a physical mass unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.particle_mass.unit,
             _KILOGRAM,
         ):
@@ -362,7 +362,7 @@ class ThermalDeBroglieWavelengthModel(
     @property
     def particle_mass_in_kilograms(self) -> ScalarQuantity:
         """Return particle mass in kilograms."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.particle_mass,
             target=_KILOGRAM,
         )

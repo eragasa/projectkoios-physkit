@@ -126,19 +126,24 @@ extraction.
 
 ## Stage 1: quantity-boundary audit
 
-After the internal repair, begin with evidence rather than a repository-wide type
-replacement.
+The read-only owner/consumer audit establishes that quantity identity must migrate as one
+coherent family rather than through wrappers or piecemeal class substitutions.
 
-- Compare KSD `operators/quantities.py` with
-  `projectkoios.physkit.units.quantities` field by field and operation by operation.
-- Inventory exact-type checks, converter calls, affine-unit behavior, serializers,
-  fixtures, persisted schemas, and public re-exports in KSD.
-- Identify whether one bounded consumer path can use direct PhysKit identities or needs
-  an explicit KSD-side nominal conversion action during migration.
-- Do not relax PhysKit type checks, add duck-typed protocols, or create a reverse
-  dependency.
-- Deliver only the smallest migration decision needed by the first scientific use case;
-  do not migrate all KSD quantities merely to complete this stage.
+- KSD has 90 source importers and 133 test importers of its local quantity identities.
+- Three KSD public façades re-export those identities.
+- Seventy-five KSD source files contain 144 exact-type checks and 138 `isinstance`
+  checks, excluding validation internal to the donor quantity module.
+- Twenty-eight source files make 130 converter calls; currently represented production
+  units are multiplicative, but the donor converter mishandles affine temperature units.
+- Three maintained serializers, retained experiment schemas and run documents, and
+  Paper-1 calculation fixtures persist magnitude/unit shapes that KSD must preserve.
+- The minimum coherent consumer boundary is the complete PhysKit unit/quantity family,
+  fixed registry, and converter behavior, deliberately re-exported through maintained
+  KSD surfaces with exact identity.
+- The separate KSD METAL calculator-conversion subsystem remains outside this boundary.
+- Consumer migration still requires a separate decision and coordinated qualification
+  of imports, nominal checks, sparse storage, serializers, schemas, fixtures, and
+  rollback; this audit changes no KSD code or pin.
 
 ## Stage 2: lattice reconciliation
 

@@ -10,8 +10,8 @@ from projectkoios.physkit.core.actions import ActionizedDataObject
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     ComplexMatrixQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -55,7 +55,7 @@ class PlaneWave2DParameters(DataObject):
             raise TypeError("wave_vector must be VectorQuantity")
         if not isinstance(self.wave_vector.unit, PhysicalUnit):
             raise TypeError("wave_vector must use a physical inverse-length unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.wave_vector.unit,
             _INVERSE_METRE,
         ):
@@ -71,7 +71,7 @@ class PlaneWave2DParameters(DataObject):
             raise TypeError("angular_frequency must be ScalarQuantity")
         if not isinstance(self.angular_frequency.unit, PhysicalUnit):
             raise TypeError("angular_frequency must use a physical inverse-time unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.angular_frequency.unit,
             _INVERSE_SECOND,
         ):
@@ -133,7 +133,7 @@ class PlaneWave2DEvaluationRequest(DataObject):
             raise TypeError(f"{argument_name} must be VectorQuantity")
         if not isinstance(coordinates.unit, PhysicalUnit):
             raise TypeError(f"{argument_name} must use a physical length unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(coordinates.unit, _METRE):
+        if not ModelSystemUnitConverter.compatible(coordinates.unit, _METRE):
             raise ValueError(f"{argument_name} must use units compatible with length")
         if coordinates.magnitude.size == 0:
             raise ValueError(f"{argument_name} must be nonempty")
@@ -144,7 +144,7 @@ class PlaneWave2DEvaluationRequest(DataObject):
             raise TypeError("time must be ScalarQuantity")
         if not isinstance(self.time.unit, PhysicalUnit):
             raise TypeError("time must use a physical time unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(self.time.unit, _SECOND):
+        if not ModelSystemUnitConverter.compatible(self.time.unit, _SECOND):
             raise ValueError("time must use units compatible with time")
 
 
@@ -194,15 +194,15 @@ class PlaneWave2DEvaluator:
         time_unit = PhysicalUnit(
             expression=f"1 / ({parameters.angular_frequency.unit.expression})"
         )
-        x_coordinates = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        x_coordinates = ModelSystemUnitConverter.convert_vector(
             request.x_coordinates,
             position_unit,
         )
-        y_coordinates = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        y_coordinates = ModelSystemUnitConverter.convert_vector(
             request.y_coordinates,
             position_unit,
         )
-        time = MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(request.time, time_unit)
+        time = ModelSystemUnitConverter.convert_scalar(request.time, time_unit)
         x_grid, y_grid = np.meshgrid(
             x_coordinates.magnitude,
             y_coordinates.magnitude,

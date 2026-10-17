@@ -7,8 +7,11 @@ The package owns reusable physical-unit and immutable quantity semantics.
 - `PhysicalUnit` and `Unitless` are the nominal unit identities for model-system data.
 - Scalar, real/complex vector, real/complex matrix, and real/complex sparse matrix
   quantities retain explicit units and immutable numerical storage.
+- `MODEL_SYSTEM_PINT_REGISTRY` is the public fixed registry shared by every owner
+  converter.
 - `PintUnitConverter` owns compatibility checks, conversion factors, and represented
-  conversions through one fixed registry.
+  conversions through that registry.
+- `ModelSystemUnitConverter` is the shared owner instance used by package models.
 - Domain-specific unit helpers and established unit-system records remain available
   through the package façade.
 - KSD local quantity classes are legacy consumers/donor evidence, not a second owner.
@@ -30,8 +33,9 @@ Unit conversion mechanics remain separate from scientific normalization.
 
 - Pint dimensional compatibility and physical conversion belong to PhysKit.
 - Affine scalar/vector conversions preserve offset-unit behavior.
-- Complex and matrix conversions use compatible multiplicative factors where affine
-  semantics are not meaningful.
+- Complex, matrix, and sparse conversions require compatible multiplicative factors;
+  they reject nonzero affine offsets rather than treating an affine map as linear.
+- `conversion_factor(...)` is defined only when zero maps to zero.
 - Calculator-native scaling fields, external-file conventions, campaign normalization,
   and serialization compatibility remain with their consumer owners.
 - Conversion success does not establish scientific comparability or acceptance.
@@ -47,6 +51,8 @@ KSD quantity adoption must remain a separately reviewed consumer migration.
 - Migration must audit exact-type checks, persisted schemas, converter behavior,
   fixtures, and retained numerical evidence.
 - No crystallography or path tranche authorizes repository-wide quantity replacement.
+- Consumer qualification must cover exact class and registry identities, affine-unit
+  behavior, sparse preservation, serialized schemas, retained fixtures, and rollback.
 
 ## Local mapping
 
@@ -55,4 +61,5 @@ Maintained source and tests define the supported unit surface.
 - Public façade: `src/python/projectkoios/physkit/units/__init__.py`
 - Nominal quantities and converter: `src/python/projectkoios/physkit/units/quantities.py`
 - Tests: `tests/projectkoios/physkit/units/`
+- [KSD extraction provenance](../../../../provenance/ksdft2effmass-model-system-quantities.md)
 - [Parent package](../index.md)

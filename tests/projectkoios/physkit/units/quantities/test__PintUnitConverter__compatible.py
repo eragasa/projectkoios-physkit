@@ -1,17 +1,17 @@
 """Verification of Pint dimensional compatibility."""
 
 from projectkoios.physkit.units.quantities import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
 )
 
 
 def test_reports_dimensional_compatibility() -> None:
-    assert MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+    assert ModelSystemUnitConverter.compatible(
         PhysicalUnit("joule * second"),
         PhysicalUnit("kilogram * meter ** 2 / second"),
     )
-    assert not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+    assert not ModelSystemUnitConverter.compatible(
         PhysicalUnit("meter"),
         PhysicalUnit("kilogram"),
     )

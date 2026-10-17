@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
 )
@@ -34,7 +34,7 @@ class MorsePotentialParameters(DataObject):
             raise TypeError("dissociation_energy must be ScalarQuantity")
         if not isinstance(self.dissociation_energy.unit, PhysicalUnit):
             raise TypeError("dissociation_energy must use a physical energy unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.dissociation_energy.unit,
             _JOULE,
         ):
@@ -50,7 +50,7 @@ class MorsePotentialParameters(DataObject):
             raise TypeError("inverse_range must be ScalarQuantity")
         if not isinstance(self.inverse_range.unit, PhysicalUnit):
             raise TypeError("inverse_range must use a physical inverse-length unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.inverse_range.unit,
             _INVERSE_METRE,
         ):
@@ -66,7 +66,7 @@ class MorsePotentialParameters(DataObject):
             raise TypeError("equilibrium_distance must be ScalarQuantity")
         if not isinstance(self.equilibrium_distance.unit, PhysicalUnit):
             raise TypeError("equilibrium_distance must use a physical length unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.equilibrium_distance.unit,
             _METRE,
         ):

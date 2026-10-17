@@ -18,7 +18,7 @@ from projectkoios.physkit.core.actions import ActionizedDataObject
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     VectorQuantity,
@@ -53,7 +53,7 @@ class MaxwellBoltzmannSpeedDistributionEvaluationRequest(DataObject):
             raise TypeError("speeds must be VectorQuantity")
         if not isinstance(self.speeds.unit, PhysicalUnit):
             raise TypeError("speeds must use a physical speed unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.speeds.unit,
             _METRE_PER_SECOND,
         ):
@@ -123,7 +123,7 @@ class MaxwellBoltzmannSpeedDistributionEvaluator:
             )
         temperature_kelvin = request.state.temperature_in_kelvin.magnitude
         molar_mass_kg_per_mol = request.state.molar_mass_in_si.magnitude
-        speeds_si = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        speeds_si = ModelSystemUnitConverter.convert_vector(
             quantity=request.speeds,
             target=_METRE_PER_SECOND,
         )
@@ -145,7 +145,7 @@ class MaxwellBoltzmannSpeedDistributionEvaluator:
         )
         return MaxwellBoltzmannSpeedDistributionEvaluation(
             request=request,
-            probability_density=MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+            probability_density=ModelSystemUnitConverter.convert_vector(
                 quantity=density_si,
                 target=density_unit,
             ),
@@ -181,7 +181,7 @@ class MaxwellBoltzmannGasState(
             raise TypeError("temperature must be ScalarQuantity")
         if not isinstance(self.temperature.unit, PhysicalUnit):
             raise TypeError("temperature must use a physical temperature unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.temperature.unit,
             _KELVIN,
         ):
@@ -195,7 +195,7 @@ class MaxwellBoltzmannGasState(
             raise TypeError("molar_mass must be ScalarQuantity")
         if not isinstance(self.molar_mass.unit, PhysicalUnit):
             raise TypeError("molar_mass must use a physical molar-mass unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.molar_mass.unit,
             _KILOGRAM_PER_MOLE,
         ):
@@ -206,7 +206,7 @@ class MaxwellBoltzmannGasState(
     @property
     def temperature_in_kelvin(self) -> ScalarQuantity:
         """Return absolute temperature in kelvin, including affine conversion."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.temperature,
             target=_KELVIN,
         )
@@ -214,7 +214,7 @@ class MaxwellBoltzmannGasState(
     @property
     def molar_mass_in_si(self) -> ScalarQuantity:
         """Return molar mass in kilograms per mole."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.molar_mass,
             target=_KILOGRAM_PER_MOLE,
         )
@@ -280,7 +280,7 @@ class HardSphereIdealGasState(DataObject):
         if not isinstance(self.pressure.unit, PhysicalUnit):
             raise TypeError("pressure must use a physical pressure unit")
         pressure_unit = PhysicalUnit(expression="pascal")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.pressure.unit,
             pressure_unit,
         ):
@@ -294,7 +294,7 @@ class HardSphereIdealGasState(DataObject):
             raise TypeError("temperature must be ScalarQuantity")
         if not isinstance(self.temperature.unit, PhysicalUnit):
             raise TypeError("temperature must use a physical temperature unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.temperature.unit,
             _KELVIN,
         ):
@@ -309,7 +309,7 @@ class HardSphereIdealGasState(DataObject):
         if not isinstance(self.collision_diameter.unit, PhysicalUnit):
             raise TypeError("collision_diameter must use a physical length unit")
         length_unit = PhysicalUnit(expression="meter")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.collision_diameter.unit,
             length_unit,
         ):
@@ -320,7 +320,7 @@ class HardSphereIdealGasState(DataObject):
     @property
     def pressure_in_pascal(self) -> ScalarQuantity:
         """Return pressure in pascals."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.pressure,
             target=PhysicalUnit(expression="pascal"),
         )
@@ -328,7 +328,7 @@ class HardSphereIdealGasState(DataObject):
     @property
     def temperature_in_kelvin(self) -> ScalarQuantity:
         """Return absolute temperature in kelvin, including affine conversion."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.temperature,
             target=_KELVIN,
         )
@@ -336,7 +336,7 @@ class HardSphereIdealGasState(DataObject):
     @property
     def collision_diameter_in_metres(self) -> ScalarQuantity:
         """Return collision diameter in metres."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.collision_diameter,
             target=PhysicalUnit(expression="meter"),
         )

@@ -13,7 +13,7 @@ from projectkoios.physkit.numerics.typing.numpy.arrays import (
     RealVector,
 )
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -27,7 +27,7 @@ def validate_amplitude(amplitude: ScalarQuantity) -> None:
     if not isinstance(amplitude, ScalarQuantity):
         raise TypeError("amplitude must be ScalarQuantity")
     if isinstance(amplitude.unit, PhysicalUnit) and not (
-        MODEL_SYSTEM_UNIT_CONVERTER.compatible(amplitude.unit, _ENERGY_UNIT)
+        ModelSystemUnitConverter.compatible(amplitude.unit, _ENERGY_UNIT)
     ):
         raise ValueError("amplitude must use units compatible with energy")
     if not isinstance(amplitude.unit, PhysicalUnit | Unitless):

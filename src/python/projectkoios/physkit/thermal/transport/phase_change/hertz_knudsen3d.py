@@ -12,7 +12,7 @@ from projectkoios.physkit.core.actions import ActionizedDataObject
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -57,7 +57,7 @@ class PlanarHertzKnudsen3DFluxEvaluationRequest(DataObject):
             raise TypeError("temperatures must be VectorQuantity")
         if not isinstance(self.temperatures.unit, PhysicalUnit):
             raise TypeError("temperatures must use a physical temperature unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.temperatures.unit,
             _KELVIN,
         ):
@@ -85,7 +85,7 @@ class PlanarHertzKnudsen3DFluxEvaluationRequest(DataObject):
         """Require an explicit compatible number-flux unit."""
         if not isinstance(self.number_flux_unit, PhysicalUnit):
             raise TypeError("number_flux_unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.number_flux_unit,
             _NUMBER_FLUX_SI,
         ):
@@ -95,7 +95,7 @@ class PlanarHertzKnudsen3DFluxEvaluationRequest(DataObject):
         """Require an explicit compatible mass-flux unit."""
         if not isinstance(self.mass_flux_unit, PhysicalUnit):
             raise TypeError("mass_flux_unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.mass_flux_unit,
             _MASS_FLUX_SI,
         ):
@@ -112,7 +112,7 @@ class PlanarHertzKnudsen3DFluxEvaluationRequest(DataObject):
             raise TypeError(f"{name} must be VectorQuantity")
         if not isinstance(quantity.unit, PhysicalUnit):
             raise TypeError(f"{name} must use a physical pressure unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(quantity.unit, _PASCAL):
+        if not ModelSystemUnitConverter.compatible(quantity.unit, _PASCAL):
             raise ValueError(f"{name} must use units compatible with pressure")
         if quantity.magnitude.shape != self.temperatures.magnitude.shape:
             raise ValueError(f"{name} must match temperatures")
@@ -122,7 +122,7 @@ class PlanarHertzKnudsen3DFluxEvaluationRequest(DataObject):
     @property
     def temperatures_in_kelvin(self) -> VectorQuantity:
         """Return represented temperatures in kelvin."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        return ModelSystemUnitConverter.convert_vector(
             quantity=self.temperatures,
             target=_KELVIN,
         )
@@ -130,7 +130,7 @@ class PlanarHertzKnudsen3DFluxEvaluationRequest(DataObject):
     @property
     def equilibrium_pressures_in_pascal(self) -> VectorQuantity:
         """Return equilibrium pressures in pascals."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        return ModelSystemUnitConverter.convert_vector(
             quantity=self.equilibrium_pressures,
             target=_PASCAL,
         )
@@ -138,7 +138,7 @@ class PlanarHertzKnudsen3DFluxEvaluationRequest(DataObject):
     @property
     def ambient_pressures_in_pascal(self) -> VectorQuantity:
         """Return ambient pressures in pascals."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        return ModelSystemUnitConverter.convert_vector(
             quantity=self.ambient_pressures,
             target=_PASCAL,
         )
@@ -281,7 +281,7 @@ class PlanarHertzKnudsen3DFluxEvaluator:
         target: PhysicalUnit,
     ) -> VectorQuantity:
         """Convert one finite flux vector to its requested unit."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        return ModelSystemUnitConverter.convert_vector(
             quantity=VectorQuantity(
                 magnitude=np.asarray(values, dtype=np.float64),
                 unit=source,
@@ -321,7 +321,7 @@ class PlanarHertzKnudsen3DNetFluxModel(
             raise TypeError("particle_mass must be ScalarQuantity")
         if not isinstance(self.particle_mass.unit, PhysicalUnit):
             raise TypeError("particle_mass must use a physical mass unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.particle_mass.unit,
             _KILOGRAM,
         ):
@@ -360,7 +360,7 @@ class PlanarHertzKnudsen3DNetFluxModel(
     @property
     def particle_mass_in_kilograms(self) -> ScalarQuantity:
         """Return particle mass in kilograms."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.particle_mass,
             target=_KILOGRAM,
         )

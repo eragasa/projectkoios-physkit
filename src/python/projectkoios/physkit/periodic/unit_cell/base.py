@@ -9,8 +9,8 @@ import numpy as np
 
 from projectkoios.physkit.periodic.lattice.lattice3d import DirectLattice3D
 from projectkoios.physkit.units.quantities import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     MatrixQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -94,7 +94,7 @@ class UnitCell:
             raise TypeError("lattice_parameter must be a ScalarQuantity")
         if type(self.lattice_parameter.unit) is not PhysicalUnit:
             raise ValueError("lattice_parameter must have an explicit physical unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.lattice_parameter.unit,
             PhysicalUnit("meter"),
         ):

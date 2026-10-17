@@ -11,7 +11,7 @@ from projectkoios.physkit.core.actions import ActionizedDataObject
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -64,7 +64,7 @@ class RegularSolutionMixingEvaluationRequest(DataObject):
             raise TypeError("temperature must be ScalarQuantity")
         if not isinstance(self.temperature.unit, PhysicalUnit):
             raise TypeError("temperature must use a physical temperature unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.temperature.unit,
             _KELVIN,
         ):
@@ -76,7 +76,7 @@ class RegularSolutionMixingEvaluationRequest(DataObject):
         """Require an explicit molar-energy output unit."""
         if not isinstance(self.molar_energy_unit, PhysicalUnit):
             raise TypeError("molar_energy_unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.molar_energy_unit,
             _MOLAR_ENERGY_SI,
         ):
@@ -85,7 +85,7 @@ class RegularSolutionMixingEvaluationRequest(DataObject):
     @property
     def temperature_in_kelvin(self) -> ScalarQuantity:
         """Return absolute temperature in kelvin."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.temperature,
             target=_KELVIN,
         )
@@ -213,7 +213,7 @@ class RegularSolutionMixingEvaluator:
         target: PhysicalUnit,
     ) -> VectorQuantity:
         """Convert one finite output vector to its requested unit."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        return ModelSystemUnitConverter.convert_vector(
             quantity=VectorQuantity(
                 magnitude=np.asarray(values, dtype=np.float64),
                 unit=source,
@@ -249,7 +249,7 @@ class SymmetricRegularSolutionModel(
             raise TypeError("interaction_parameter must be ScalarQuantity")
         if not isinstance(self.interaction_parameter.unit, PhysicalUnit):
             raise TypeError("interaction_parameter must use a physical unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.interaction_parameter.unit,
             _MOLAR_ENERGY_SI,
         ):
@@ -260,7 +260,7 @@ class SymmetricRegularSolutionModel(
     @property
     def interaction_parameter_in_si(self) -> ScalarQuantity:
         """Return the interaction parameter in joules per mole."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.interaction_parameter,
             target=_MOLAR_ENERGY_SI,
         )

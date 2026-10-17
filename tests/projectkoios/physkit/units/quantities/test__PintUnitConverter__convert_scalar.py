@@ -3,7 +3,7 @@
 import pytest
 
 from projectkoios.physkit.units.quantities import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
 )
@@ -13,7 +13,7 @@ class TestPintUnitConverterConvertScalar:
     """Verify multiplicative, affine, and incompatible scalar conversion."""
 
     def test__convert_scalar_converts_compatible_length(self) -> None:
-        result = MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        result = ModelSystemUnitConverter.convert_scalar(
             quantity=ScalarQuantity(
                 magnitude=100.0,
                 unit=PhysicalUnit(expression="centimeter"),
@@ -27,7 +27,7 @@ class TestPintUnitConverterConvertScalar:
         )
 
     def test__convert_scalar_converts_affine_temperature(self) -> None:
-        result = MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        result = ModelSystemUnitConverter.convert_scalar(
             quantity=ScalarQuantity(
                 magnitude=26.85,
                 unit=PhysicalUnit(expression="degree_Celsius"),
@@ -40,7 +40,7 @@ class TestPintUnitConverterConvertScalar:
 
     def test__convert_scalar_rejects_incompatible_dimensions(self) -> None:
         with pytest.raises(ValueError, match="dimensionally incompatible"):
-            MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+            ModelSystemUnitConverter.convert_scalar(
                 quantity=ScalarQuantity(
                     magnitude=1.0,
                     unit=PhysicalUnit(expression="meter"),

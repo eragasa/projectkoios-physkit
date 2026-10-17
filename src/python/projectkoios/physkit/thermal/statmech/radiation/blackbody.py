@@ -12,7 +12,7 @@ from projectkoios.physkit.core.actions import ActionizedDataObject
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     VectorQuantity,
@@ -50,7 +50,7 @@ class BlackbodyWavelengthSpectrumEvaluationRequest(DataObject):
             raise TypeError("wavelengths must be VectorQuantity")
         if not isinstance(self.wavelengths.unit, PhysicalUnit):
             raise TypeError("wavelengths must use a physical length unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.wavelengths.unit,
             _METRE,
         ):
@@ -66,7 +66,7 @@ class BlackbodyWavelengthSpectrumEvaluationRequest(DataObject):
             raise TypeError("temperature must be ScalarQuantity")
         if not isinstance(self.temperature.unit, PhysicalUnit):
             raise TypeError("temperature must use a physical temperature unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.temperature.unit,
             _KELVIN,
         ):
@@ -78,7 +78,7 @@ class BlackbodyWavelengthSpectrumEvaluationRequest(DataObject):
         """Require an explicit compatible spectral-density output unit."""
         if not isinstance(self.spectral_energy_density_unit, PhysicalUnit):
             raise TypeError("spectral_energy_density_unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.spectral_energy_density_unit,
             _SPECTRAL_ENERGY_DENSITY_SI,
         ):
@@ -90,7 +90,7 @@ class BlackbodyWavelengthSpectrumEvaluationRequest(DataObject):
     @property
     def wavelengths_in_metres(self) -> VectorQuantity:
         """Return represented wavelengths in metres."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        return ModelSystemUnitConverter.convert_vector(
             quantity=self.wavelengths,
             target=_METRE,
         )
@@ -98,7 +98,7 @@ class BlackbodyWavelengthSpectrumEvaluationRequest(DataObject):
     @property
     def temperature_in_kelvin(self) -> ScalarQuantity:
         """Return absolute temperature in kelvin."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             quantity=self.temperature,
             target=_KELVIN,
         )
@@ -227,7 +227,7 @@ class BlackbodyWavelengthSpectrumEvaluator:
         target: PhysicalUnit,
     ) -> VectorQuantity:
         """Convert one SI spectral-density vector to the requested unit."""
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        return ModelSystemUnitConverter.convert_vector(
             quantity=VectorQuantity(
                 magnitude=np.asarray(values, dtype=np.float64),
                 unit=_SPECTRAL_ENERGY_DENSITY_SI,

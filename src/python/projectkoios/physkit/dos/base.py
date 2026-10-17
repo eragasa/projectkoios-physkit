@@ -14,9 +14,9 @@ from projectkoios.physkit.thermal.statmech.qm import (
     WeightedFermiDiracChemicalPotentialResult,
 )
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     MatrixQuantity,
     ModelSystemUnit,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -52,7 +52,7 @@ class BaseUniformBandDensityOfStates(DataObject, ABC):
             raise ValueError("brillouin_zone_measure must be positive")
         if isinstance(measure.unit, PhysicalUnit):
             expected_unit = PhysicalUnit(f"1 / meter ** {self.dimension}")
-            if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+            if not ModelSystemUnitConverter.compatible(
                 measure.unit,
                 expected_unit,
             ):
@@ -184,7 +184,7 @@ class BaseBandDensityOfStatesRequest(DataObject):
             raise ValueError("band_energies must have nonempty rows and columns")
         energy_unit = self.band_energies.unit
         if isinstance(energy_unit, PhysicalUnit):
-            if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+            if not ModelSystemUnitConverter.compatible(
                 energy_unit,
                 _ENERGY_UNIT,
             ):

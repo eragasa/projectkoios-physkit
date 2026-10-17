@@ -9,7 +9,7 @@ import numpy.typing as npt
 
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     Unitless,
     VectorQuantity,
@@ -189,7 +189,7 @@ class Piab2DAnalyticalEvaluator:
                 f"({length_x.unit.expression}) ** 2"
             )
             energy_unit = model.unit_system.energy_unit
-            energies *= MODEL_SYSTEM_UNIT_CONVERTER.conversion_factor(
+            energies *= ModelSystemUnitConverter.conversion_factor(
                 source_unit,
                 energy_unit,
             )

@@ -10,7 +10,7 @@ from projectkoios.physkit.core.actions import ActionizedDataObject
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -43,7 +43,7 @@ class PlanarPointSource3DProfileEvaluationRequest(DataObject):
             raise TypeError("lateral_offsets must be VectorQuantity")
         if not isinstance(self.lateral_offsets.unit, PhysicalUnit):
             raise TypeError("lateral_offsets must use a physical length unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.lateral_offsets.unit,
             _METRE,
         ):
@@ -56,7 +56,7 @@ class PlanarPointSource3DProfileEvaluationRequest(DataObject):
     @property
     def dimensionless_lateral_offsets(self) -> np.ndarray:
         """Return lateral offsets divided by source-plane separation."""
-        offsets = MODEL_SYSTEM_UNIT_CONVERTER.convert_vector(
+        offsets = ModelSystemUnitConverter.convert_vector(
             quantity=self.lateral_offsets,
             target=self.model.source_to_substrate_distance.unit,
         )
@@ -160,7 +160,7 @@ class PlanarPointSource3DDepositionModel(
             raise TypeError(
                 "source_to_substrate_distance must use a physical length unit"
             )
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.source_to_substrate_distance.unit,
             _METRE,
         ):

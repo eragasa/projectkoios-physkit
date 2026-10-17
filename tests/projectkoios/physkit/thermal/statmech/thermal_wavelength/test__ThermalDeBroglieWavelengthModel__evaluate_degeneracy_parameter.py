@@ -8,7 +8,7 @@ from projectkoios.physkit.thermal.statmech.thermal_wavelength import (
     ThermalDeBroglieWavelengthModel,
 )
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -39,7 +39,7 @@ class TestThermalDeBroglieWavelengthModelEvaluateDegeneracyParameter:
             wavelength_unit=PhysicalUnit(expression="nanometer"),
         )
 
-        wavelength_metres = MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        wavelength_metres = ModelSystemUnitConverter.convert_scalar(
             quantity=evaluation.wavelength,
             target=PhysicalUnit(expression="meter"),
         )

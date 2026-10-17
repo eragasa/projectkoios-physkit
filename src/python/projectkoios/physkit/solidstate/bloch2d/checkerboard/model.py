@@ -21,9 +21,9 @@ from projectkoios.physkit.potentials.periodic2d.checkerboard import (
 )
 from projectkoios.physkit.solidstate.bloch2d.cell import BlochCell2D
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     ComplexSparseMatrixQuantity,
     MatrixQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     Unitless,
@@ -152,7 +152,7 @@ class CheckerboardPotentialBloch2DHamiltonianConstructor(
                 f"(({mass.unit.expression}) * "
                 f"({model.cell.direct_basis.unit.expression}) ** 2)"
             )
-            conversion_factor = MODEL_SYSTEM_UNIT_CONVERTER.conversion_factor(
+            conversion_factor = ModelSystemUnitConverter.conversion_factor(
                 represented_energy_unit,
                 model.cell.unit_system.energy_unit,
             )
@@ -367,7 +367,7 @@ class CheckerboardPotentialBloch2D(
         """Return bare-electron mass, or one in the nondimensional convention."""
         if self.cell.unit_system is UnitSystem.NONDIMENSIONAL:
             return ScalarQuantity(1.0, Unitless())
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             ScalarQuantity(SI.me0, PhysicalUnit("kilogram")),
             self.cell.unit_system.mass_unit,
         )

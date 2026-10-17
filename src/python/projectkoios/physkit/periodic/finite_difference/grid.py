@@ -28,7 +28,7 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
 )
 from projectkoios.physkit.periodic.lattice.metric import DirectLatticeMetric
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     Unitless,
 )
@@ -116,7 +116,7 @@ class PeriodicFiniteDifferenceGrid(DataObject):
         if not isinstance(self.direct_basis_unit, PhysicalUnit | Unitless):
             raise TypeError("direct_basis_unit must be PhysicalUnit or Unitless")
         if isinstance(self.direct_basis_unit, PhysicalUnit) and not (
-            MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+            ModelSystemUnitConverter.compatible(
                 self.direct_basis_unit,
                 _METRE,
             )

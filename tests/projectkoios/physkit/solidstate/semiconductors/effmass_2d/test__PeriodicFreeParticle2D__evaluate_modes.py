@@ -13,8 +13,8 @@ from projectkoios.physkit.solidstate.semiconductors.effmass_2d.tensor import (
     CartesianEffectiveMassTensor2D,
 )
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     MatrixQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     UnitSystem,
@@ -27,7 +27,7 @@ class TestPeriodicFreeParticle2D:
 
     @staticmethod
     def _electron_mass_dalton() -> float:
-        return MODEL_SYSTEM_UNIT_CONVERTER.convert_scalar(
+        return ModelSystemUnitConverter.convert_scalar(
             ScalarQuantity(
                 magnitude=SI.me0,
                 unit=PhysicalUnit(expression="kilogram"),

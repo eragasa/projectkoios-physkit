@@ -10,7 +10,7 @@ import numpy as np
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     VectorQuantity,
 )
@@ -63,7 +63,7 @@ class RadialPairPotentialEvaluationRequest(DataObject):
             raise TypeError("distances must be VectorQuantity")
         if not isinstance(self.distances.unit, PhysicalUnit):
             raise TypeError("distances must use a physical length unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.distances.unit,
             _METRE,
         ):
@@ -77,14 +77,14 @@ class RadialPairPotentialEvaluationRequest(DataObject):
         """Require a physical energy output unit."""
         if not isinstance(self.energy_unit, PhysicalUnit):
             raise TypeError("energy_unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(self.energy_unit, _JOULE):
+        if not ModelSystemUnitConverter.compatible(self.energy_unit, _JOULE):
             raise ValueError("energy_unit must be compatible with energy")
 
     def _check_arg_force_unit(self) -> None:
         """Require a physical force output unit."""
         if not isinstance(self.force_unit, PhysicalUnit):
             raise TypeError("force_unit must be PhysicalUnit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(self.force_unit, _NEWTON):
+        if not ModelSystemUnitConverter.compatible(self.force_unit, _NEWTON):
             raise ValueError("force_unit must be compatible with force")
 
 

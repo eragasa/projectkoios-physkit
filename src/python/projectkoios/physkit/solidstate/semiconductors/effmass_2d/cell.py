@@ -8,8 +8,8 @@ import numpy as np
 
 from projectkoios.physkit.core.data import DataObject
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     MatrixQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
     UnitSystem,
@@ -36,7 +36,7 @@ class PeriodicPrimitiveCell2D(DataObject):
             raise TypeError("primitive_basis must be MatrixQuantity")
         if not isinstance(self.primitive_basis.unit, PhysicalUnit):
             raise TypeError("primitive_basis must use a physical length unit")
-        if not MODEL_SYSTEM_UNIT_CONVERTER.compatible(
+        if not ModelSystemUnitConverter.compatible(
             self.primitive_basis.unit,
             _METRE,
         ):

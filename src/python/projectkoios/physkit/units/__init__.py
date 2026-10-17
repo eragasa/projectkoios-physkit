@@ -17,13 +17,14 @@ from .mass import Mass
 from .pressure import Pressure
 from .protocols import UnitQuantityProtocol
 from .quantities import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
+    MODEL_SYSTEM_PINT_REGISTRY,
     ComplexMatrixQuantity,
     ComplexSparseMatrixQuantity,
     ComplexVectorQuantity,
     MatrixQuantity,
     ModelSystemQuantity,
     ModelSystemUnit,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     PintUnitConverter,
     ScalarQuantity,
@@ -49,7 +50,8 @@ from .velocity import Velocity
 from .viscosity import Viscosity
 
 __all__ = [
-    "MODEL_SYSTEM_UNIT_CONVERTER",
+    "MODEL_SYSTEM_PINT_REGISTRY",
+    "ModelSystemUnitConverter",
     "ComplexMatrixQuantity",
     "ComplexSparseMatrixQuantity",
     "ComplexVectorQuantity",

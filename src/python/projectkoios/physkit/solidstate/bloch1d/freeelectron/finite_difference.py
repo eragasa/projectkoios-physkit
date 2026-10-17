@@ -16,8 +16,8 @@ from projectkoios.physkit.solidstate.bloch1d.freeelectron.model import (
     FreeElectronBloch1D,
 )
 from projectkoios.physkit.units import (
-    MODEL_SYSTEM_UNIT_CONVERTER,
     ComplexSparseMatrixQuantity,
+    ModelSystemUnitConverter,
     PhysicalUnit,
     ScalarQuantity,
 )
@@ -140,7 +140,7 @@ class FreeElectronBloch1DFiniteDifferenceHamiltonianConstructor(
             f"(({mass.unit.expression}) * "
             f"({model.cell.length.unit.expression}) ** 2)"
         )
-        conversion_factor = MODEL_SYSTEM_UNIT_CONVERTER.conversion_factor(
+        conversion_factor = ModelSystemUnitConverter.conversion_factor(
             represented_energy_unit,
             model.cell.unit_system.energy_unit,
         )
