@@ -2,21 +2,31 @@
 
 ## Current responsibility
 
-The package owns physical direct-lattice records, direct-basis metric geometry,
-explicit ambient-3D/intrinsic-2D lattice adaptation, and reusable
-finite-periodic integer-domain mechanics. The finite-periodic slice
-includes boundary twists, integral symmetry operations, scalar and block hopping
-models, represented sparse operators, compatibility-gated composition, uniform-link
-construction, and explicit gauge bridges.
+The package owns reusable physical and represented lattice contracts.
+
+- Physical geometry includes direct lattices, direct-basis metrics, and explicit
+  ambient-3D/intrinsic-2D adaptation.
+- Finite-periodic mechanics include integer domains, boundary twists, integral
+  symmetry operations, scalar and block hopping models, and represented sparse
+  operators.
+- Composition capabilities include compatibility gates, uniform-link
+  construction, and explicit gauge bridges.
 
 ## Public contract
 
 Physical `DirectLattice1D`, `DirectLattice2D`, and `DirectLattice3D` records are
 not interchangeable with `FinitePeriodicDomain`. Supported finite-periodic
 interfaces are intentionally limited to one, two, and three dimensions.
-Defining modules remain the preferred import routes.
+
+- The package façade exports the direct-lattice records and
+  `DirectLatticeMetric` as supported composition surfaces.
+- `DirectLatticeMetric` retains its defining-module identity and current 2D/3D
+  semantics.
+- Defining modules remain the preferred routes for the remaining interfaces.
 
 ## Navigation
+
+The architecture pages follow the package's owned modules and subpackages.
 
 - [Module `lattice2d`](lattice2d/index.md)
 - [Module `lattice3d`](lattice3d/index.md)
@@ -29,12 +39,16 @@ Defining modules remain the preferred import routes.
 
 ## Local mapping
 
+Maintained implementation and verification mirror this package ownership.
+
 - Code: `src/python/projectkoios/physkit/periodic/lattice/__init__.py`
 - Tests: `tests/projectkoios/physkit/periodic/lattice/`
 
 ## Evidence
 
-Implementation conformance is supported by the direct-basis metric,
-nearest-image, finite-domain, boundary-phase, symmetry, hopping,
-represented-operator, composition, construction, and gauge-bridge tests. These
-tests make no campaign-level or scientific-validation claim.
+Mapped tests provide implementation-conformance evidence for the owned contracts.
+
+- Coverage includes direct-basis metrics, nearest images, finite domains,
+  boundary phases, symmetry, hopping, represented operators, composition,
+  construction, and gauge bridges.
+- These checks make no campaign-level or scientific-validation claim.

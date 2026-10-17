@@ -30,6 +30,7 @@ from projectkoios.physkit.periodic.lattice.lattice3d import (
     ReciprocalLattice3D,
     WignerSeitzCell3D,
 )
+from projectkoios.physkit.periodic.lattice.metric import DirectLatticeMetric
 
 __all__ = [
     "BravaisLattice",
@@ -38,6 +39,7 @@ __all__ = [
     "DirectLattice1D",
     "DirectLattice2D",
     "DirectLattice3D",
+    "DirectLatticeMetric",
     "FirstBrillouinZone",
     "FirstBrillouinZone1D",
     "FirstBrillouinZone2D",
