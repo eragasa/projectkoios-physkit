@@ -5,6 +5,10 @@ from __future__ import annotations
 import numpy as np
 
 import projectkoios.physkit.periodic.lattice as lattice
+from projectkoios.physkit.periodic.lattice.deformation_paths import (
+    UnitVolumeBainPath3D,
+    UnitVolumeBainPathPoint3D,
+)
 from projectkoios.physkit.periodic.lattice.metric import DirectLatticeMetric
 
 
@@ -31,11 +35,17 @@ class TestLatticePublicApi:
             "ReciprocalLattice1D",
             "ReciprocalLattice2D",
             "ReciprocalLattice3D",
+            "UnitVolumeBainPath3D",
+            "UnitVolumeBainPathPoint3D",
             "WignerSeitzCell",
             "WignerSeitzCell1D",
             "WignerSeitzCell2D",
             "WignerSeitzCell3D",
         ]
+
+    def test__exports_bain_path_with_defining_module_identity(self) -> None:
+        assert lattice.UnitVolumeBainPath3D is UnitVolumeBainPath3D
+        assert lattice.UnitVolumeBainPathPoint3D is UnitVolumeBainPathPoint3D
 
     def test__composes_exported_two_dimensional_lattice_and_metric(self) -> None:
         direct_lattice = lattice.DirectLattice2D(

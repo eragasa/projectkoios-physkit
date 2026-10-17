@@ -12,6 +12,10 @@ from projectkoios.physkit.periodic.lattice.bravais3d import (
     BravaisLattice,
     BravaisLatticeKind,
 )
+from projectkoios.physkit.periodic.lattice.deformation_paths import (
+    UnitVolumeBainPath3D,
+    UnitVolumeBainPathPoint3D,
+)
 from projectkoios.physkit.periodic.lattice.lattice1d import (
     DirectLattice1D,
     FirstBrillouinZone1D,
@@ -50,6 +54,8 @@ __all__ = [
     "ReciprocalLattice1D",
     "ReciprocalLattice2D",
     "ReciprocalLattice3D",
+    "UnitVolumeBainPath3D",
+    "UnitVolumeBainPathPoint3D",
     "WignerSeitzCell",
     "WignerSeitzCell1D",
     "WignerSeitzCell2D",
