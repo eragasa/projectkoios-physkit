@@ -18,7 +18,8 @@ Each basis accepts exactly one reciprocal-lattice owner for its dimension.
 
 - Supported lattice identities are defined in `periodic.lattice` and exported from the
   package façade.
-- The legacy 1D class in `periodic.reciprocal` is not accepted as a second owner.
+- The obsolete `periodic.reciprocal` module has been removed; the lattice package is
+  the sole nominal owner.
 - The 3D basis requires `periodic.lattice.ReciprocalLattice3D` exactly.
 - Mode and vector arrays are copied into immutable integer and binary64 storage.
 - The 1D and 3D basis identities are exported deliberately from `periodic`.
@@ -57,7 +58,7 @@ This tranche remains limited to represented basis identity.
 - Lattice values retain the existing dimensionless lattice semantics.
 - No 2D mode basis, reciprocal mesh, sewing map, Hamiltonian, frame, or hopping
   transform is introduced.
-- The legacy 1D module remains untouched for separate compatibility disposition.
+- No compatibility duplicate of the 1D reciprocal lattice is retained.
 - Cutoff choice, convergence, material interpretation, and scientific validation remain
   outside the basis contract.
 

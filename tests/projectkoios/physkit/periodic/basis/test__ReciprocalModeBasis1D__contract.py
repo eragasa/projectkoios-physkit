@@ -10,9 +10,6 @@ from projectkoios.physkit.periodic.lattice import (
     DirectLattice1D,
     ReciprocalLattice1D,
 )
-from projectkoios.physkit.periodic.reciprocal import (
-    ReciprocalLattice1D as LegacyReciprocalLattice1D,
-)
 
 
 def _reciprocal_lattice() -> ReciprocalLattice1D:
@@ -48,13 +45,12 @@ def test__from_mode_limit__constructs_symmetric_inventory() -> None:
     )
 
 
-def test__init__rejects_legacy_reciprocal_lattice_identity() -> None:
-    """The unexported legacy lattice is not a second nominal owner."""
+def test__init__rejects_noncanonical_lattice_identity() -> None:
+    """A direct lattice cannot substitute for the reciprocal-lattice owner."""
     direct = DirectLattice1D(2.0)
-    legacy = LegacyReciprocalLattice1D(direct)
 
     with pytest.raises(TypeError, match="must be ReciprocalLattice1D"):
-        ReciprocalModeBasis1D(legacy, [-1, 0, 1])  # type: ignore[arg-type]
+        ReciprocalModeBasis1D(direct, [-1, 0, 1])  # type: ignore[arg-type]
 
 
 def test__init__rejects_empty_or_duplicate_mode_inventory() -> None:

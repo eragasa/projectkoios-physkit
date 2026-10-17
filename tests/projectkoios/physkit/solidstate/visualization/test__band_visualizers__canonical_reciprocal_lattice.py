@@ -1,4 +1,4 @@
-"""Compatibility tests for model-specific band visualizers."""
+"""Canonical reciprocal-lattice tests for model-specific band visualizers."""
 
 from __future__ import annotations
 
@@ -12,9 +12,6 @@ import matplotlib.pyplot as plt
 from projectkoios.physkit.periodic.lattice import (
     DirectLattice1D,
     ReciprocalLattice1D,
-)
-from projectkoios.physkit.periodic.reciprocal import (
-    ReciprocalLattice1D as LegacyReciprocalLattice1D,
 )
 from projectkoios.physkit.solidstate.electronic.results import (
     ElectronicBandStructureResult,
@@ -63,9 +60,9 @@ def test__phonon_visualizer__normalizes_by_canonical_basis_vector() -> None:
     plt.close(figure)
 
 
-def test__visualizers__reject_legacy_reciprocal_lattice_identity() -> None:
-    """The model-specific visualizers enforce the single nominal owner."""
-    legacy = LegacyReciprocalLattice1D(DirectLattice1D(2.0))
+def test__visualizers__reject_noncanonical_lattice_identity() -> None:
+    """The model-specific visualizers enforce the reciprocal-lattice owner."""
+    direct = DirectLattice1D(2.0)
     electronic = ElectronicBandStructureResult(
         k_points=np.asarray([0.0]),
         energies=np.asarray([[0.0]]),
@@ -79,6 +76,6 @@ def test__visualizers__reject_legacy_reciprocal_lattice_identity() -> None:
     )
 
     with pytest.raises(TypeError, match="must be ReciprocalLattice1D"):
-        ElectronicBandStructureVisualizer(electronic, legacy)  # type: ignore[arg-type]
+        ElectronicBandStructureVisualizer(electronic, direct)  # type: ignore[arg-type]
     with pytest.raises(TypeError, match="must be ReciprocalLattice1D"):
-        PhononBandStructureVisualizer(phonon, legacy)  # type: ignore[arg-type]
+        PhononBandStructureVisualizer(phonon, direct)  # type: ignore[arg-type]

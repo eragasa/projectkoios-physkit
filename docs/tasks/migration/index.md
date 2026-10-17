@@ -88,41 +88,30 @@ The provisional reciprocal-path branch demonstrated why owner ordering matters.
 
 ## First bounded owner audit
 
-The initial read-only audit found an internal PhysKit identity conflict that must be
-resolved before any KSD reciprocal extraction.
+The initial read-only audit found an internal PhysKit identity conflict before any KSD
+reciprocal extraction.
 
-- `projectkoios.physkit.periodic.lattice.lattice1d.ReciprocalLattice1D` is the
-  public-façade identity, implements the common lattice contract, supports independent
-  construction and `from_direct_lattice(...)`, and has mapped tests.
-- `projectkoios.physkit.periodic.reciprocal.ReciprocalLattice1D` is a distinct legacy
-  identity that retains its source direct lattice and is not exported from the periodic
-  façade.
-- Both identities produce the same positive reciprocal scale when derived from the same
-  positive direct-lattice constant, but they are nominally incompatible and expose
-  different attributes.
-- `ReciprocalModeBasis1D` consumes the legacy identity and reads a nonexistent
-  `fundamental_vector` attribute; ordinary construction currently raises
-  `AttributeError`.
-- The electronic and phonon band visualizers import the legacy identity and also read
-  the nonexistent attribute.
-- `BlochMode1D`, the plane-wave electronic Hamiltonian, and its solver depend on the
-  affected basis family, while no focused tests currently bind this chain.
+- `projectkoios.physkit.periodic.lattice.lattice1d.ReciprocalLattice1D` was the
+  public-façade identity with the common lattice contract and mapped tests.
+- `projectkoios.physkit.periodic.reciprocal.ReciprocalLattice1D` was a distinct,
+  unexported legacy identity with incompatible attributes.
+- `ReciprocalModeBasis1D` and older band visualizers consumed the legacy identity and
+  attempted to read a nonexistent `fundamental_vector` attribute.
+- `BlochMode1D`, the plane-wave electronic Hamiltonian, and its solver depended on that
+  affected basis chain without focused verification.
 
-The recommended first implementation tranche is an internal owner repair, not an
-extraction.
+The bounded owner repair and subsequent explicit compatibility disposition are now
+represented together in the integrated checkpoint.
 
-- Keep `periodic.lattice.lattice1d.ReciprocalLattice1D` as the canonical nominal
+- `periodic.lattice.lattice1d.ReciprocalLattice1D` is the sole canonical nominal
   identity.
-- Update `ReciprocalModeBasis1D` to consume that identity and obtain vectors through its
-  existing `vector(...)` operation.
-- Update affected PhysKit consumers to use the canonical identity and its declared
-  surface instead of inventing a compatibility attribute.
-- Add focused basis, mode, Hamiltonian, solver, and visualizer tests before changing any
-  KSD consumer.
-- Preserve current dimensionless lattice semantics during this repair; unit-aware
-  reciprocal representation remains a separate tranche.
-- Do not remove the legacy module, add sewing, generalize dimensions, or migrate KSD in
-  the same change.
+- `ReciprocalModeBasis1D` obtains vectors through the canonical `vector(...)` operation.
+- Electronic and phonon visualizers consume the canonical identity and its `b1` vector.
+- Focused basis, mode, Hamiltonian, solver, and visualizer tests bind the repaired chain.
+- The obsolete `periodic.reciprocal` module has been removed rather than retained as a
+  nominal compatibility duplicate.
+- Current dimensionless lattice semantics remain unchanged; unit-aware reciprocal
+  representation and KSD migration remain separate tranches.
 
 ## Stage 1: quantity-boundary audit
 
