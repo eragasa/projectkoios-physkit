@@ -31,8 +31,8 @@ The scalar adapter preserves the exact ordered finite-series contract.
 The default block adapter uses the pinned shared-grid batched finite-Fourier owner.
 
 - The exact owner revision is commit
-  `f3a295fde4aeb905414da6375ec4f2794480628d`, tree
-  `2dd59908008cfbd1d91ba946063e24c25a6d37af`.
+  `99fe1679be4a5f13e505051cb32cf1bdc8ff02db`, tree
+  `97ddee8e0cd44297826a2d496fa7b91d793926f5`.
 - `evaluate(...)` maps one model to `basis_size²` coefficient channels.
 - `evaluate_family(...)` maps models in supplied order to one combined channel set.
 - Compatible families share dimension, ordered basis, energy unit, and energy

@@ -56,8 +56,8 @@ complete spectra delegate directly to the exact pinned Numerics owner.
 
 The generic numerical calculations are consumed from the
 `projectkoios-optimization` distribution at exact commit
-`f3a295fde4aeb905414da6375ec4f2794480628d`, tree
-`2dd59908008cfbd1d91ba946063e24c25a6d37af`.
+`99fe1679be4a5f13e505051cb32cf1bdc8ff02db`, tree
+`97ddee8e0cd44297826a2d496fa7b91d793926f5`.
 
 - `projectkoios.numerics.finite_periodic.finite_series` fixes
   $\sum_j c_j\exp(+2\pi i\,x\cdot m_j)$ without normalization.
