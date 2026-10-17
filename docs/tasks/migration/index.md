@@ -40,6 +40,39 @@ Reusable physical representation and campaign policy must remain distinct.
 - Quantum ESPRESSO and Wannier90 retain their existing electronic-structure and
   localization ownership.
 
+## Crystallography and unit ownership ledger
+
+PhysKit is the destination owner for reusable crystallographic and unit semantics even
+when a current implementation lives in KSD.
+
+- Crystallographic ownership includes Bravais classifications and metric compatibility,
+  direct/reciprocal lattices, duality, metrics, coordinate conventions, periodic
+  structures and sites, fractional bases, exact coordinate bridges, crystal factories,
+  symmetry operations, and named homogeneous deformation paths.
+- Reciprocal ownership includes primitive cells, reduced and Cartesian coordinates,
+  mode bases, meshes, generic neighbor-wrap mechanics, finite-basis sewing, and reusable
+  k-point sampling representation.
+- Path ownership includes Bain, diamond-decorated Bain, rhombic deformation,
+  reciprocal-space paths, and reusable frame/projector/operator path records.
+- Unit ownership includes physical and unitless identities, scalar/vector/matrix/sparse
+  quantities, Pint registry and conversion behavior, and immutable unit-bearing
+  numerical records.
+- Calculator-native fields, pseudopotential bindings, external-format scaling,
+  campaign normalization and sampling choices, workflow routes, tolerances,
+  convergence, diagnostics, artifacts, and acceptance remain with KSD.
+- Existing KSD implementations may continue supporting science as frozen donor/legacy
+  code until each small owner contract and consumer migration is separately accepted.
+
+Ownership does not imply one big-bang extraction.
+
+- Begin with the unit-volume Bravais Bain path.
+- Handle the diamond-decorated basis and FCC-to-Bain coordinate bridge separately.
+- Handle the 2D rhombic path separately.
+- Reconcile lattice, structure, reciprocal, symmetry, and quantity families one active
+  scientific use case at a time.
+- Do not infer implementation, KSD migration, removal, or successor authorization from
+  this ledger.
+
 ## Current correction
 
 The provisional reciprocal-path branch demonstrated why owner ordering matters.
