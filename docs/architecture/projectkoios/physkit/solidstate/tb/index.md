@@ -11,6 +11,9 @@ raw diagnostics with explicit physics semantics.
 - Bloch evaluation retains fractional-coordinate and energy-unit conventions while
   sharing point-mode phases across matrix entries and compatible model families.
 - Complete block-band evaluation retains ordered-basis and backend evidence.
+- Unit-aware finite-periodic matrix transforms retain energy units, energy references,
+  basis identities, construction meshes, and backend evidence across generic Numerics
+  transforms, tensor evaluation, Parseval reductions, and cyclic Hermiticity analysis.
 - Explicit source-and-truncation range families share Bloch and spectrum batches
   without choosing a cutoff policy.
 - Hermiticity and power diagnostics report raw numerical facts.
@@ -29,6 +32,7 @@ The module pages describe each cohesive tight-binding capability.
 
 - [Module `bloch`](bloch/index.md)
 - [Module `bands`](bands/index.md)
+- [Module `finite_periodic`](finite_periodic/index.md)
 - [Module `diagnostics`](diagnostics/index.md)
 - [Module `truncation`](truncation/index.md)
 - [Parent package](../index.md)
