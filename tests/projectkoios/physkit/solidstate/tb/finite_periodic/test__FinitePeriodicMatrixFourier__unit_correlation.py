@@ -4,9 +4,6 @@ import numpy as np
 import pytest
 
 from projectkoios.numerics.finite_periodic.meshes import CenteredUniformMesh
-from projectkoios.numerics.finite_periodic.numpy.matrix_evaluation import (
-    NumpyFiniteFourierMatrixEvaluationResult,
-)
 from projectkoios.physkit.solidstate.tb.finite_periodic import (
     FinitePeriodicMatrixFourierEvaluation,
     FinitePeriodicMatrixFourierSeries,
@@ -14,8 +11,11 @@ from projectkoios.physkit.solidstate.tb.finite_periodic import (
     FinitePeriodicMatrixFourierTransformer,
     FinitePeriodicMatrixFourierTransformResult,
     FinitePeriodicMatrixHermiticityAnalyzer,
+    FinitePeriodicMatrixHermiticityDiagnostics,
     FinitePeriodicMatrixParsevalAnalyzer,
+    FinitePeriodicMatrixParsevalDiagnostics,
     FinitePeriodicMatrixSamples,
+    diagnostics,
 )
 from projectkoios.physkit.units import PhysicalUnit, Unitless
 
@@ -88,7 +88,7 @@ def test_transform_evaluation_and_diagnostics_preserve_energy_unit(size: int) ->
     assert hermiticity.ordinary_comparison_covers_complete_inventory is (size % 2 == 1)
 
 
-def test_transform_result_requires_the_exact_source_mesh() -> None:
+def test_computed_results_require_their_owning_actions() -> None:
     mesh = CenteredUniformMesh(1, 5, (0.0,))
     source = FinitePeriodicMatrixSamples.from_array(
         mesh=mesh,
@@ -97,24 +97,92 @@ def test_transform_result_requires_the_exact_source_mesh() -> None:
         energy_reference="zero",
         basis_identifier="basis",
     )
-    valid = FinitePeriodicMatrixFourierTransformer().transform(source)
-    equal_but_distinct_mesh = CenteredUniformMesh(1, 5, (0.0,))
-    distinct_series = FinitePeriodicMatrixFourierSeries.from_arrays(
-        source_mesh=equal_but_distinct_mesh,
-        integer_modes=valid.series.integer_modes,
-        matrix_coefficients=valid.series.matrix_coefficients,
-        energy_unit=valid.series.energy_unit,
-        energy_reference=valid.series.energy_reference,
-        basis_identifier=valid.series.basis_identifier,
+    transform = FinitePeriodicMatrixFourierTransformer().transform(source)
+    evaluation = FinitePeriodicMatrixFourierTensorEvaluator().evaluate(
+        transform.series,
+        (np.asarray([0.0], dtype=np.float64),),
+    )
+    parseval = FinitePeriodicMatrixParsevalAnalyzer().analyze(transform)
+    hermiticity = FinitePeriodicMatrixHermiticityAnalyzer().analyze(transform)
+
+    with pytest.raises(TypeError, match="owning action"):
+        FinitePeriodicMatrixFourierTransformResult(
+            source=transform.source,
+            series=transform.series,
+            backend_identifier=transform.backend_identifier,
+            backend_version=transform.backend_version,
+        )
+    with pytest.raises(TypeError, match="owning action"):
+        FinitePeriodicMatrixFourierEvaluation(
+            series=evaluation.series,
+            coordinate_axes=evaluation.coordinate_axes,
+            matrix_values=evaluation.matrix_values,
+            maximum_working_elements=evaluation.maximum_working_elements,
+            backend_identifier=evaluation.backend_identifier,
+            backend_version=evaluation.backend_version,
+        )
+    with pytest.raises(TypeError, match="owning action"):
+        FinitePeriodicMatrixParsevalDiagnostics(
+            transform=parseval.transform,
+            sample_mean_squared_frobenius_norm=(
+                parseval.sample_mean_squared_frobenius_norm
+            ),
+            coefficient_sum_squared_frobenius_norm=(
+                parseval.coefficient_sum_squared_frobenius_norm
+            ),
+            absolute_defect=parseval.absolute_defect,
+        )
+    with pytest.raises(TypeError, match="owning action"):
+        FinitePeriodicMatrixHermiticityDiagnostics(
+            transform=hermiticity.transform,
+            twisted_cyclic_maximum_frobenius_defect=(
+                hermiticity.twisted_cyclic_maximum_frobenius_defect
+            ),
+            ordinary_maximum_frobenius_defect=(
+                hermiticity.ordinary_maximum_frobenius_defect
+            ),
+        )
+
+
+def test_each_diagnostic_owner_runs_once(monkeypatch: pytest.MonkeyPatch) -> None:
+    mesh = CenteredUniformMesh(1, 5, (0.0,))
+    source = FinitePeriodicMatrixSamples.from_array(
+        mesh=mesh,
+        matrix_samples=_hermitian_samples(mesh),
+        energy_unit=PhysicalUnit("eV"),
+        energy_reference="zero",
+        basis_identifier="basis",
+    )
+    transform = FinitePeriodicMatrixFourierTransformer().transform(source)
+    calls = {"parseval": 0, "hermiticity": 0}
+    parseval_owner = diagnostics.NumpyFinitePeriodicParsevalAnalyzer
+    hermiticity_owner = diagnostics.NumpyCenteredUniformMeshHermiticityAnalyzer
+
+    class CountingParsevalAnalyzer:
+        def analyze(self, *args: object) -> object:
+            calls["parseval"] += 1
+            return parseval_owner().analyze(*args)
+
+    class CountingHermiticityAnalyzer:
+        def analyze(self, *args: object) -> object:
+            calls["hermiticity"] += 1
+            return hermiticity_owner().analyze(*args)
+
+    monkeypatch.setattr(
+        diagnostics,
+        "NumpyFinitePeriodicParsevalAnalyzer",
+        CountingParsevalAnalyzer,
+    )
+    monkeypatch.setattr(
+        diagnostics,
+        "NumpyCenteredUniformMeshHermiticityAnalyzer",
+        CountingHermiticityAnalyzer,
     )
 
-    with pytest.raises(ValueError, match="exact source mesh"):
-        FinitePeriodicMatrixFourierTransformResult(
-            source=source,
-            series=distinct_series,
-            backend_identifier=valid.backend_identifier,
-            backend_version=valid.backend_version,
-        )
+    FinitePeriodicMatrixParsevalAnalyzer().analyze(transform)
+    FinitePeriodicMatrixHermiticityAnalyzer().analyze(transform)
+
+    assert calls == {"parseval": 1, "hermiticity": 1}
 
 
 def test_selected_series_retains_units_and_explicit_inventory_order() -> None:
@@ -203,39 +271,6 @@ def test_series_rejects_invalid_physical_inventories(
             energy_unit=PhysicalUnit("eV"),
             energy_reference="zero",
             basis_identifier="basis",
-        )
-
-
-def test_evaluation_rejects_matrix_size_inconsistent_with_series() -> None:
-    mesh = CenteredUniformMesh(1, 5, (0.0,))
-    source = FinitePeriodicMatrixSamples.from_array(
-        mesh=mesh,
-        matrix_samples=_hermitian_samples(mesh),
-        energy_unit=PhysicalUnit("eV"),
-        energy_reference="zero",
-        basis_identifier="basis",
-    )
-    valid = FinitePeriodicMatrixFourierTensorEvaluator().evaluate(
-        FinitePeriodicMatrixFourierTransformer().transform(source).series,
-        (np.asarray([0.0], dtype=np.float64),),
-    )
-
-    wrong_values = NumpyFiniteFourierMatrixEvaluationResult.from_array(
-        dimension=1,
-        point_shape=(1,),
-        term_count=valid.series.term_count,
-        matrix_values=np.zeros((1, 1, 1), dtype=np.complex128),
-        backend_identifier=valid.backend_identifier,
-        backend_version=valid.backend_version,
-    ).matrix_values
-    with pytest.raises(ValueError, match="series matrix size"):
-        FinitePeriodicMatrixFourierEvaluation(
-            series=valid.series,
-            coordinate_axes=valid.coordinate_axes,
-            matrix_values=wrong_values,
-            maximum_working_elements=valid.maximum_working_elements,
-            backend_identifier=valid.backend_identifier,
-            backend_version=valid.backend_version,
         )
 
 

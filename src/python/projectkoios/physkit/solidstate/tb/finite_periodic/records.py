@@ -1,16 +1,4 @@
-"""Unit-aware physical adapters for finite-periodic matrix Fourier operations.
-
-ProjectKoios Numerics owns centered meshes, Fourier arithmetic, tensor-product
-contractions, Parseval reductions, and cyclic Hermiticity pairing. This module owns the
-physical correlation that those generic kernels deliberately omit: one explicit energy
-unit, energy reference, and ordered-basis identity across samples, coefficients,
-evaluations, and diagnostics.
-
-The records and actions choose no support, cutoff, tolerance, or scientific acceptance
-policy. Reduced coordinates and integer modes are dimensionless; matrix samples,
-coefficients, evaluated matrices, and Hermiticity defects carry the declared energy
-unit. Parseval quantities carry its square.
-"""
+"""Unit-aware records for finite-periodic matrix Fourier operations."""
 
 from __future__ import annotations
 
@@ -29,20 +17,13 @@ from projectkoios.numerics.finite_periodic.numpy.matrix_series import (
 )
 from projectkoios.numerics.finite_periodic.numpy.tensor_product_evaluation import (
     NumpyTensorProductFourierMatrixEvaluationDefinition,
-    NumpyTensorProductFourierMatrixSeriesEvaluator,
-)
-from projectkoios.numerics.finite_periodic.numpy.transform_diagnostics import (
-    NumpyCenteredUniformMeshHermiticityAnalyzer,
-    NumpyFinitePeriodicParsevalAnalyzer,
 )
 from projectkoios.numerics.finite_periodic.numpy.transforms import (
     NumpyCenteredUniformMeshMatrixFourierTransformDefinition,
-    NumpyCenteredUniformMeshMatrixFourierTransformer,
     NumpyCenteredUniformMeshMatrixFourierTransformResult,
 )
 from projectkoios.physkit.core.results import ResultsObject
-from projectkoios.physkit.periodic.lattice.hopping import SolidStateUnit
-from projectkoios.physkit.units import PhysicalUnit, ScalarQuantity, Unitless
+from projectkoios.physkit.units import ModelSystemUnit, PhysicalUnit, Unitless
 
 ComplexArray = NDArray[np.complex128]
 FloatArray = NDArray[np.float64]
@@ -57,17 +38,10 @@ def _identity(value: str, name: str) -> None:
         raise ValueError(f"{name} must be nonempty")
 
 
-def _unit(value: SolidStateUnit, name: str) -> None:
-    """Validate one exact PhysKit solid-state unit identity."""
+def _unit(value: ModelSystemUnit, name: str) -> None:
+    """Validate one supported PhysKit model-system unit."""
     if not isinstance(value, PhysicalUnit | Unitless):
         raise TypeError(f"{name} must be PhysicalUnit or Unitless")
-
-
-def _squared_unit(unit: SolidStateUnit) -> SolidStateUnit:
-    """Return the explicit square of one solid-state unit."""
-    if isinstance(unit, Unitless):
-        return Unitless()
-    return PhysicalUnit(f"({unit.expression}) ** 2")
 
 
 @final
@@ -92,7 +66,7 @@ class FinitePeriodicMatrixSamples:
 
     mesh: CenteredUniformMesh
     matrix_samples: ComplexArray = field(repr=False)
-    energy_unit: SolidStateUnit
+    energy_unit: ModelSystemUnit
     energy_reference: str
     basis_identifier: str
 
@@ -102,7 +76,7 @@ class FinitePeriodicMatrixSamples:
         *,
         mesh: CenteredUniformMesh,
         matrix_samples: ComplexArray,
-        energy_unit: SolidStateUnit,
+        energy_unit: ModelSystemUnit,
         energy_reference: str,
         basis_identifier: str,
     ) -> Self:
@@ -160,7 +134,7 @@ class FinitePeriodicMatrixFourierSeries:
     source_mesh: CenteredUniformMesh
     integer_modes: IntArray = field(repr=False)
     matrix_coefficients: ComplexArray = field(repr=False)
-    energy_unit: SolidStateUnit
+    energy_unit: ModelSystemUnit
     energy_reference: str
     basis_identifier: str
 
@@ -171,7 +145,7 @@ class FinitePeriodicMatrixFourierSeries:
         source_mesh: CenteredUniformMesh,
         integer_modes: IntArray,
         matrix_coefficients: ComplexArray,
-        energy_unit: SolidStateUnit,
+        energy_unit: ModelSystemUnit,
         energy_reference: str,
         basis_identifier: str,
     ) -> Self:
@@ -266,17 +240,47 @@ class FinitePeriodicMatrixFourierSeries:
 
 
 @final
-@dataclass(frozen=True, slots=True, eq=False)
+@dataclass(frozen=True, slots=True, eq=False, init=False)
 class FinitePeriodicMatrixFourierTransformResult(ResultsObject):
-    """Retain a complete transform and its source physical field."""
+    """Retain a complete transform and its source physical field.
+
+    Computed results are constructed only by
+    :class:`FinitePeriodicMatrixFourierTransformer`; callers cannot create a
+    structurally plausible result that bypasses the owning transform action.
+    """
 
     source: FinitePeriodicMatrixSamples
     series: FinitePeriodicMatrixFourierSeries
     backend_identifier: str
     backend_version: str
 
-    def __post_init__(self) -> None:
-        """Validate complete inventory, physical correlation, and backend evidence."""
+    def __init__(self, *_args: object, **_kwargs: object) -> None:
+        """Reject direct construction outside the owning transform action."""
+        raise TypeError(
+            "FinitePeriodicMatrixFourierTransformResult must be created by its "
+            "owning action"
+        )
+
+    @classmethod
+    def _from_action(
+        cls,
+        *,
+        source: FinitePeriodicMatrixSamples,
+        series: FinitePeriodicMatrixFourierSeries,
+        backend_identifier: str,
+        backend_version: str,
+    ) -> Self:
+        """Construct one result for the owning package action."""
+        result = object.__new__(cls)
+        object.__setattr__(result, "source", source)
+        object.__setattr__(result, "series", series)
+        object.__setattr__(result, "backend_identifier", backend_identifier)
+        object.__setattr__(result, "backend_version", backend_version)
+        result._validate()
+        return result
+
+    def _validate(self) -> None:
+        """Validate physical correlation and delegated backend evidence."""
         if type(self.source) is not FinitePeriodicMatrixSamples:
             raise TypeError("source must be FinitePeriodicMatrixSamples")
         if type(self.series) is not FinitePeriodicMatrixFourierSeries:
@@ -306,41 +310,13 @@ class FinitePeriodicMatrixFourierTransformResult(ResultsObject):
 
 
 @final
-class FinitePeriodicMatrixFourierTransformer:
-    """Apply the canonical Numerics transform while preserving physical units."""
-
-    __slots__ = ()
-
-    def transform(
-        self,
-        source: FinitePeriodicMatrixSamples,
-    ) -> FinitePeriodicMatrixFourierTransformResult:
-        """Transform complete samples without selecting support or tolerance."""
-        if type(source) is not FinitePeriodicMatrixSamples:
-            raise TypeError("source must be FinitePeriodicMatrixSamples")
-        numerical = NumpyCenteredUniformMeshMatrixFourierTransformer().transform(
-            source._numerical_definition()
-        )
-        series = FinitePeriodicMatrixFourierSeries(
-            source_mesh=source.mesh,
-            integer_modes=numerical.series.integer_modes,
-            matrix_coefficients=numerical.series.matrix_coefficients,
-            energy_unit=source.energy_unit,
-            energy_reference=source.energy_reference,
-            basis_identifier=source.basis_identifier,
-        )
-        return FinitePeriodicMatrixFourierTransformResult(
-            source=source,
-            series=series,
-            backend_identifier=numerical.backend_identifier,
-            backend_version=numerical.backend_version,
-        )
-
-
-@final
-@dataclass(frozen=True, slots=True, eq=False)
+@dataclass(frozen=True, slots=True, eq=False, init=False)
 class FinitePeriodicMatrixFourierEvaluation(ResultsObject):
-    """Retain tensor-grid matrix values correlated with one physical series."""
+    """Retain tensor-grid matrix values correlated with one physical series.
+
+    Computed evaluations are constructed only by
+    :class:`FinitePeriodicMatrixFourierTensorEvaluator`.
+    """
 
     series: FinitePeriodicMatrixFourierSeries
     coordinate_axes: tuple[FloatArray, ...] = field(repr=False)
@@ -349,8 +325,40 @@ class FinitePeriodicMatrixFourierEvaluation(ResultsObject):
     backend_identifier: str
     backend_version: str
 
-    def __post_init__(self) -> None:
-        """Validate axes, values, physical correlation, and backend evidence."""
+    def __init__(self, *_args: object, **_kwargs: object) -> None:
+        """Reject direct construction outside the owning evaluation action."""
+        raise TypeError(
+            "FinitePeriodicMatrixFourierEvaluation must be created by its owning action"
+        )
+
+    @classmethod
+    def _from_action(
+        cls,
+        *,
+        series: FinitePeriodicMatrixFourierSeries,
+        coordinate_axes: tuple[FloatArray, ...],
+        matrix_values: ComplexArray,
+        maximum_working_elements: int,
+        backend_identifier: str,
+        backend_version: str,
+    ) -> Self:
+        """Construct one result for the owning package action."""
+        result = object.__new__(cls)
+        object.__setattr__(result, "series", series)
+        object.__setattr__(result, "coordinate_axes", coordinate_axes)
+        object.__setattr__(result, "matrix_values", matrix_values)
+        object.__setattr__(
+            result,
+            "maximum_working_elements",
+            maximum_working_elements,
+        )
+        object.__setattr__(result, "backend_identifier", backend_identifier)
+        object.__setattr__(result, "backend_version", backend_version)
+        result._validate()
+        return result
+
+    def _validate(self) -> None:
+        """Validate axes, matrix values, correlation, and backend evidence."""
         if type(self.series) is not FinitePeriodicMatrixFourierSeries:
             raise TypeError("series must be FinitePeriodicMatrixFourierSeries")
         definition = (
@@ -374,7 +382,7 @@ class FinitePeriodicMatrixFourierEvaluation(ResultsObject):
             raise ValueError("matrix value shapes must match the series matrix size")
 
     @property
-    def energy_unit(self) -> SolidStateUnit:
+    def energy_unit(self) -> ModelSystemUnit:
         """Return the exact series energy unit carried by every matrix value."""
         return self.series.energy_unit
 
@@ -394,206 +402,9 @@ class FinitePeriodicMatrixFourierEvaluation(ResultsObject):
         return tuple(int(axis.size) for axis in self.coordinate_axes)
 
 
-@final
-class FinitePeriodicMatrixFourierTensorEvaluator:
-    """Evaluate a physical matrix series through the canonical tensor kernel."""
-
-    __slots__ = ()
-
-    def evaluate(
-        self,
-        series: FinitePeriodicMatrixFourierSeries,
-        coordinate_axes: tuple[FloatArray, ...],
-        maximum_working_elements: int = 1_000_000,
-    ) -> FinitePeriodicMatrixFourierEvaluation:
-        """Evaluate one complete or explicitly selected series on a tensor grid."""
-        if type(series) is not FinitePeriodicMatrixFourierSeries:
-            raise TypeError("series must be FinitePeriodicMatrixFourierSeries")
-        definition = NumpyTensorProductFourierMatrixEvaluationDefinition.from_arrays(
-            series.source_mesh,
-            series._numerical_series(),
-            coordinate_axes,
-            maximum_working_elements,
-        )
-        numerical = NumpyTensorProductFourierMatrixSeriesEvaluator().evaluate(
-            definition
-        )
-        return FinitePeriodicMatrixFourierEvaluation(
-            series=series,
-            coordinate_axes=definition.coordinate_axes,
-            matrix_values=numerical.matrix_values,
-            maximum_working_elements=definition.maximum_working_elements,
-            backend_identifier=numerical.backend_identifier,
-            backend_version=numerical.backend_version,
-        )
-
-
-@final
-@dataclass(frozen=True, slots=True, eq=False)
-class FinitePeriodicMatrixParsevalDiagnostics(ResultsObject):
-    """Retain unit-aware Parseval evidence for one complete transform."""
-
-    transform: FinitePeriodicMatrixFourierTransformResult
-    sample_mean_squared_frobenius_norm: ScalarQuantity
-    coefficient_sum_squared_frobenius_norm: ScalarQuantity
-    absolute_defect: ScalarQuantity
-
-    def __post_init__(self) -> None:
-        """Validate exact canonical values and squared-energy units."""
-        if type(self.transform) is not FinitePeriodicMatrixFourierTransformResult:
-            raise TypeError(
-                "transform must be FinitePeriodicMatrixFourierTransformResult"
-            )
-        quantities = (
-            self.sample_mean_squared_frobenius_norm,
-            self.coefficient_sum_squared_frobenius_norm,
-            self.absolute_defect,
-        )
-        if any(type(quantity) is not ScalarQuantity for quantity in quantities):
-            raise TypeError("Parseval values must be ScalarQuantity values")
-        squared = _squared_unit(self.transform.source.energy_unit)
-        if any(quantity.unit != squared for quantity in quantities):
-            raise ValueError("Parseval values must use the squared energy unit")
-        expected = NumpyFinitePeriodicParsevalAnalyzer().analyze(
-            self.transform.source._numerical_definition(),
-            self.transform._numerical_result(),
-        )
-        expected_values = (
-            expected.sample_mean_squared_frobenius_norm,
-            expected.coefficient_sum_squared_frobenius_norm,
-            expected.absolute_defect,
-        )
-        if tuple(quantity.magnitude for quantity in quantities) != expected_values:
-            raise ValueError("Parseval values must equal the canonical diagnostics")
-
-
-@final
-class FinitePeriodicMatrixParsevalAnalyzer:
-    """Attach squared-energy units to canonical finite Parseval diagnostics."""
-
-    __slots__ = ()
-
-    def analyze(
-        self,
-        transform: FinitePeriodicMatrixFourierTransformResult,
-    ) -> FinitePeriodicMatrixParsevalDiagnostics:
-        """Return threshold-free unit-aware Parseval evidence."""
-        if type(transform) is not FinitePeriodicMatrixFourierTransformResult:
-            raise TypeError(
-                "transform must be FinitePeriodicMatrixFourierTransformResult"
-            )
-        numerical = NumpyFinitePeriodicParsevalAnalyzer().analyze(
-            transform.source._numerical_definition(),
-            transform._numerical_result(),
-        )
-        unit = _squared_unit(transform.source.energy_unit)
-        return FinitePeriodicMatrixParsevalDiagnostics(
-            transform=transform,
-            sample_mean_squared_frobenius_norm=ScalarQuantity(
-                numerical.sample_mean_squared_frobenius_norm,
-                unit,
-            ),
-            coefficient_sum_squared_frobenius_norm=ScalarQuantity(
-                numerical.coefficient_sum_squared_frobenius_norm,
-                unit,
-            ),
-            absolute_defect=ScalarQuantity(numerical.absolute_defect, unit),
-        )
-
-
-@final
-@dataclass(frozen=True, slots=True, eq=False)
-class FinitePeriodicMatrixHermiticityDiagnostics(ResultsObject):
-    """Retain unit-aware cyclic coefficient-Hermiticity evidence."""
-
-    transform: FinitePeriodicMatrixFourierTransformResult
-    twisted_cyclic_maximum_frobenius_defect: ScalarQuantity
-    ordinary_maximum_frobenius_defect: ScalarQuantity
-
-    def __post_init__(self) -> None:
-        """Validate exact canonical defects and energy units."""
-        if type(self.transform) is not FinitePeriodicMatrixFourierTransformResult:
-            raise TypeError(
-                "transform must be FinitePeriodicMatrixFourierTransformResult"
-            )
-        quantities = (
-            self.twisted_cyclic_maximum_frobenius_defect,
-            self.ordinary_maximum_frobenius_defect,
-        )
-        if any(type(quantity) is not ScalarQuantity for quantity in quantities):
-            raise TypeError("Hermiticity defects must be ScalarQuantity values")
-        if any(
-            quantity.unit != self.transform.source.energy_unit
-            for quantity in quantities
-        ):
-            raise ValueError("Hermiticity defects must use the energy unit")
-        expected = NumpyCenteredUniformMeshHermiticityAnalyzer().analyze(
-            self.transform._numerical_result()
-        )
-        expected_values = (
-            expected.twisted_cyclic_maximum_frobenius_defect,
-            expected.ordinary_maximum_frobenius_defect,
-        )
-        if tuple(quantity.magnitude for quantity in quantities) != expected_values:
-            raise ValueError("Hermiticity defects must equal canonical diagnostics")
-
-    @property
-    def has_nyquist_boundary(self) -> bool:
-        """Return whether each centered axis has one Nyquist representative."""
-        return self.transform.source.mesh.size % 2 == 0
-
-    @property
-    def ordinary_comparison_covers_complete_inventory(self) -> bool:
-        """Return whether ordinary negation covers every represented mode.
-
-        Odd centered meshes have no Nyquist singleton, so ordinary pairing covers the
-        complete inventory. Even meshes require the separately reported twisted cyclic
-        comparison at their lower Nyquist boundaries.
-        """
-        return not self.has_nyquist_boundary
-
-
-@final
-class FinitePeriodicMatrixHermiticityAnalyzer:
-    """Attach energy units to canonical cyclic Hermiticity diagnostics."""
-
-    __slots__ = ()
-
-    def analyze(
-        self,
-        transform: FinitePeriodicMatrixFourierTransformResult,
-    ) -> FinitePeriodicMatrixHermiticityDiagnostics:
-        """Return threshold-free unit-aware coefficient defects."""
-        if type(transform) is not FinitePeriodicMatrixFourierTransformResult:
-            raise TypeError(
-                "transform must be FinitePeriodicMatrixFourierTransformResult"
-            )
-        numerical = NumpyCenteredUniformMeshHermiticityAnalyzer().analyze(
-            transform._numerical_result()
-        )
-        unit = transform.source.energy_unit
-        return FinitePeriodicMatrixHermiticityDiagnostics(
-            transform=transform,
-            twisted_cyclic_maximum_frobenius_defect=ScalarQuantity(
-                numerical.twisted_cyclic_maximum_frobenius_defect,
-                unit,
-            ),
-            ordinary_maximum_frobenius_defect=ScalarQuantity(
-                numerical.ordinary_maximum_frobenius_defect,
-                unit,
-            ),
-        )
-
-
 __all__ = [
     "FinitePeriodicMatrixFourierEvaluation",
     "FinitePeriodicMatrixFourierSeries",
-    "FinitePeriodicMatrixFourierTensorEvaluator",
     "FinitePeriodicMatrixFourierTransformResult",
-    "FinitePeriodicMatrixFourierTransformer",
-    "FinitePeriodicMatrixHermiticityAnalyzer",
-    "FinitePeriodicMatrixHermiticityDiagnostics",
-    "FinitePeriodicMatrixParsevalAnalyzer",
-    "FinitePeriodicMatrixParsevalDiagnostics",
     "FinitePeriodicMatrixSamples",
 ]

@@ -56,9 +56,11 @@ complete spectra delegate directly to the exact pinned Numerics owner.
 destination as the physical boundary around generic finite-periodic matrix Fourier
 operations. It correlates samples, complete or explicitly selected coefficients,
 tensor-grid evaluations, Parseval evidence, and cyclic Hermiticity evidence with exact
-energy units, energy references, and ordered-basis identities. It does not claim copied
-implementation lineage, choose a support, or duplicate the generic transform,
-evaluation, pairing, or reduction arithmetic owned by Numerics.
+energy units, energy references, and ordered-basis identities. Computed records are
+created only by their owning PhysKit actions, and each diagnostic action invokes its
+Numerics owner once. The package does not claim copied implementation lineage, choose
+a support, or duplicate the generic transform, evaluation, pairing, or reduction
+arithmetic owned by Numerics.
 
 ## Numerics owner binding
 

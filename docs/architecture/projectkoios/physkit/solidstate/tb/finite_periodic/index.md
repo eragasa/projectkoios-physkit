@@ -1,6 +1,6 @@
-# Module `projectkoios.physkit.solidstate.tb.finite_periodic`
+# Package `projectkoios.physkit.solidstate.tb.finite_periodic`
 
-This module is the unit-aware physical boundary around generic finite-periodic matrix
+This package is the unit-aware physical boundary around generic finite-periodic matrix
 Fourier operations.
 
 ## Current responsibility
@@ -19,6 +19,8 @@ identity, and ordered-basis identity.
 - Cyclic coefficient-Hermiticity defects carry the energy unit and report whether a
   Nyquist boundary exists and whether ordinary pairing covers the complete inventory.
 - `take(...)` applies explicit ordered term indices but derives no physical support.
+- Computed transform, evaluation, and diagnostic records can be created only by their
+  owning actions, preventing manually forged results from entering the public flow.
 
 Reduced coordinates and integer modes are dimensionless. Samples, coefficients, and
 reconstructed matrices retain the source energy unit through every PhysKit record.
@@ -33,6 +35,8 @@ Generic arithmetic delegates to the exact pinned Optimization owner.
 - `NumpyTensorProductFourierMatrixSeriesEvaluator` owns bounded separable evaluation.
 - `NumpyFinitePeriodicParsevalAnalyzer` owns raw Parseval reductions.
 - `NumpyCenteredUniformMeshHermiticityAnalyzer` owns parity-aware cyclic pairing.
+- Each diagnostic owner runs exactly once per public analyzer call; result validation
+  checks units and represented relations without repeating the numerical reduction.
 - PhysKit passes only dimensionless coordinates, integer modes, and raw complex
   magnitudes to Numerics, then restores physical units and identities.
 
@@ -71,13 +75,21 @@ The package façade exports these exact identities.
 - `FinitePeriodicMatrixHermiticityDiagnostics`
 - `FinitePeriodicMatrixHermiticityAnalyzer`
 
+## Internal organization
+
+The public façade preserves one import surface while separating responsibilities.
+
+- `records.py` owns source definitions, selected series, and action-created results.
+- `actions.py` owns transform and tensor-evaluation delegation.
+- `diagnostics.py` owns unit-aware Parseval and Hermiticity evidence.
+
 ## Local mapping
 
-- Code: `src/python/projectkoios/physkit/solidstate/tb/finite_periodic.py`
+- Code: `src/python/projectkoios/physkit/solidstate/tb/finite_periodic/`
 - Tests: `tests/projectkoios/physkit/solidstate/tb/finite_periodic/`
 
 The tests cover odd and even inventories, reconstruction, physical-unit propagation,
 squared Parseval units, Hermiticity-defect units, Nyquist applicability evidence,
-explicit selected and empty supports, immutable storage, source bounds, and
-package-façade identity. They establish bounded
-software and numerical behavior only.
+explicit selected and empty supports, immutable storage, source bounds, action-only
+result construction, single diagnostic-owner execution, and package-façade identity.
+They establish bounded software and numerical behavior only.
