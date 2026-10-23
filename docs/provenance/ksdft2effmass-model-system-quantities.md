@@ -38,8 +38,11 @@ PhysKit retains and strengthens the reusable quantity semantics.
 
 - `PhysicalUnit`, `Unitless`, nominal unit/quantity bases, immutable scalar and dense or
   sparse array records, the Pint registry, and conversion operations belong to PhysKit.
-- Real and complex dense/sparse inputs retain binary64 or complex128 storage and explicit
-  physical or unitless identity.
+- Real dense inputs require integer, unsigned-integer, or floating NumPy dtypes before
+  binary64 conversion; boolean, string, object, and complex arrays are rejected rather
+  than coerced or silently truncated. Complex dense inputs separately accept real or
+  complex numeric dtypes and retain complex128 storage.
+- Real and complex dense/sparse quantities retain explicit physical or unitless identity.
 - CSR quantities retain canonical ordering, eliminate duplicate and explicit-zero
   entries, and do not densify implicitly.
 - The fixed Pint registry is a public identity shared by every owner converter.

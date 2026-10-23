@@ -116,6 +116,10 @@ class VectorQuantity(ModelSystemQuantity):
     def __post_init__(self) -> None:
         if not isinstance(self.magnitude, np.ndarray):
             raise TypeError("magnitude must be a numpy.ndarray")
+        if self.magnitude.dtype.kind not in "iuf":
+            raise TypeError(
+                "magnitude must contain real numeric values excluding booleans"
+            )
         values = np.asarray(self.magnitude, dtype=np.float64)
         if values.ndim != 1 or not np.all(np.isfinite(values)):
             raise ValueError("magnitude must be a finite vector")
@@ -158,6 +162,10 @@ class MatrixQuantity(ModelSystemQuantity):
     def __post_init__(self) -> None:
         if not isinstance(self.magnitude, np.ndarray):
             raise TypeError("magnitude must be a numpy.ndarray")
+        if self.magnitude.dtype.kind not in "iuf":
+            raise TypeError(
+                "magnitude must contain real numeric values excluding booleans"
+            )
         values = np.asarray(self.magnitude, dtype=np.float64)
         if values.ndim != 2 or not np.all(np.isfinite(values)):
             raise ValueError("magnitude must be a finite matrix")

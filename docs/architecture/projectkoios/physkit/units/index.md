@@ -7,6 +7,9 @@ The package owns reusable physical-unit and immutable quantity semantics.
 - `PhysicalUnit` and `Unitless` are the nominal unit identities for model-system data.
 - Scalar, real/complex vector, real/complex matrix, and real/complex sparse matrix
   quantities retain explicit units and immutable numerical storage.
+- Real dense vector and matrix quantities accept only integer, unsigned-integer, or
+  floating NumPy dtypes before binary64 conversion. Boolean, string, object, and
+  complex arrays are rejected rather than coerced or truncated.
 - `MODEL_SYSTEM_PINT_REGISTRY` is the public fixed registry shared by every owner
   converter.
 - `PintUnitConverter` owns compatibility checks, conversion factors, and represented
