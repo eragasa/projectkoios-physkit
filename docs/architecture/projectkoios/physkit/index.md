@@ -34,6 +34,7 @@ Architecture pages follow package-level ownership.
 - [Package `projectkoios.physkit.dos2d`](dos2d/index.md)
 - [Package `projectkoios.physkit.dos3d`](dos3d/index.md)
 - [Package `projectkoios.physkit.math`](math/index.md)
+- [Package `projectkoios.physkit.linalg`](linalg/index.md)
 - [Package `projectkoios.physkit.materials`](materials/index.md)
 - [Package `projectkoios.physkit.mechanics`](mechanics/index.md)
 - [Package `projectkoios.physkit.numerics`](numerics/index.md)

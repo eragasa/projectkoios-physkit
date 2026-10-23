@@ -14,6 +14,7 @@ import routes.
 
 ## Navigation
 
+- [Package `eigenproblems`](eigenproblems/index.md)
 - [Package `linear_algebra`](linear_algebra/index.md)
 - [Package `typing`](typing/index.md)
 - [Parent package](../index.md)

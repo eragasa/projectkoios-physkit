@@ -22,7 +22,7 @@ from projectkoios.physkit.units import (
 )
 
 from ..base import Piab1D
-from ..tise_fd import Piab1dTiseFdResults
+from ..tise_fd import Piab1dTiseFdSolution
 
 
 def _selected_times(model: Piab1D, times: VectorQuantity) -> VectorQuantity:
@@ -46,7 +46,7 @@ def _selected_times(model: Piab1D, times: VectorQuantity) -> VectorQuantity:
 class Piab1dTdseFdResults(ResultsObject):
     """Retain one unitary evolution of a finite-difference PIAB1D state."""
 
-    tise_results: Piab1dTiseFdResults
+    tise_results: Piab1dTiseFdSolution
     initial_state: ComplexVectorQuantity
     times: VectorQuantity
     states: ComplexMatrixQuantity
@@ -60,8 +60,8 @@ class Piab1dTdseFdResults(ResultsObject):
 
     def _check_arg_tise_results(self) -> None:
         """Require the finite-difference eigensystem used for propagation."""
-        if not isinstance(self.tise_results, Piab1dTiseFdResults):
-            raise TypeError("tise_results must be Piab1dTiseFdResults")
+        if not isinstance(self.tise_results, Piab1dTiseFdSolution):
+            raise TypeError("tise_results must be Piab1dTiseFdSolution")
 
     def _check_arg_initial_state(self) -> None:
         """Require normalized coordinate-basis amplitudes on the interior grid."""
@@ -184,13 +184,13 @@ class Piab1dTdseFdSolver:
     def solve(
         self,
         *,
-        tise_results: Piab1dTiseFdResults,
+        tise_results: Piab1dTiseFdSolution,
         initial_state: ComplexVectorQuantity,
         times: VectorQuantity,
     ) -> Piab1dTdseFdResults:
         """Return unitary spectral evolution in the interior coordinate basis."""
-        if not isinstance(tise_results, Piab1dTiseFdResults):
-            raise TypeError("tise_results must be Piab1dTiseFdResults")
+        if not isinstance(tise_results, Piab1dTiseFdSolution):
+            raise TypeError("tise_results must be Piab1dTiseFdSolution")
         if not isinstance(initial_state, ComplexVectorQuantity):
             raise TypeError("initial_state must be ComplexVectorQuantity")
         if not isinstance(initial_state.unit, Unitless):

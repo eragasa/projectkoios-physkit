@@ -9,6 +9,7 @@ action inputs are keyword-only.
 
 ## Navigation
 
+- [Package `tise_fd`](tise_fd/index.md)
 - [Package `tdse_analytical`](tdse_analytical/index.md)
 - [Parent package](../index.md)
 

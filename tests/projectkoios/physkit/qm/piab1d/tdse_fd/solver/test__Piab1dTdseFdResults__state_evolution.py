@@ -27,8 +27,7 @@ class TestPiab1dTdseFdResultsStateEvolution:
             mass=electron_mass_atomic_units,
             unit_system=UnitSystem.METAL,
         )
-        tise = Piab1dTiseFdSolver().solve(
-            model=model,
+        tise = Piab1dTiseFdSolver(model=model).solve(
             interior_points=interior_point_count,
         )
         initial_state = ComplexVectorQuantity(

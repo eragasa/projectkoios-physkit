@@ -22,7 +22,7 @@ class TestPiab1dTdseFdSolverSolve:
 
     def test_propagates_eigenstate_by_global_phase(self) -> None:
         model = Piab1D(length=1.0, mass=1.0, unit_system=UnitSystem.NONDIMENSIONAL)
-        tise = Piab1dTiseFdSolver().solve(model=model, interior_points=5)
+        tise = Piab1dTiseFdSolver(model=model).solve(interior_points=5)
         initial = ComplexVectorQuantity(
             magnitude=tise.eigenvectors.magnitude[:, 0].astype(np.complex128),
             unit=Unitless(),
@@ -51,7 +51,7 @@ class TestPiab1dTdseFdSolverSolve:
 
     def test_rejects_invalid_coordinate_state(self) -> None:
         model = Piab1D(length=1.0, mass=1.0, unit_system=UnitSystem.NONDIMENSIONAL)
-        tise = Piab1dTiseFdSolver().solve(model=model, interior_points=3)
+        tise = Piab1dTiseFdSolver(model=model).solve(interior_points=3)
         solver = Piab1dTdseFdSolver()
         times = VectorQuantity(magnitude=np.array([0.0]), unit=Unitless())
 

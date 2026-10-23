@@ -14,6 +14,7 @@ locations.
 
 ## Navigation
 
+- [Module `matrix_properties`](matrix_properties/index.md)
 - [Module `kronecker`](kronecker/index.md)
 - [Module `volume`](volume/index.md)
 - [Parent package](../index.md)
@@ -25,6 +26,7 @@ locations.
 
 ## Evidence
 
-Mapped tests verify sparse Kronecker-sum shape, ordering, dtype, and spectrum,
-as well as scale-invariant normalized-volume and tolerance behavior. They
-establish numerical software behavior only.
+Mapped tests verify sparse Kronecker-sum shape, ordering, dtype, and spectrum;
+scale-invariant normalized-volume behavior; and dense/sparse Hermiticity
+predicates with explicit tolerances. They establish numerical software behavior
+only.

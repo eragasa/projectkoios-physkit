@@ -72,8 +72,8 @@ Keep immutable data and results in frozen, slotted dataclasses when practical.
 
 `UnitSystem` selects a coherent numerical scale. Model and operator boundaries
 retain units, but arrays passed into `projectkoios.physkit.numerics` are stripped
-to plain numerical magnitudes. Numerical results are wrapped with units again by the
-owning model layer. Numerical matrices remain in the selected scale; they are
+to plain numerical magnitudes. Represented operator or model layers wrap numerical
+results with units again. Numerical matrices remain in the selected scale; they are
 not converted wholesale to canonical SI.
 
 For example, `UnitSystem.METAL` uses ångström, dalton, picosecond, electron-volt,
@@ -92,9 +92,12 @@ outputs are correlated. Do not return unrelated arrays that require the caller
 to reconstruct provenance or dimensional relationships.
 
 A concrete results object retains the exact inputs and representations needed to
-interpret it. For example, `Piab1dTiseFdResults` owns its model, interval,
-Hamiltonian, and eigenpairs and exposes energies and eigenvectors as correlated
-accessors. Use `fd` for finite-difference module and type names.
+interpret it. `RealSymmetricEigendecomposition` correlates one unit-aware represented
+operator with its eigenvalues and eigenvectors while the unit-free eigensolver result
+remains an internal numerical-layer output. `Piab1dTiseFdSolution` composes that
+represented decomposition with its model and interval and exposes the Hamiltonian,
+energies, and eigenvectors as correlated accessors. Use `fd` for finite-difference
+module and type names.
 
 Results objects do not absorb campaign metadata, serialization policy, workflow
 state, or manuscript evidence.
