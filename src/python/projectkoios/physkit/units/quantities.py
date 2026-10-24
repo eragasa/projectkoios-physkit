@@ -8,6 +8,7 @@ physical unit and the first-class :class:`Unitless` unit.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pint
@@ -45,6 +46,13 @@ MODEL_SYSTEM_PINT_REGISTRY = pint.UnitRegistry()
 
 class ModelSystemUnit:
     """Nominal runtime base for physical and explicitly unitless values."""
+
+    if TYPE_CHECKING:
+
+        @property
+        def expression(self) -> str:
+            """Return the read-only unit expression shared by concrete units."""
+            ...
 
 
 @dataclass(frozen=True, slots=True)

@@ -24,7 +24,14 @@ The package owns reusable physical-unit and immutable quantity semantics.
 Runtime quantity ownership is explicit rather than structural.
 
 - `ModelSystemUnit` is the nominal base for physical and explicitly unitless values.
+  Its static contract exposes read-only `expression: str`, allowing consumers of a
+  nominally typed quantity unit to read the shared expression without narrowing or
+  casting. The contract is type-checking-only on the base, so it introduces no runtime
+  descriptor: `PhysicalUnit` retains its frozen dataclass field and `Unitless` retains
+  its computed property unchanged.
 - `ModelSystemQuantity` is the nominal base for immutable unit-bearing numerical values.
+  Canonical scalar, vector, matrix, and sparse-matrix quantity fields remain annotated
+  with exact `ModelSystemUnit` ownership.
 - Public numerical records use exact concrete quantity identities where correlation
   depends on ownership.
 - Consumers may deliberately re-export exact PhysKit identities during migration.
