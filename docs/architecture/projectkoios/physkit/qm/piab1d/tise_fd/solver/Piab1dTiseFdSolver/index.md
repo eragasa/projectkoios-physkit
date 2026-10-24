@@ -10,9 +10,11 @@ accepted.
 
 The construction uses a uniform grid with `interior_points + 2` total points,
 homogeneous Dirichlet boundaries, the centered three-point Laplacian, zero
-interior potential, and a complete unit-aware real-symmetric eigendecomposition
-composed over the unit-free backend. Binding the model does not change those
-represented numerical or physical choices.
+interior potential, and a complete unit-aware real-symmetric eigensystem
+obtained through `SpectralDecomposition(hamiltonian).eigensystem()`. The
+`SpectralDecomposition` constructor performs the complete solve eagerly.
+Binding the model does not change those represented numerical or physical
+choices.
 
 ## Local mapping
 

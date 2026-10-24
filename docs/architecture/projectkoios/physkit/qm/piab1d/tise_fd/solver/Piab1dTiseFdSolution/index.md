@@ -3,13 +3,14 @@
 ## Responsibility
 
 `Piab1dTiseFdSolution` is an immutable `ResultsObject` that retains the exact
-`Piab1D`, homogeneous-Dirichlet interval, and complete unit-aware
-`RealSymmetricEigendecomposition` produced by one finite-difference solve. The
-decomposition owns the sparse selected-scale Hamiltonian, energy quantity, and
-unitless eigenvector matrix without duplicate storage.
+`Piab1D`, homogeneous-Dirichlet interval, and complete public `Eigensystem`
+produced through the eager unit-aware spectral façade. The `eigensystem` field
+owns the exact sparse selected-scale Hamiltonian, energy quantity, unitless
+eigenvector matrix, and residual evidence without duplicate storage.
 
-The compatibility accessors `hamiltonian`, `eigenpairs`, `energies`, and
-`eigenvectors` return objects owned by that decomposition. Additional accessors
+The established `eigenpairs` compatibility accessor returns that exact
+eigensystem. The `hamiltonian`, `energies`, and `eigenvectors` projections
+return objects owned by the eigensystem. Additional accessors
 expose the interior-point count, spacing, and closed-form spectrum of the
 represented tridiagonal matrix. `Piab1dTiseFdResults` is an exact alias for this
 canonical type.

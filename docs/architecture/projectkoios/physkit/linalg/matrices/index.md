@@ -10,6 +10,9 @@ binary64 or complex128 inputs are copied into unitless PhysKit quantities.
 `MatrixVerifier.is_hermitian` delegates to the unit-free sparse-safe numerical
 predicate and never densifies sparse input. It establishes a represented
 software property; it does not retain scientific acceptance policy.
+Hermiticity is an operator-only property and is distinct from eigenpair residual
+analysis of a correlated operator, eigenvalue vector, and eigenvector matrix,
+which belongs to `linalg.eigen`.
 
 ## Public contracts
 

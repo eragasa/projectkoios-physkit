@@ -92,12 +92,17 @@ outputs are correlated. Do not return unrelated arrays that require the caller
 to reconstruct provenance or dimensional relationships.
 
 A concrete results object retains the exact inputs and representations needed to
-interpret it. `RealSymmetricEigendecomposition` correlates one unit-aware represented
-operator with its eigenvalues and eigenvectors while the unit-free eigensolver result
-remains an internal numerical-layer output. `Piab1dTiseFdSolution` composes that
-represented decomposition with its model and interval and exposes the Hamiltonian,
-energies, and eigenvectors as correlated accessors. Use `fd` for finite-difference
-module and type names.
+interpret it. `SpectralDecomposition(matrix)` eagerly computes the complete N-state
+solution and residual evidence; `.eigensystem(n_rank=None)` returns the retained public
+`Eigensystem` or an immutable lowest prefix without another solve. `max_rank` means
+matrix dimension N, never a tolerance-dependent numerical rank. The eigensystem
+correlates the exact unit-aware represented matrix with eigenvalues, eigenvectors, and
+supplied residual evidence, while unit-free eigensolver outputs remain numerical-layer
+details. Direct `Eigensystem` construction checks structural correlation but does not
+verify the eigen-equation or derive residuals. `Piab1dTiseFdSolution` composes that
+eigensystem with its model and interval and exposes the Hamiltonian, energies, and
+eigenvectors as correlated accessors. Use `fd` for finite-difference module and type
+names.
 
 Results objects do not absorb campaign metadata, serialization policy, workflow
 state, or manuscript evidence.

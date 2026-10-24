@@ -5,7 +5,7 @@
 This module constructs a uniform interior discretization for a solver-bound
 `Piab1D`, composes its selected-scale kinetic and zero-potential operators, and
 solves the complete real-symmetric finite Hamiltonian as one represented,
-unit-aware eigendecomposition.
+unit-aware eigensystem.
 
 ## Public classes
 

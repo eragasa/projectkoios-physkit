@@ -4,15 +4,15 @@
 
 This package owns the homogeneous-Dirichlet, second-order centered-difference
 stationary solution for one `Piab1D` model. It retains the represented interval,
-sparse Hamiltonian and complete represented real-symmetric eigendecomposition
-in model-system units.
+sparse Hamiltonian and complete represented real-symmetric eigensystem in
+model-system units.
 
 ## Public contracts
 
 - `Piab1dTiseFdSolver` binds one `Piab1D` at construction and accepts only the
   interior-point count when solving.
 - `Piab1dTiseFdSolution` correlates that model and grid with one unit-aware
-  decomposition and exposes its Hamiltonian, energies, and eigenvectors.
+  eigensystem and exposes its Hamiltonian, energies, and eigenvectors.
 - `Piab1dTiseFdResults` is an exact compatibility alias for the canonical
   solution type.
 

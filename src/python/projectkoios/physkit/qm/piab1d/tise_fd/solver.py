@@ -18,10 +18,7 @@ from projectkoios.physkit.discretization.boundary_conditions import (
 )
 from projectkoios.physkit.discretization.cartesian_grids import UniformCartesianGrid1D
 from projectkoios.physkit.discretization.intervals import DirichletInterval
-from projectkoios.physkit.linalg.eigenproblems import (
-    RealSymmetricEigendecomposer,
-    RealSymmetricEigendecomposition,
-)
+from projectkoios.physkit.linalg.eigen import Eigensystem, SpectralDecomposition
 from projectkoios.physkit.operators.operators_1d import (
     SecondOrderCentralDifferenceLaplacian1D,
 )
@@ -49,13 +46,13 @@ class Piab1dTiseFdSolution(ResultsObject):
 
     model: Piab1D
     interval: DirichletInterval
-    decomposition: RealSymmetricEigendecomposition
+    eigensystem: Eigensystem
 
     def __post_init__(self) -> None:
         """Check each finite-difference TISE response argument."""
         self._check_arg_model()
         self._check_arg_interval()
-        self._check_arg_decomposition()
+        self._check_arg_eigensystem()
 
     def _check_arg_model(self) -> None:
         """Require the PIAB1D model represented by the discretization."""
@@ -67,30 +64,32 @@ class Piab1dTiseFdSolution(ResultsObject):
         if not isinstance(self.interval, DirichletInterval):
             raise TypeError("interval must be DirichletInterval")
 
-    def _check_arg_decomposition(self) -> None:
-        """Require a complete model-unit sparse Hamiltonian decomposition."""
-        if not isinstance(self.decomposition, RealSymmetricEigendecomposition):
-            raise TypeError("decomposition must be RealSymmetricEigendecomposition")
-        operator = self.decomposition.operator
-        if not isinstance(operator, SparseMatrixQuantity):
-            raise TypeError("decomposition operator must be SparseMatrixQuantity")
+    def _check_arg_eigensystem(self) -> None:
+        """Require a complete model-unit sparse Hamiltonian eigensystem."""
+        if not isinstance(self.eigensystem, Eigensystem):
+            raise TypeError("eigensystem must be Eigensystem")
+        matrix = self.eigensystem.matrix
+        if not isinstance(matrix, SparseMatrixQuantity):
+            raise TypeError("eigensystem matrix must be SparseMatrixQuantity")
         points = self.interval.interior_points
-        if operator.shape != (points, points):
+        if matrix.shape != (points, points):
             raise ValueError("Hamiltonian must match the interval dimension")
-        if operator.unit != self.model.unit_system.energy_unit:
+        if matrix.unit != self.model.unit_system.energy_unit:
             raise ValueError("Hamiltonian must use the model energy unit")
-        if not self.decomposition.is_complete:
-            raise ValueError("decomposition must span the Hamiltonian")
+        if not isinstance(self.eigensystem.eigenvectors, MatrixQuantity):
+            raise TypeError("eigensystem eigenvectors must be MatrixQuantity")
+        if not self.eigensystem.is_complete:
+            raise ValueError("eigensystem must span the Hamiltonian")
 
     @property
     def hamiltonian(self) -> SparseMatrixQuantity:
         """Return the represented sparse Hamiltonian."""
-        return cast(SparseMatrixQuantity, self.decomposition.operator)
+        return cast(SparseMatrixQuantity, self.eigensystem.matrix)
 
     @property
-    def eigenpairs(self) -> RealSymmetricEigendecomposition:
-        """Return the represented decomposition under the compatibility name."""
-        return self.decomposition
+    def eigenpairs(self) -> Eigensystem:
+        """Return the eigensystem under the established compatibility name."""
+        return self.eigensystem
 
     @property
     def interior_points(self) -> int:
@@ -105,12 +104,12 @@ class Piab1dTiseFdSolution(ResultsObject):
     @property
     def energies(self) -> VectorQuantity:
         """Return the ordered finite-difference energy eigenvalues."""
-        return self.decomposition.eigenvalues
+        return self.eigensystem.eigenvalues
 
     @property
     def eigenvectors(self) -> MatrixQuantity:
         """Return the ordered column eigenvectors."""
-        return self.decomposition.eigenvectors
+        return self.eigensystem.eigenvectors
 
     def closed_form_discrete_energies(self) -> VectorQuantity:
         """Return the exact spectrum of the represented tridiagonal matrix."""
@@ -157,7 +156,7 @@ Piab1dTiseFdResults = Piab1dTiseFdSolution
 class Piab1dTiseFdSolver:
     """Solve one ``Piab1D`` TISE with finite-difference machinery."""
 
-    __slots__ = ("model", "_eigendecomposer")
+    __slots__ = ("model",)
 
     def __init__(
         self,
@@ -168,7 +167,6 @@ class Piab1dTiseFdSolver:
         if not isinstance(model, Piab1D):
             raise TypeError("model must be Piab1D")
         self.model = model
-        self._eigendecomposer = RealSymmetricEigendecomposer()
 
     def solve(
         self,
@@ -224,9 +222,9 @@ class Piab1dTiseFdSolver:
             kinetic_energy=kinetic,
             potential=potential,
         ).matrix()
-        decomposition = self._eigendecomposer.execute(hamiltonian)
+        eigensystem = SpectralDecomposition(hamiltonian).eigensystem()
         return Piab1dTiseFdSolution(
             model=model,
             interval=interval,
-            decomposition=decomposition,
+            eigensystem=eigensystem,
         )

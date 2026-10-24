@@ -8,11 +8,14 @@ algorithms over unit-free NumPy dense and SciPy sparse matrices.
 `RealSymmetricEigenpairResult` contains immutable numerical eigenvalue and
 eigenvector arrays only. `RealSymmetricEigenpairSolver` validates exact symmetry
 and delegates to dense or sparse SciPy algorithms while preserving canonical
-ordered, sign-normalized eigenvectors.
+ordered, sign-normalized eigenvectors. Its raw `execute_lowest` capability
+remains available to numerical users; represented `linalg.eigen` construction
+uses the complete solver once and performs later rank selection from stored
+evidence.
 
 The result is a numerical backend output, not the represented scientific
 operator decomposition. The latter is owned by
-`projectkoios.physkit.linalg.eigenproblems.real_symmetric`.
+`projectkoios.physkit.linalg.eigen`.
 
 ## Local mapping
 

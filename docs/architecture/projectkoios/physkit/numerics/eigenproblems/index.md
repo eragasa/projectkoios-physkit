@@ -2,12 +2,13 @@
 
 ## Current responsibility
 
-This package owns unit-free eigensolver algorithms and their immutable numerical
-array outputs. It accepts NumPy/SciPy matrices, not quantity-bearing operators.
-Represented units and scientific decomposition identity belong to
-`projectkoios.physkit.linalg.eigenproblems`.
+This package owns unit-free eigensolver algorithms, their immutable numerical
+array outputs, and generic eigenpair residual kernels. It accepts NumPy/SciPy
+matrices, not quantity-bearing operators. Represented units, diagnostic policy,
+and scientific decomposition identity belong to higher layers.
 
 ## Navigation
 
 - [Module `real_symmetric`](real_symmetric/index.md)
+- [Module `residuals`](residuals/index.md)
 - [Parent package](../index.md)
