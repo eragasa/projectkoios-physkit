@@ -1,28 +1,44 @@
 # Package `projectkoios.physkit.linalg`
 
-## Current responsibility
+## Responsibility
 
-This package is the public generic linear-algebra boundary for finite raw and
-unit-aware matrix representations. It composes canonical quantities from
-`projectkoios.physkit.units` with unit-free algorithms from
-`projectkoios.physkit.numerics` without duplicating either ownership layer.
+This structural package organizes generic finite-matrix verification, mathematical
+matrix operations, and eigensystem contracts. It defines no numerical behavior and
+exports no module-owned or subpackage-owned identities from `__init__.py`.
 
-Callers may verify raw NumPy dense or SciPy CSR matrices and their PhysKit
-quantity equivalents. Quantity-aware matrix norms accept only canonical real or complex
-dense or sparse quantities, delegate raw magnitudes to exact Optimization owners, and
-restore the exact input unit. The explicit `linalg.eigen` namespace accepts unit-aware
-dense or sparse matrices, restores units around unit-free backends, and retains
-per-eigenpair residual evidence without acceptance policy.
+## Canonical ownership paths
 
-## Public contract
+- [`matrices`](matrices/index.md) owns raw-or-quantity matrix verification and explicit
+  canonical dense conversion.
+- [`matrix`](matrix/index.md) organizes mathematical matrix operation families.
+- [`matrix.norm`](matrix/norm/index.md) owns quantity-aware matrix norms.
+- [`eigen`](eigen/index.md) owns eigensystem and spectral-decomposition contracts.
 
-The package facade re-exports deliberate exact identities from `matrices` and
-`matrix.norm`. Matrix-norm semantics and iterative controls reuse their exact
-Optimization identities; PhysKit adds only quantity ownership, explicit sparse spectral
-selection, and unit restoration. Spectral-decomposition contracts remain under the
-explicit `linalg.eigen` namespace. Only real-symmetric spectral decomposition is
-currently established. Generic matrix verification and matrix norms support real and
-complex matrices but do not imply a validated complex-Hermitian decomposition contract.
+Callers import public identities from the narrowest owning module or integration
+package. Parent-package convenience re-exports are not part of the contract.
+
+## Representation boundaries
+
+`matrices` accepts raw NumPy dense arrays, raw SciPy CSR values, and canonical PhysKit
+matrix quantities because verification owns raw-to-quantity canonicalization.
+
+`matrix.norm` accepts only canonical real/complex dense/sparse matrix quantities. It
+delegates unit-free arithmetic to exact Optimization owners and restores the exact input
+unit.
+
+`eigen` accepts its documented unit-aware represented matrices and retains correlated
+eigenvalue, eigenvector, and residual evidence. Matrix verification, matrix norms, and
+spectral decomposition remain separate ownership contracts.
+
+## Package initializer
+
+`projectkoios.physkit.linalg.__all__` is empty. The initializer performs no eager imports,
+wrapper construction, aliasing, dispatch, or compatibility behavior.
+
+## Local mapping
+
+- Package initializer: `src/python/projectkoios/physkit/linalg/__init__.py`
+- Tests: `tests/projectkoios/physkit/linalg/test__linalg_public_api.py`
 
 ## Navigation
 
@@ -30,8 +46,3 @@ complex matrices but do not imply a validated complex-Hermitian decomposition co
 - [Package `matrix`](matrix/index.md)
 - [Package `eigen`](eigen/index.md)
 - [Parent package](../index.md)
-
-## Local mapping
-
-- Code: `src/python/projectkoios/physkit/linalg/`
-- Tests: `tests/projectkoios/physkit/linalg/`

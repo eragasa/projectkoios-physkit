@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from scipy import sparse
 
-from projectkoios.physkit.linalg import MatrixVerifier
+from projectkoios.physkit.linalg.matrices import MatrixVerifier
 from projectkoios.physkit.units import ComplexSparseMatrixQuantity, Unitless
 
 

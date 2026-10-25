@@ -10,10 +10,9 @@ algorithm-selection, result, and failure contracts.
 
 - [`norm`](norm/index.md) owns quantity-aware matrix-norm evaluation.
 
-The package `__init__.py` exports the exact `norm` subpackage identity. It does not
-flatten norm classes into the `matrix` namespace. The higher-level
-`projectkoios.physkit.linalg` facade deliberately re-exports the four identities needed
-to invoke norm evaluation.
+The package `__init__.py` exports no identities. Callers import the norm integration
+surface directly from `projectkoios.physkit.linalg.matrix.norm`. Neither `matrix` nor
+`linalg` flattens norm classes into a broader namespace.
 
 ## Ownership boundary
 

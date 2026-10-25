@@ -3,7 +3,7 @@
 import numpy as np
 from scipy import sparse
 
-from projectkoios.physkit.linalg import VerifiedMatrixUtils
+from projectkoios.physkit.linalg.matrices import VerifiedMatrixUtils
 from projectkoios.physkit.units import (
     MatrixQuantity,
     PhysicalUnit,

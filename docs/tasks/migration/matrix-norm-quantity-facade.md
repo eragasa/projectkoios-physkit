@@ -1,6 +1,7 @@
 # Matrix-quantity norm facade
 
-**Status:** Implemented and qualified at the canonical `matrix.norm` path.
+**Status:** Implemented and qualified at the canonical `matrix.norm` path with
+structural parent package initializers.
 
 ## Purpose
 
@@ -60,12 +61,10 @@ the PhysKit facade and use Optimization directly.
 - `SparseSpectralNormOptionsEnum`
 - exact Optimization `ScipyCsrSpectralNormControls`
 
-`projectkoios.physkit.linalg.__all__` exposes the KSD-facing facade identities:
-
-- `MatrixNorm`
-- exact Optimization `MatrixNormEnum`
-- `SparseSpectralNormOptionsEnum`
-- exact Optimization `ScipyCsrSpectralNormControls`
+`projectkoios.physkit.linalg.__all__` and
+`projectkoios.physkit.linalg.matrix.__all__` are empty. These structural packages do not
+flatten norm identities. KSD imports the integration surface directly from
+`projectkoios.physkit.linalg.matrix.norm`.
 
 Optimization's `MatrixNormABC` and concrete backend classes retain their defining
 Optimization imports. PhysKit does not re-export them as convenience aliases.
@@ -299,19 +298,22 @@ The capability does not provide or preserve:
 
 The Frobenius integration is committed locally as
 `025e0d5f16899c85b6fa3bfb034972343e0e98dc`. The initial quantity-aware facade is
-committed locally as `749920f4c3518455e17ae8cab0f2bd89d86a7eb4`. Neither commit has
-been pushed.
+committed locally as `749920f4c3518455e17ae8cab0f2bd89d86a7eb4`. The canonical
+`matrix.norm` relocation is committed locally as
+`b05763e69317d363a1c8906da975c0c7b19a0ec5`. None of these commits has been pushed.
 
 The operator subsequently selected `projectkoios.physkit.linalg.matrix.norm` as the
 canonical defining package so a future matrix-decomposition capability can occupy the
 sibling `projectkoios.physkit.linalg.matrix.decomposition` package. The relocation must:
 
 1. remove the provisional `matrix_norms` defining path without an alias;
-2. preserve the top-level `projectkoios.physkit.linalg` facade identities;
-3. mirror source, tests, and architecture under `matrix/norm`;
-4. rerun complete qualification and installed-wheel inspection; and
-5. record the reviewed relocation in one authorized local follow-up commit.
+2. mirror source, tests, and architecture under `matrix/norm`;
+3. keep `linalg` and `linalg.matrix` structural with empty `__all__` declarations;
+4. retain `linalg.matrix.norm` as the narrow integration package;
+5. rerun complete qualification and installed-wheel inspection; and
+6. record the reviewed package-boundary correction in local history before publication.
 
-The operator authorized the local follow-up commit after review found no blocking
-issues. No push, release, tag, merge, KSD mutation, or matrix-decomposition migration is
-authorized.
+The operator authorized one local package-boundary correction commit and authorized
+updating KSD after the corrected PhysKit revision becomes remotely resolvable. No
+PhysKit push, release, tag, merge, KSD mutation, or matrix-decomposition migration is
+authorized until the required publication step is explicitly authorized.
