@@ -66,8 +66,8 @@ arithmetic owned by Numerics.
 
 The generic numerical calculations are consumed from the
 `projectkoios-optimization` distribution at exact commit
-`3cd32ea8985a855bcdbaffbf89af95e970b3bf14`, tree
-`7596151740065d63e0bcfb61629ea3a57ae760bb`.
+`31ce3de66a46302e21b87189b1af4ce78adc0f7d`, tree
+`44b33434f4a2226045ef9db35704567df4b78b6f`.
 
 - `projectkoios.numerics.finite_periodic.finite_series` fixes
   $\sum_j c_j\exp(+2\pi i\,x\cdot m_j)$ without normalization.
@@ -83,8 +83,10 @@ The generic numerical calculations are consumed from the
   separable evaluation of complete or selected matrix series.
 - `projectkoios.numerics.finite_periodic.numpy.transform_diagnostics` owns unit-free
   Parseval reductions and origin-aware cyclic Hermiticity pairing.
-- `projectkoios.numerics.linalg.frobenius` returns deterministic raw power and its
-  square root for finite built-in complex tuple matrices.
+- `projectkoios.numerics.linalg.frobenius` retains the dependency-free detailed
+  Frobenius result for finite built-in complex tuple matrices.
+- `projectkoios.numerics.linalg.numpy.frobenius` owns direct dense-array
+  `NumpyFrobeniusPower` and `NumpyFrobeniusNorm` scalar evaluations.
 - `projectkoios.numerics.linalg.hermitian_spectrum` owns normalized batch
   definitions, tolerances, diagnostics, results, validation, and explicit
   Hermitian representatives.

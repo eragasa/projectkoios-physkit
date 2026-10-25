@@ -5,6 +5,7 @@ from typing import Any, cast
 import numpy as np
 import pytest
 
+from projectkoios.numerics.linalg.numpy.frobenius import NumpyFrobeniusNorm
 from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeDimension,
     LatticeDisplacement,
@@ -13,6 +14,7 @@ from projectkoios.physkit.periodic.lattice.hopping import (
     BlockHoppingModel,
     BlockHoppingTerm,
 )
+from projectkoios.physkit.solidstate.tb import diagnostics as diagnostics_module
 from projectkoios.physkit.solidstate.tb.diagnostics import (
     BlockHoppingHermiticityAnalyzer,
 )
@@ -74,6 +76,31 @@ def test__execute__compares_pairs_once_and_reports_missing_targets() -> None:
     assert result.maximum_frobenius_defect is not None
     assert result.maximum_frobenius_defect.magnitude == 0.5
     assert result.maximum_frobenius_defect.unit == model.energy_unit
+
+
+def test__execute__delegates_finite_defect_matrices_to_numerics(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[np.ndarray] = []
+
+    def recording_frobenius_norm(matrix: np.ndarray, /) -> NumpyFrobeniusNorm:
+        calls.append(matrix)
+        return NumpyFrobeniusNorm(matrix)
+
+    monkeypatch.setattr(
+        diagnostics_module,
+        "NumpyFrobeniusNorm",
+        recording_frobenius_norm,
+    )
+    negative = np.asarray(((1.0 + 0.0j,),), dtype=np.complex128)
+    positive = np.asarray(((2.0 + 0.0j,),), dtype=np.complex128)
+
+    BlockHoppingHermiticityAnalyzer().execute(
+        _model((((-1, 0), negative), ((1, 0), positive)))
+    )
+
+    assert len(calls) == 2
+    assert all(np.array_equal(matrix, np.asarray(((1.0 + 0.0j,),))) for matrix in calls)
 
 
 def test__execute__reports_no_maximum_when_every_target_is_missing() -> None:

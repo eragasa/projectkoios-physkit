@@ -17,11 +17,13 @@ the squared energy unit and can sum power outside any explicit retained inventor
 
 ## Numerical boundary
 
-Unit-free matrix reduction delegates to
-`projectkoios.numerics.linalg.frobenius.complex_matrix_frobenius` at the exact
-Optimization dependency revision. PhysKit converts immutable coefficient blocks
-to the owner's backend-free tuple representation and restores hopping-model,
-basis, displacement, and energy or squared-energy unit semantics.
+Unit-free dense matrix reduction delegates directly to
+`projectkoios.numerics.linalg.numpy.frobenius.NumpyFrobeniusNorm` and
+`NumpyFrobeniusPower` at the exact Optimization dependency revision. PhysKit
+passes immutable coefficient arrays without tuple conversion and restores
+hopping-model, basis, displacement, and energy or squared-energy unit semantics.
+Nonfinite block subtraction is rejected at its owning arithmetic boundary before
+norm evaluation.
 
 ## Exclusions
 

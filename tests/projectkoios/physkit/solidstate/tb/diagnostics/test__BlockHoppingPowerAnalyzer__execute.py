@@ -5,10 +5,7 @@ from typing import Any, cast
 import numpy as np
 import pytest
 
-from projectkoios.numerics.linalg.frobenius import (
-    ComplexMatrixFrobenius,
-    complex_matrix_frobenius,
-)
+from projectkoios.numerics.linalg.numpy.frobenius import NumpyFrobeniusPower
 from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeDimension,
     LatticeDisplacement,
@@ -67,32 +64,28 @@ def test__execute__returns_raw_powers_in_squared_energy_units() -> None:
     assert result.total_power.unit == PhysicalUnit("(electron_volt) ** 2")
 
 
-def test__execute__delegates_exact_complex_tuples_to_numerics(
+def test__execute__delegates_exact_dense_matrices_to_numerics(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    calls: list[tuple[tuple[complex, ...], ...]] = []
+    calls: list[np.ndarray] = []
 
-    def recording_frobenius(
-        matrix: tuple[tuple[complex, ...], ...], /
-    ) -> ComplexMatrixFrobenius:
+    def recording_frobenius_power(matrix: np.ndarray, /) -> NumpyFrobeniusPower:
         calls.append(matrix)
-        return complex_matrix_frobenius(matrix)
+        return NumpyFrobeniusPower(matrix)
 
     monkeypatch.setattr(
         diagnostics_module,
-        "complex_matrix_frobenius",
-        recording_frobenius,
+        "NumpyFrobeniusPower",
+        recording_frobenius_power,
     )
 
-    BlockHoppingPowerAnalyzer().execute(_model(PhysicalUnit("electron_volt")))
+    model = _model(PhysicalUnit("electron_volt"))
+    BlockHoppingPowerAnalyzer().execute(model)
 
-    assert (
-        calls
-        == [
-            ((3.0 + 0.0j, 4.0 + 0.0j), (0.0 + 0.0j, 0.0 + 0.0j)),
-            ((0.0 + 1.0j, 2.0 + 0.0j), (2.0 + 0.0j, 0.0 + 0.0j)),
-        ]
-        * 2
+    expected = tuple(term.coefficient.magnitude for term in model.terms) * 2
+    assert len(calls) == len(expected)
+    assert all(
+        actual is retained for actual, retained in zip(calls, expected, strict=True)
     )
 
 

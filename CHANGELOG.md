@@ -6,7 +6,8 @@
   unit-aware Bloch evaluator backed by the exact reviewed
   `projectkoios.numerics` finite Fourier-series owner.
 - Advance the exact `projectkoios-optimization` dependency revision while
-  preserving the finite Fourier-series implementation consumed by PhysKit.
+  preserving finite Fourier-series behavior and adopting direct dense Frobenius
+  power and norm evaluations for unit-aware block diagnostics.
 
 ## 0.1.2 - 2026-10-11
 

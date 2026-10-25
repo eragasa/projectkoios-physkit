@@ -20,9 +20,9 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from projectkoios.numerics.linalg.frobenius import (
-    ComplexMatrixFrobenius,
-    complex_matrix_frobenius,
+from projectkoios.numerics.linalg.numpy.frobenius import (
+    NumpyFrobeniusNorm,
+    NumpyFrobeniusPower,
 )
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.periodic.lattice.finite_domain import (
@@ -346,19 +346,6 @@ class BlockHoppingCoefficientComparison:
         return self.frobenius_defect is not None
 
 
-def _block_frobenius(values: np.ndarray, /) -> ComplexMatrixFrobenius:
-    """Adapt one PhysKit block to the canonical unit-free Numerics reduction."""
-    matrix = tuple(tuple(complex(entry) for entry in row) for row in values)
-    try:
-        return complex_matrix_frobenius(matrix)
-    except ValueError as error:
-        if not bool(np.isfinite(values).all()):
-            raise FloatingPointError(
-                "block arithmetic produced nonfinite Frobenius input"
-            ) from error
-        raise
-
-
 def _block_hermiticity_comparisons(
     model: BlockHoppingModel,
 ) -> tuple[BlockHoppingCoefficientComparison, ...]:
@@ -382,12 +369,16 @@ def _block_hermiticity_comparisons(
                     target_term.coefficient.magnitude
                     - source_term.coefficient.magnitude.conj().T
                 )
+            if not bool(np.isfinite(difference).all()):
+                raise FloatingPointError(
+                    "block arithmetic produced nonfinite Frobenius input"
+                )
             comparisons.append(
                 BlockHoppingCoefficientComparison(
                     source=source_term.displacement,
                     target=target_displacement,
                     frobenius_defect=ScalarQuantity(
-                        _block_frobenius(difference).norm,
+                        NumpyFrobeniusNorm(difference).result(),
                         model.energy_unit,
                     ),
                 )
@@ -494,7 +485,7 @@ def _block_powers(model: BlockHoppingModel) -> tuple[BlockHoppingPower, ...]:
             BlockHoppingPower(
                 displacement=term.displacement,
                 frobenius_power=ScalarQuantity(
-                    _block_frobenius(term.coefficient.magnitude).power,
+                    NumpyFrobeniusPower(term.coefficient.magnitude).result(),
                     squared_unit,
                 ),
             )
