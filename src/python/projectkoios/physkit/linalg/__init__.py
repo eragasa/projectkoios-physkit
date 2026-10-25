@@ -1,4 +1,10 @@
-"""Generic linear algebra over raw and unit-aware finite matrices."""
+"""Expose deliberate generic linear-algebra identities.
+
+The facade exports raw-or-quantity matrix verification from :mod:`.matrices` and the
+quantity-only matrix-norm invocation surface from :mod:`.matrix.norm`. Every exported
+object retains its defining-module identity; this module defines no wrapper classes,
+compatibility aliases, or numerical behavior.
+"""
 
 from .matrices import (
     CsrSparseMatrix,
@@ -7,7 +13,7 @@ from .matrices import (
     VerifiedMatrix,
     VerifiedMatrixUtils,
 )
-from .matrix_norms import (
+from .matrix.norm import (
     MatrixNorm,
     MatrixNormEnum,
     ScipyCsrSpectralNormControls,

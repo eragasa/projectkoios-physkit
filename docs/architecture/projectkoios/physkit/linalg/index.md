@@ -17,7 +17,7 @@ per-eigenpair residual evidence without acceptance policy.
 ## Public contract
 
 The package facade re-exports deliberate exact identities from `matrices` and
-`matrix_norms`. Matrix-norm semantics and iterative controls reuse their exact
+`matrix.norm`. Matrix-norm semantics and iterative controls reuse their exact
 Optimization identities; PhysKit adds only quantity ownership, explicit sparse spectral
 selection, and unit restoration. Spectral-decomposition contracts remain under the
 explicit `linalg.eigen` namespace. Only real-symmetric spectral decomposition is
@@ -27,7 +27,7 @@ complex matrices but do not imply a validated complex-Hermitian decomposition co
 ## Navigation
 
 - [Module `matrices`](matrices/index.md)
-- [Package `matrix_norms`](matrix_norms/index.md)
+- [Package `matrix`](matrix/index.md)
 - [Package `eigen`](eigen/index.md)
 - [Parent package](../index.md)
 

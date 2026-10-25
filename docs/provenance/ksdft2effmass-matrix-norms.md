@@ -31,7 +31,7 @@ qualification remain Optimization-owned.
 ## PhysKit destination
 
 ```text
-src/python/projectkoios/physkit/linalg/matrix_norms/
+src/python/projectkoios/physkit/linalg/matrix/norm/
 ├── base.py
 ├── frobenius.py
 ├── maximum_absolute_entry.py

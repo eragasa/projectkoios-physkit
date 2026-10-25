@@ -1,6 +1,6 @@
 # Matrix-quantity norm facade
 
-**Status:** Implemented and qualified locally; uncommitted review pending.
+**Status:** Implemented and qualified at the canonical `matrix.norm` path.
 
 ## Purpose
 
@@ -14,12 +14,14 @@ provenance and verification context, not compatibility requirements.
 ## Package layout
 
 ```text
-src/python/projectkoios/physkit/linalg/matrix_norms/
+src/python/projectkoios/physkit/linalg/matrix/
 ├── __init__.py
-├── base.py
-├── frobenius.py
-├── maximum_absolute_entry.py
-└── spectral.py
+└── norm/
+    ├── __init__.py
+    ├── base.py
+    ├── frobenius.py
+    ├── maximum_absolute_entry.py
+    └── spectral.py
 ```
 
 - `base.py` owns `BaseMatrixQuantityNorm` and the `MatrixNorm` facade. It imports the
@@ -47,7 +49,7 @@ the PhysKit facade and use Optimization directly.
 
 ## Public identities
 
-`projectkoios.physkit.linalg.matrix_norms.__all__` deliberately exposes:
+`projectkoios.physkit.linalg.matrix.norm.__all__` deliberately exposes:
 
 - `BaseMatrixQuantityNorm`
 - `MatrixNorm`
@@ -66,8 +68,7 @@ the PhysKit facade and use Optimization directly.
 - exact Optimization `ScipyCsrSpectralNormControls`
 
 Optimization's `MatrixNormABC` and concrete backend classes retain their defining
-Optimization imports. PhysKit imports them for implementation and typing but does not
-re-export them as convenience aliases.
+Optimization imports. PhysKit does not re-export them as convenience aliases.
 
 The supported surface contains no string selector, mapping accessor, `ncv` alias,
 compatibility alias, callable evaluator shortcut, or separate factory.
@@ -228,8 +229,8 @@ The exact pin is used directly; no unreviewed merge revision is substituted.
 ## Verification
 
 ```text
-tests/projectkoios/physkit/linalg/matrix_norms/
-├── test__matrix_norms_public_api.py
+tests/projectkoios/physkit/linalg/matrix/norm/
+├── test__matrix_norm_public_api.py
 ├── test__BaseMatrixQuantityNorm.py
 ├── test__MatrixNorm.py
 ├── test__FrobeniusMatrixNorm.py
@@ -256,7 +257,7 @@ Verification covers:
   matrix construction remains owned by the quantity classes; and
 - unchanged existing block-diagnostic behavior.
 
-Qualification completed with 38 focused tests and the full suite at 1545 passed plus
+Qualification completed with 39 focused tests and the full suite at 1546 passed plus
 20 passed subtests. Ruff checks and formatting, compileall, exact lock verification,
 `git diff --check`, fresh-sdist wheel construction, metadata/payload inspection, and an
 isolated installed-wheel dense/complete-sparse/iterative-sparse smoke test passed.
@@ -267,7 +268,7 @@ PhysKit has no configured strict static checker; that limitation is reported exp
 Current-state documentation mirrors each package, module, and class under:
 
 ```text
-docs/architecture/projectkoios/physkit/linalg/matrix_norms/
+docs/architecture/projectkoios/physkit/linalg/matrix/norm/
 ```
 
 Implementation also adds a KSD prior-art provenance page without promising API
@@ -296,14 +297,21 @@ The capability does not provide or preserve:
 
 ## Sequencing
 
-The preceding Frobenius integration is committed locally as
-`025e0d5f16899c85b6fa3bfb034972343e0e98dc` and has not been pushed.
+The Frobenius integration is committed locally as
+`025e0d5f16899c85b6fa3bfb034972343e0e98dc`. The initial quantity-aware facade is
+committed locally as `749920f4c3518455e17ae8cab0f2bd89d86a7eb4`. Neither commit has
+been pushed.
 
-1. Complete and review source-mirrored architecture documentation.
-2. Implement the package exactly as documented.
-3. Repin and regenerate the lock.
-4. Add mapped tests and provenance.
-5. Run complete qualification.
-6. Stop with the facade diff uncommitted for review.
+The operator subsequently selected `projectkoios.physkit.linalg.matrix.norm` as the
+canonical defining package so a future matrix-decomposition capability can occupy the
+sibling `projectkoios.physkit.linalg.matrix.decomposition` package. The relocation must:
 
-No push, second commit, release, tag, merge, or KSD mutation is authorized.
+1. remove the provisional `matrix_norms` defining path without an alias;
+2. preserve the top-level `projectkoios.physkit.linalg` facade identities;
+3. mirror source, tests, and architecture under `matrix/norm`;
+4. rerun complete qualification and installed-wheel inspection; and
+5. record the reviewed relocation in one authorized local follow-up commit.
+
+The operator authorized the local follow-up commit after review found no blocking
+issues. No push, release, tag, merge, KSD mutation, or matrix-decomposition migration is
+authorized.
