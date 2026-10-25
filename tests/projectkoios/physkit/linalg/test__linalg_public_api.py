@@ -2,6 +2,7 @@
 
 import projectkoios.physkit.linalg as linalg
 import projectkoios.physkit.linalg.matrices as matrices
+import projectkoios.physkit.linalg.matrix_norms as matrix_norms
 
 
 def test__linalg_facade__retains_defining_module_identities() -> None:
@@ -13,6 +14,24 @@ def test__linalg_facade__retains_defining_module_identities() -> None:
         "VerifiedMatrix",
         "VerifiedMatrixUtils",
     )
+    matrix_norm_names = (
+        "MatrixNorm",
+        "MatrixNormEnum",
+        "ScipyCsrSpectralNormControls",
+        "SparseSpectralNormOptionsEnum",
+    )
     for name in matrix_names:
         assert getattr(linalg, name) is getattr(matrices, name)
-    assert linalg.__all__ == list(matrix_names)
+    for name in matrix_norm_names:
+        assert getattr(linalg, name) is getattr(matrix_norms, name)
+    assert linalg.__all__ == [
+        "CsrSparseMatrix",
+        "MatrixInput",
+        "MatrixNorm",
+        "MatrixNormEnum",
+        "MatrixVerifier",
+        "ScipyCsrSpectralNormControls",
+        "SparseSpectralNormOptionsEnum",
+        "VerifiedMatrix",
+        "VerifiedMatrixUtils",
+    ]

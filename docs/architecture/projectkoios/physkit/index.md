@@ -47,6 +47,7 @@ Architecture pages follow package-level ownership.
 - [Package `projectkoios.physkit.units`](units/index.md)
 - [Package `projectkoios.physkit.waves`](waves/index.md)
 - [Finite-periodic extraction provenance](../../../provenance/finite-periodic-lattice-source-mapping.md)
+- [Matrix-norm prior-art provenance](../../../provenance/ksdft2effmass-matrix-norms.md)
 
 ## Local mapping
 

@@ -66,8 +66,8 @@ arithmetic owned by Numerics.
 
 The generic numerical calculations are consumed from the
 `projectkoios-optimization` distribution at exact commit
-`31ce3de66a46302e21b87189b1af4ce78adc0f7d`, tree
-`44b33434f4a2226045ef9db35704567df4b78b6f`.
+`2a18e485109e307b2f7928bd0418bcf796aeb0d5`, tree
+`77262fed5d75e7ddf01334321f9fb24bf6d5961e`.
 
 - `projectkoios.numerics.finite_periodic.finite_series` fixes
   $\sum_j c_j\exp(+2\pi i\,x\cdot m_j)$ without normalization.

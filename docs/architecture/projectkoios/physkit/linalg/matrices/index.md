@@ -17,7 +17,8 @@ which belongs to `linalg.eigen`.
 ## Public contracts
 
 - `MatrixInput` is the supported raw-or-quantity input union.
-- `VerifiedMatrix` is the canonical quantity union.
+- `VerifiedMatrix` is the canonical quantity union. Quantity-aware matrix norms consume
+  these nominal quantity classes directly and do not widen their API to raw `MatrixInput`.
 - [`MatrixVerifier`](MatrixVerifier/index.md) owns canonical input retention and
   matrix-property queries.
 - [`VerifiedMatrixUtils`](VerifiedMatrixUtils/index.md) owns uniform explicit

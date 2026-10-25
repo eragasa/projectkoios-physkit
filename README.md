@@ -29,6 +29,9 @@ campaigns, provenance, tolerances, and scientific interpretations. Generic
 finite-periodic domain and represented-operator mechanics adapted from that
 repository are documented in
 [`docs/provenance/finite-periodic-lattice-source-mapping.md`](docs/provenance/finite-periodic-lattice-source-mapping.md).
+Quantity-aware matrix norms delegate their unit-free arithmetic to Optimization; their
+KSD prior-art boundary is documented in
+[`docs/provenance/ksdft2effmass-matrix-norms.md`](docs/provenance/ksdft2effmass-matrix-norms.md).
 
 ## Python package
 

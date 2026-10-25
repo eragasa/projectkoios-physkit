@@ -17,10 +17,10 @@ authors = [
 dependencies = [
   "numpy>=1.26",
   "pandas",
-  "scipy>=1.10",
+  "scipy>=1.18,<2",
   "matplotlib>=3.8",
   "pint>=0.26,<0.27",
-  "projectkoios-optimization[numpy] @ git+https://github.com/eragasa/projectkoios-optimization.git@31ce3de66a46302e21b87189b1af4ce78adc0f7d",
+  "projectkoios-optimization[numpy,scipy] @ git+https://github.com/eragasa/projectkoios-optimization.git@2a18e485109e307b2f7928bd0418bcf796aeb0d5",
   "sympy>=1.12"
 ]
 

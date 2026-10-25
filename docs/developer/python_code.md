@@ -85,6 +85,13 @@ Use `ScalarQuantity`, `VectorQuantity`, `ComplexVectorQuantity`,
 `MatrixQuantity`, and `SparseMatrixQuantity` at package boundaries. Maintain
 canonical immutable CSR storage for sparse matrices.
 
+Quantity-aware matrix norms accept only the nominal real/complex dense/sparse matrix
+quantity classes. Raw ndarray and CSR callers use the exact Optimization APIs directly.
+Sparse spectral quantities require explicit `complete` or `iterative` selection:
+`complete` owns one visible dense materialization boundary, while `iterative` must remain
+sparse and must not fall back. Public controls use the descriptive
+`krylov_dimension` field; `ncv` remains internal to the SciPy owner call.
+
 ## Results objects
 
 A computation returns one immutable object inheriting `ResultsObject` when its

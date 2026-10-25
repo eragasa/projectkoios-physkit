@@ -5,6 +5,10 @@ lives in `ksdft2effmass`. It deliberately rejects a big-bang migration: scientif
 must be able to continue while each small owner contract is designed, qualified, and
 adopted independently.
 
+## Current bounded designs
+
+- [Quantity-aware matrix-norm facade](matrix-norm-quantity-facade.md)
+
 ## Operating principles
 
 Each tranche must be small enough to review and useful without authorizing its

@@ -8,6 +8,8 @@
 - Advance the exact `projectkoios-optimization` dependency revision while
   preserving finite Fourier-series behavior and adopting direct dense Frobenius
   power and norm evaluations for unit-aware block diagnostics.
+- Add quantity-aware Frobenius, spectral, and maximum-absolute-entry matrix norms with
+  exact unit restoration and explicit complete or iterative sparse spectral selection.
 
 ## 0.1.2 - 2026-10-11
 
