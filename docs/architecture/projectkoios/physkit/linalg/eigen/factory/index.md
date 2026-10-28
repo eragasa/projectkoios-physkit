@@ -11,9 +11,11 @@ tolerance policy.
 
 Real dense/CSR quantities select the internal real-symmetric implementation.
 The eager complete sparse path retains the exact-tridiagonal numerical backend
-restriction. Malformed real or complex matrices reject. Exact
-complex-Hermitian quantities raise `UnsupportedSpectralDecompositionError`
-because no complex implementation exists.
+restriction. Dense `ComplexMatrixQuantity` values select the internal
+complex-Hermitian implementation. Malformed real or complex matrices reject.
+Exact complex-Hermitian sparse quantities raise
+`UnsupportedSpectralDecompositionError`; the factory never silently densifies
+them.
 
 The factory is a package collaboration seam, not a supported package export.
 No plugin registry or dynamic algorithm registration is provided.
