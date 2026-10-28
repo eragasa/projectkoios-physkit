@@ -14,9 +14,10 @@ built-in integer below N returns an immutable lowest-prefix eigensystem without
 calling an eigensolver or recomputing residuals. `max_rank` means exactly matrix
 dimension N, never a tolerance-dependent numerical matrix rank.
 
-Only real-symmetric decomposition is implemented. Exact complex-Hermitian
-matrices are recognized but reported as unsupported; the generic `Eigensystem`
-record does not imply a complex solver contract.
+Complete real-symmetric dense/CSR decomposition and complete dense
+complex-Hermitian decomposition are implemented. Complex sparse matrices are
+recognized and checked for exact Hermiticity but remain explicitly unsupported;
+they are never silently densified.
 
 ## Public contracts
 
@@ -36,11 +37,14 @@ real decomposition identity is also an implementation detail.
 
 - Code: `src/python/projectkoios/physkit/linalg/eigen/`
 - Tests: `tests/projectkoios/physkit/linalg/eigen/`
-- Unit-free eigensolver: `projectkoios.physkit.numerics.eigenproblems.real_symmetric`
+- Unit-free eigensolvers:
+  `projectkoios.physkit.numerics.eigenproblems.real_symmetric` and
+  `projectkoios.physkit.numerics.eigenproblems.complex_hermitian`
 - Unit-free residual kernel: `projectkoios.physkit.numerics.eigenproblems.residuals`
 
 ## Navigation
 
 - [Factory module](factory/index.md)
 - [Real implementation](real_symmetric/index.md)
+- [Dense complex implementation](complex_hermitian/index.md)
 - [Parent package](../index.md)

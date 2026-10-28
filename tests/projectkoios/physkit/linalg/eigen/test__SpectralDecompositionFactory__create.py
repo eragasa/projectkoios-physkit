@@ -9,6 +9,9 @@ from projectkoios.physkit.linalg.eigen.errors import (
     UnsupportedSpectralDecompositionError,
 )
 from projectkoios.physkit.linalg.eigen.factory import SpectralDecompositionFactory
+from projectkoios.physkit.numerics.eigenproblems.complex_hermitian import (
+    ComplexHermitianEigenpairSolver,
+)
 from projectkoios.physkit.numerics.eigenproblems.real_symmetric import (
     RealSymmetricEigenpairSolver,
 )
@@ -105,25 +108,48 @@ def test__create__rejects_nonhermitian_complex_matrix(sparse_input: bool) -> Non
         SpectralDecompositionFactory().create(matrix)
 
 
-@pytest.mark.parametrize("sparse_input", [False, True])
-def test__create__reports_exact_complex_hermitian_as_unsupported(
-    sparse_input: bool,
-) -> None:
+def test__create__selects_dense_complex_operation_and_retains_matrix_identity() -> None:
     values = np.array(
         [[1.0 + 0.0j, 1.0j], [-1.0j, 2.0 + 0.0j]],
         dtype=np.complex128,
     )
-    matrix = (
-        ComplexSparseMatrixQuantity.from_csr(
-            sparse.csr_array(values),
-            Unitless(),
-        )
-        if sparse_input
-        else ComplexMatrixQuantity(values, Unitless())
+    matrix = ComplexMatrixQuantity(values, Unitless())
+
+    operation = SpectralDecompositionFactory().create(matrix)
+
+    assert isinstance(operation, SpectralDecompositionABC)
+    assert operation.matrix is matrix
+    assert operation.max_rank == 2
+    assert operation.eigensystem().matrix is matrix
+
+
+def test__create__eagerly_executes_dense_complex_numerical_backend(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    matrix = ComplexMatrixQuantity(np.eye(2, dtype=np.complex128), Unitless())
+
+    def report_execution(*args: object, **kwargs: object) -> None:
+        del args, kwargs
+        raise RuntimeError("complete complex solver executed eagerly")
+
+    monkeypatch.setattr(ComplexHermitianEigenpairSolver, "execute", report_execution)
+
+    with pytest.raises(RuntimeError, match="executed eagerly"):
+        SpectralDecompositionFactory().create(matrix)
+
+
+def test__create__reports_exact_sparse_complex_hermitian_as_unsupported() -> None:
+    values = np.array(
+        [[1.0 + 0.0j, 1.0j], [-1.0j, 2.0 + 0.0j]],
+        dtype=np.complex128,
+    )
+    matrix = ComplexSparseMatrixQuantity.from_csr(
+        sparse.csr_array(values),
+        Unitless(),
     )
 
     with pytest.raises(
         UnsupportedSpectralDecompositionError,
-        match="complex-Hermitian",
+        match="complex-Hermitian sparse",
     ):
         SpectralDecompositionFactory().create(matrix)

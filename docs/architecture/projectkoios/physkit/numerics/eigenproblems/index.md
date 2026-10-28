@@ -9,6 +9,7 @@ and scientific decomposition identity belong to higher layers.
 
 ## Navigation
 
+- [Module `complex_hermitian`](complex_hermitian/index.md)
 - [Module `real_symmetric`](real_symmetric/index.md)
 - [Module `residuals`](residuals/index.md)
 - [Parent package](../index.md)

@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from projectkoios.physkit.linalg.eigen._complex_hermitian import (
+    ComplexHermitianSpectralDecomposition,
+)
 from projectkoios.physkit.linalg.eigen._real_symmetric import (
     RealSymmetricSpectralDecomposition,
 )
@@ -31,19 +34,16 @@ class SpectralDecompositionFactory:
         """Validate the matrix family and construct its eager decomposition."""
         if isinstance(matrix, MatrixQuantity | SparseMatrixQuantity):
             return RealSymmetricSpectralDecomposition(matrix)
-        if isinstance(matrix, ComplexMatrixQuantity | ComplexSparseMatrixQuantity):
-            shape = (
-                matrix.magnitude.shape
-                if isinstance(matrix, ComplexMatrixQuantity)
-                else matrix.shape
-            )
-            dimension = shape[0]
-            if dimension <= 0 or shape != (dimension, dimension):
+        if isinstance(matrix, ComplexMatrixQuantity):
+            return ComplexHermitianSpectralDecomposition(matrix)
+        if isinstance(matrix, ComplexSparseMatrixQuantity):
+            dimension = matrix.shape[0]
+            if dimension <= 0 or matrix.shape != (dimension, dimension):
                 raise ValueError("matrix must be nonempty and square")
             if not MatrixVerifier(matrix).is_hermitian():
                 raise ValueError("matrix must be exactly Hermitian")
             raise UnsupportedSpectralDecompositionError(
-                "complex-Hermitian spectral decomposition is not implemented"
+                "complex-Hermitian sparse spectral decomposition is not implemented"
             )
         raise TypeError(
             "matrix must be a real or complex dense or sparse matrix quantity"

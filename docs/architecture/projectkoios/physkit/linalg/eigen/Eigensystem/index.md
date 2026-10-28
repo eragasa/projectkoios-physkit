@@ -29,9 +29,10 @@ retained supplied evidence. `SpectralDecomposition` owns their computation;
 direct record construction does not establish that the supplied vectors are
 eigenvectors or that the supplied residual evidence was independently derived.
 
-The generic record does not claim that a complex decomposition algorithm is
-implemented. The public façade continues to report exact complex-Hermitian
-matrices as unsupported.
+The generic record is also the represented output of the supported complete
+dense complex-Hermitian decomposition. Complex sparse decomposition remains
+unsupported; structural admission of a directly constructed sparse complex
+record does not imply a sparse solver capability.
 
 ## Local mapping
 

@@ -7,9 +7,10 @@ façade. It invokes the separate top-level `SpectralDecompositionFactory` to
 select and eagerly construct a `SpectralDecompositionABC` product. Construction
 performs the complete N-state eigensolve and residual computation before the
 façade returns. This intentionally permits expensive hidden constructor work.
-The complete sparse real path retains the numerical backend's exact
-tridiagonal restriction, so unsupported nontridiagonal sparse matrices fail at
-construction.
+Real dense/CSR and dense complex-Hermitian matrix quantities are supported. The
+complete sparse real path retains the numerical backend's exact-tridiagonal
+restriction, so unsupported nontridiagonal sparse matrices fail at construction.
+Complex sparse matrices remain explicitly unsupported and are not densified.
 
 `matrix` returns the exact input quantity retained by the selected product.
 `max_rank` returns the matrix dimension N, not a numerical rank estimate.
