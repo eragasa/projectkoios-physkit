@@ -11,6 +11,9 @@ The package owns reduced electronic models for solid-state systems.
 - The plane-wave family consumes
   `projectkoios.physkit.periodic.basis.ReciprocalModeBasis1D`; it does not define a
   second reciprocal-lattice identity.
+- [`frame_transport`](frame_transport/index.md) binds Optimization's unit-free
+  closed-loop polar transport to exact route or one-dimensional periodic-mesh identity,
+  ordered ambient basis, retained frame, and endpoint-sewing semantics.
 
 ## Numerical scope
 
@@ -21,6 +24,8 @@ The maintained plane-wave solver is a direct pedagogical dense implementation.
 - Complete dense eigenpairs are ordered by NumPy's Hermitian eigensolver.
 - Backend-neutral production spectrum operations remain owned by Optimization and are
   not implied by this older pedagogical family.
+- Closed-loop frame transport delegates to Optimization's exact SciPy capability and
+  adds no numerical threshold, retry, fallback, or scientific qualification policy.
 
 ## Evidence limits
 
