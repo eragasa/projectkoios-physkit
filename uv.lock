@@ -560,7 +560,7 @@ wheels = [
 [[package]]
 name = "projectkoios-optimization"
 version = "0.1.0.dev0"
-source = { git = "https://github.com/eragasa/projectkoios-optimization.git?rev=ef608716ae9f515f56406dd517c1a8b7487d3391#ef608716ae9f515f56406dd517c1a8b7487d3391" }
+source = { git = "https://github.com/eragasa/projectkoios-optimization.git?rev=e0749d1efeddbabfafa9edac76d0715912a6c1e3#e0749d1efeddbabfafa9edac76d0715912a6c1e3" }
 
 [package.optional-dependencies]
 numpy = [
@@ -600,7 +600,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=1.26" },
     { name = "pandas" },
     { name = "pint", specifier = ">=0.26,<0.27" },
-    { name = "projectkoios-optimization", extras = ["numpy", "scipy"], git = "https://github.com/eragasa/projectkoios-optimization.git?rev=ef608716ae9f515f56406dd517c1a8b7487d3391" },
+    { name = "projectkoios-optimization", extras = ["numpy", "scipy"], git = "https://github.com/eragasa/projectkoios-optimization.git?rev=e0749d1efeddbabfafa9edac76d0715912a6c1e3" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=4.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.16,<1" },
