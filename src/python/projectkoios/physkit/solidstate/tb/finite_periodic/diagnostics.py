@@ -102,23 +102,28 @@ class FinitePeriodicMatrixParsevalDiagnostics(ResultsObject):
 
 @final
 class FinitePeriodicMatrixParsevalAnalyzer:
-    """Attach squared-energy units to canonical finite Parseval diagnostics."""
+    """Analyze one constructor-bound physical transform for Parseval identity."""
 
-    __slots__ = ()
+    __slots__ = ("_transform",)
 
-    def analyze(
+    def __init__(
         self,
+        *,
         transform: FinitePeriodicMatrixFourierTransformResult,
-    ) -> FinitePeriodicMatrixParsevalDiagnostics:
-        """Return threshold-free unit-aware Parseval evidence."""
+    ) -> None:
         if type(transform) is not FinitePeriodicMatrixFourierTransformResult:
             raise TypeError(
                 "transform must be FinitePeriodicMatrixFourierTransformResult"
             )
-        numerical = NumpyFinitePeriodicParsevalAnalyzer().analyze(
-            transform.source._numerical_definition(),
-            transform._numerical_result(),
-        )
+        self._transform = transform
+
+    def result(self) -> FinitePeriodicMatrixParsevalDiagnostics:
+        """Return threshold-free unit-aware Parseval evidence for the transform."""
+        transform = self._transform
+        numerical = NumpyFinitePeriodicParsevalAnalyzer(
+            definition=transform.source._numerical_definition(),
+            transform_result=transform._numerical_result(),
+        ).result()
         unit = _squared_unit(transform.source.energy_unit)
         return FinitePeriodicMatrixParsevalDiagnostics._from_action(
             transform=transform,
@@ -214,22 +219,27 @@ class FinitePeriodicMatrixHermiticityDiagnostics(ResultsObject):
 
 @final
 class FinitePeriodicMatrixHermiticityAnalyzer:
-    """Attach energy units to canonical cyclic Hermiticity diagnostics."""
+    """Analyze one constructor-bound physical transform for Hermiticity."""
 
-    __slots__ = ()
+    __slots__ = ("_transform",)
 
-    def analyze(
+    def __init__(
         self,
+        *,
         transform: FinitePeriodicMatrixFourierTransformResult,
-    ) -> FinitePeriodicMatrixHermiticityDiagnostics:
-        """Return threshold-free unit-aware coefficient defects."""
+    ) -> None:
         if type(transform) is not FinitePeriodicMatrixFourierTransformResult:
             raise TypeError(
                 "transform must be FinitePeriodicMatrixFourierTransformResult"
             )
-        numerical = NumpyCenteredUniformMeshHermiticityAnalyzer().analyze(
-            transform._numerical_result()
-        )
+        self._transform = transform
+
+    def result(self) -> FinitePeriodicMatrixHermiticityDiagnostics:
+        """Return threshold-free unit-aware defects for the bound transform."""
+        transform = self._transform
+        numerical = NumpyCenteredUniformMeshHermiticityAnalyzer(
+            transform_result=transform._numerical_result()
+        ).result()
         unit = transform.source.energy_unit
         return FinitePeriodicMatrixHermiticityDiagnostics._from_action(
             transform=transform,
