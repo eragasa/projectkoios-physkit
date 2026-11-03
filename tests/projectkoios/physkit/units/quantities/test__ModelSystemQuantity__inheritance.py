@@ -4,6 +4,7 @@ import pytest
 
 from projectkoios.physkit.units.quantities import (
     ComplexMatrixQuantity,
+    ComplexQuantity,
     ComplexSparseMatrixQuantity,
     ComplexVectorQuantity,
     MatrixQuantity,
@@ -18,6 +19,7 @@ from projectkoios.physkit.units.quantities import (
     "quantity_type",
     [
         ScalarQuantity,
+        ComplexQuantity,
         VectorQuantity,
         ComplexVectorQuantity,
         MatrixQuantity,

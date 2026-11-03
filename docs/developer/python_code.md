@@ -81,8 +81,9 @@ and electron-volt–picosecond. Unit conversion may supply a multiplicative
 coefficient, but the represented Laplacian, Hamiltonian, and eigenvalues remain
 well-scaled in the selected units.
 
-Use `ScalarQuantity`, `VectorQuantity`, `ComplexVectorQuantity`,
-`MatrixQuantity`, and `SparseMatrixQuantity` at package boundaries. Maintain
+Use `ScalarQuantity`, `ComplexQuantity`, `VectorQuantity`,
+`ComplexVectorQuantity`, `MatrixQuantity`, and `SparseMatrixQuantity` at package
+boundaries. Maintain
 canonical immutable CSR storage for sparse matrices.
 
 Quantity-aware matrix norms accept only the nominal real/complex dense/sparse matrix

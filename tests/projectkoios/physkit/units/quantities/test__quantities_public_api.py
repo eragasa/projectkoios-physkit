@@ -10,6 +10,7 @@ def test__units_facade__retains_quantity_owner_identities() -> None:
         "MODEL_SYSTEM_PINT_REGISTRY",
         "ModelSystemUnitConverter",
         "ComplexMatrixQuantity",
+        "ComplexQuantity",
         "ComplexSparseMatrixQuantity",
         "ComplexVectorQuantity",
         "MatrixQuantity",
