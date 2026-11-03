@@ -15,6 +15,9 @@ The package owns reusable physical-unit and immutable quantity semantics.
 - `PintUnitConverter` owns compatibility checks, conversion factors, and represented
   conversions through that registry.
 - `ModelSystemUnitConverter` is the shared owner instance used by package models.
+- `UnitSystem` provides coherent nondimensional, SI, metal, and atomic numerical
+  scales. The atomic system uses Pint-supported `bohr`, `electron_mass`,
+  `atomic_unit_of_time`, `hartree`, and `atomic_unit_of_action` units.
 - Domain-specific unit helpers and established unit-system records remain available
   through the package façade.
 - KSD local quantity classes are legacy consumers/donor evidence, not a second owner.

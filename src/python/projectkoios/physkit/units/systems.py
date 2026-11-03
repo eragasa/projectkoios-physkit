@@ -34,11 +34,20 @@ from .viscosity import Viscosity
 
 
 class UnitSystem(StrEnum):
-    """Select a coherent numerical scale for model-system calculations."""
+    """Select a coherent numerical scale for model-system calculations.
+
+    Notes
+    -----
+    `NONDIMENSIONAL`, `SI`, `METAL`, and `ATOMIC` each supply mutually compatible
+    length, mass, time, energy, action, and reduced-Planck-constant quantities. The
+    enum owns unit selection only; scientific normalization remains with the composing
+    model.
+    """
 
     NONDIMENSIONAL = "nondimensional"
     SI = "si"
     METAL = "metal"
+    ATOMIC = "atomic"
 
     @property
     def length_unit(self) -> ModelSystemUnit:
@@ -47,7 +56,9 @@ class UnitSystem(StrEnum):
             return Unitless()
         if self is UnitSystem.SI:
             return PhysicalUnit("meter")
-        return PhysicalUnit("angstrom")
+        if self is UnitSystem.METAL:
+            return PhysicalUnit("angstrom")
+        return PhysicalUnit("bohr")
 
     @property
     def mass_unit(self) -> ModelSystemUnit:
@@ -61,7 +72,9 @@ class UnitSystem(StrEnum):
             return Unitless()
         if self is UnitSystem.SI:
             return PhysicalUnit("kilogram")
-        return PhysicalUnit("dalton")
+        if self is UnitSystem.METAL:
+            return PhysicalUnit("dalton")
+        return PhysicalUnit("electron_mass")
 
     @property
     def time_unit(self) -> ModelSystemUnit:
@@ -70,7 +83,9 @@ class UnitSystem(StrEnum):
             return Unitless()
         if self is UnitSystem.SI:
             return PhysicalUnit("second")
-        return PhysicalUnit("picosecond")
+        if self is UnitSystem.METAL:
+            return PhysicalUnit("picosecond")
+        return PhysicalUnit("atomic_unit_of_time")
 
     @property
     def energy_unit(self) -> ModelSystemUnit:
@@ -79,7 +94,9 @@ class UnitSystem(StrEnum):
             return Unitless()
         if self is UnitSystem.SI:
             return PhysicalUnit("joule")
-        return PhysicalUnit("electron_volt")
+        if self is UnitSystem.METAL:
+            return PhysicalUnit("electron_volt")
+        return PhysicalUnit("hartree")
 
     @property
     def action_unit(self) -> ModelSystemUnit:
@@ -88,13 +105,17 @@ class UnitSystem(StrEnum):
             return Unitless()
         if self is UnitSystem.SI:
             return PhysicalUnit("joule * second")
-        return PhysicalUnit("electron_volt * picosecond")
+        if self is UnitSystem.METAL:
+            return PhysicalUnit("electron_volt * picosecond")
+        return PhysicalUnit("atomic_unit_of_action")
 
     @property
     def hbar(self) -> ScalarQuantity:
         """Return reduced Planck's constant in the selected action unit."""
         if self is UnitSystem.NONDIMENSIONAL:
             return ScalarQuantity(1.0, Unitless())
+        if self is UnitSystem.ATOMIC:
+            return ScalarQuantity(1.0, PhysicalUnit("atomic_unit_of_action"))
         hbar_si = ScalarQuantity(
             1.054_571_817e-34,
             PhysicalUnit("joule * second"),
