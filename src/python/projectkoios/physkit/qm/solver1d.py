@@ -27,11 +27,7 @@ class TISEAnalytical1D:
         self.x_min: float = x_lower
         self.x_max: float = x_upper
         self.mass: float = mass
-        self.hbar: float = mass
-
-
-class TISESymbolic1D:
-    def __init__(self): ...
+        self.hbar: float = hbar
 
 
 class TISESolver1D:

@@ -563,7 +563,7 @@ unrecorded capability lacks value.
 
 **Source-declared objects and functions**
 
-- `as_f64_array`, `is_scalar`
+- `as_f64_array`
 - `ConstantsSI`, `ConstantsGaussianCGS`
 - `UnitQuantityProtocol`
 - `Pressure`, `Temperature`, `Energy`, `Force`, `Length`, `Mass`, `Time`,
