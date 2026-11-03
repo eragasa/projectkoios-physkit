@@ -8,7 +8,7 @@ of retained hopping models.
 The evaluator composes the policy-free truncator, shared-grid Bloch evaluation, and
 batched complete-spectrum evaluation.
 
-- Input includes one source `BlockHoppingModel`.
+- Input includes one source `DenseBlockHoppingModel`.
 - Input selections contain explicit conjugate-closed inventories and distinct model
   identifiers.
 - Duplicate inventories and identifiers reject before numerical work.

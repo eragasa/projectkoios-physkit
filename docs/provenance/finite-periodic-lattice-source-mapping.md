@@ -28,7 +28,7 @@ destination against the extracted `ScalarHoppingModel` and
 lineage from a donor module. The module owns raw tolerance-free scalar and block
 Hermiticity diagnostics plus displacement-correlated unit-aware block powers.
 
-`BlockHoppingTerm` and `BlockHoppingModel` generalize the destination hopping
+`DenseBlockHoppingTerm` and `DenseBlockHoppingModel` generalize the destination hopping
 records to energy-unit-bearing square matrices with explicit ordered-basis and
 energy-reference identity. `projectkoios.physkit.solidstate.tb.truncation`
 selects a caller-supplied ordinary-integer-lattice conjugate-closed displacement

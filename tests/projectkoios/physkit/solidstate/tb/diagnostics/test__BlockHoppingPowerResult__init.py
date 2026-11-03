@@ -10,8 +10,8 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeDisplacement,
 )
 from projectkoios.physkit.periodic.lattice.hopping import (
-    BlockHoppingModel,
-    BlockHoppingTerm,
+    DenseBlockHoppingModel,
+    DenseBlockHoppingTerm,
 )
 from projectkoios.physkit.solidstate.tb.diagnostics import (
     BlockHoppingPower,
@@ -25,14 +25,14 @@ from projectkoios.physkit.units import (
 )
 
 
-def _model() -> BlockHoppingModel:
+def _model() -> DenseBlockHoppingModel:
     dimension = LatticeDimension.ONE
     unit = PhysicalUnit("electron_volt")
-    return BlockHoppingModel(
+    return DenseBlockHoppingModel(
         "model",
         dimension,
         (
-            BlockHoppingTerm(
+            DenseBlockHoppingTerm(
                 LatticeDisplacement(dimension, (0,)),
                 ComplexMatrixQuantity(np.array([[2.0]]), unit),
             ),
@@ -55,7 +55,7 @@ def test__init__rejects_wrong_types_and_noncanonical_values() -> None:
     model = _model()
     canonical = BlockHoppingPowerAnalyzer().execute(model)
 
-    with pytest.raises(TypeError, match="model must be BlockHoppingModel"):
+    with pytest.raises(TypeError, match="model must be DenseBlockHoppingModel"):
         BlockHoppingPowerResult(cast(Any, object()), canonical.powers)
     with pytest.raises(TypeError, match="BlockHoppingPower"):
         BlockHoppingPowerResult(model, cast(Any, (object(),)))

@@ -11,28 +11,28 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeDisplacement,
 )
 from projectkoios.physkit.periodic.lattice.hopping import (
-    BlockHoppingModel,
-    BlockHoppingTerm,
+    DenseBlockHoppingModel,
+    DenseBlockHoppingTerm,
 )
 from projectkoios.physkit.solidstate.tb import diagnostics as diagnostics_module
 from projectkoios.physkit.solidstate.tb.diagnostics import BlockHoppingPowerAnalyzer
 from projectkoios.physkit.units import ComplexMatrixQuantity, PhysicalUnit, Unitless
 
 
-def _model(unit: PhysicalUnit | Unitless) -> BlockHoppingModel:
+def _model(unit: PhysicalUnit | Unitless) -> DenseBlockHoppingModel:
     dimension = LatticeDimension.ONE
-    return BlockHoppingModel(
+    return DenseBlockHoppingModel(
         "power model",
         dimension,
         (
-            BlockHoppingTerm(
+            DenseBlockHoppingTerm(
                 LatticeDisplacement(dimension, (0,)),
                 ComplexMatrixQuantity(
                     np.array([[3.0, 4.0], [0.0, 0.0]]),
                     unit,
                 ),
             ),
-            BlockHoppingTerm(
+            DenseBlockHoppingTerm(
                 LatticeDisplacement(dimension, (1,)),
                 ComplexMatrixQuantity(
                     np.array([[1.0j, 2.0], [2.0, 0.0]]),
@@ -100,16 +100,16 @@ def test__execute__preserves_explicit_unitless_power() -> None:
 
 def test__execute__rejects_wrong_model_and_nonfinite_power() -> None:
     analyzer = BlockHoppingPowerAnalyzer()
-    with pytest.raises(TypeError, match="model must be BlockHoppingModel"):
+    with pytest.raises(TypeError, match="model must be DenseBlockHoppingModel"):
         analyzer.execute(cast(Any, object()))
 
     dimension = LatticeDimension.ONE
     unit = PhysicalUnit("electron_volt")
-    model = BlockHoppingModel(
+    model = DenseBlockHoppingModel(
         "overflow",
         dimension,
         (
-            BlockHoppingTerm(
+            DenseBlockHoppingTerm(
                 LatticeDisplacement(dimension, (0,)),
                 ComplexMatrixQuantity(np.array([[1.0e308]]), unit),
             ),

@@ -19,8 +19,8 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeDisplacement,
 )
 from projectkoios.physkit.periodic.lattice.hopping import (
-    BlockHoppingModel,
-    BlockHoppingTerm,
+    DenseBlockHoppingModel,
+    DenseBlockHoppingTerm,
 )
 from projectkoios.physkit.solidstate.tb.bands import (
     BlockHoppingBandEvaluator,
@@ -28,7 +28,7 @@ from projectkoios.physkit.solidstate.tb.bands import (
     BlockHoppingRangeBandEvaluator,
     BlockHoppingRangeBandSelection,
 )
-from projectkoios.physkit.solidstate.tb.bloch import BlockHoppingBlochEvaluator
+from projectkoios.physkit.solidstate.tb.bloch import DenseBlockHoppingBlochEvaluator
 from projectkoios.physkit.solidstate.tb.truncation import (
     ConjugateClosedBlockHoppingTruncator,
 )
@@ -41,7 +41,7 @@ from projectkoios.physkit.units import (
 )
 
 
-def _model() -> BlockHoppingModel:
+def _model() -> DenseBlockHoppingModel:
     dimension = LatticeDimension.ONE
     unit = PhysicalUnit("electron_volt")
     positive_one = np.array(
@@ -59,11 +59,11 @@ def _model() -> BlockHoppingModel:
         positive_one,
         positive_two,
     )
-    return BlockHoppingModel(
+    return DenseBlockHoppingModel(
         "five-block source",
         dimension,
         tuple(
-            BlockHoppingTerm(
+            DenseBlockHoppingTerm(
                 LatticeDisplacement(dimension, (displacement,)),
                 ComplexMatrixQuantity(block, unit),
             )
@@ -85,7 +85,7 @@ def _selection(maximum: int) -> BlockHoppingRangeBandSelection:
     )
 
 
-def _tolerance(model: BlockHoppingModel) -> BlockHoppingBandTolerance:
+def _tolerance(model: DenseBlockHoppingModel) -> BlockHoppingBandTolerance:
     return BlockHoppingBandTolerance(ScalarQuantity(1.0e-13, model.energy_unit), 0.0)
 
 
@@ -172,7 +172,7 @@ def test__evaluate__shares_phases_and_one_spectrum_batch_in_input_order(
     # The ordered scalar backend provides an independent per-model route. Dense
     # channel reduction is compared numerically rather than bitwise.
     scalar_bands = BlockHoppingBandEvaluator(
-        BlockHoppingBlochEvaluator(NumpyFiniteFourierSeriesEvaluator())
+        DenseBlockHoppingBlochEvaluator(NumpyFiniteFourierSeriesEvaluator())
     )
     family = (result.source_band_evaluation,) + tuple(
         entry.band_evaluation for entry in result.entries

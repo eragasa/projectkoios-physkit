@@ -2,7 +2,7 @@
 
 ## Current contract
 
-The result retains one `BlockHoppingModel` and its exact canonical comparisons.
+The result retains one `DenseBlockHoppingModel` and its exact canonical comparisons.
 Each available unordered pair `{R,-R}` appears once; zero displacement compares
 with itself; a one-sided term records one missing target. `missing_targets` exposes
 coverage gaps and `maximum_frobenius_defect` returns the largest available

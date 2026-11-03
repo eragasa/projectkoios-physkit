@@ -10,8 +10,8 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeDisplacement,
 )
 from projectkoios.physkit.periodic.lattice.hopping import (
-    BlockHoppingModel,
-    BlockHoppingTerm,
+    DenseBlockHoppingModel,
+    DenseBlockHoppingTerm,
 )
 from projectkoios.physkit.solidstate.tb.truncation import (
     BlockHoppingTruncationResult,
@@ -24,14 +24,14 @@ from projectkoios.physkit.units import (
 )
 
 
-def _source() -> BlockHoppingModel:
+def _source() -> DenseBlockHoppingModel:
     dimension = LatticeDimension.ONE
     unit = PhysicalUnit("electron_volt")
-    return BlockHoppingModel(
+    return DenseBlockHoppingModel(
         "source",
         dimension,
         tuple(
-            BlockHoppingTerm(
+            DenseBlockHoppingTerm(
                 LatticeDisplacement(dimension, (representative,)),
                 ComplexMatrixQuantity(np.array([[float(representative + 3)]]), unit),
             )
@@ -69,7 +69,7 @@ def test__init__rejects_wrong_truncated_model_metadata_terms_and_power() -> None
         (source.terms[1].displacement,),
         "retained",
     )
-    unchanged_identity = BlockHoppingModel(
+    unchanged_identity = DenseBlockHoppingModel(
         source.identifier,
         source.dimension,
         canonical.truncated.terms,
@@ -77,7 +77,7 @@ def test__init__rejects_wrong_truncated_model_metadata_terms_and_power() -> None
         source.energy_reference,
         source.basis_identifier,
     )
-    wrong_metadata = BlockHoppingModel(
+    wrong_metadata = DenseBlockHoppingModel(
         "wrong metadata",
         source.dimension,
         canonical.truncated.terms,
@@ -85,14 +85,14 @@ def test__init__rejects_wrong_truncated_model_metadata_terms_and_power() -> None
         "different zero",
         source.basis_identifier,
     )
-    equivalent_new_term = BlockHoppingTerm(
+    equivalent_new_term = DenseBlockHoppingTerm(
         source.terms[1].displacement,
         ComplexMatrixQuantity(
             source.terms[1].coefficient.magnitude,
             source.energy_unit,
         ),
     )
-    wrong_term_identity = BlockHoppingModel(
+    wrong_term_identity = DenseBlockHoppingModel(
         "wrong term identity",
         source.dimension,
         (equivalent_new_term,),
@@ -101,7 +101,7 @@ def test__init__rejects_wrong_truncated_model_metadata_terms_and_power() -> None
         source.basis_identifier,
     )
 
-    with pytest.raises(TypeError, match="truncated must be BlockHoppingModel"):
+    with pytest.raises(TypeError, match="truncated must be DenseBlockHoppingModel"):
         BlockHoppingTruncationResult(
             source,
             canonical.retained_displacements,

@@ -185,7 +185,7 @@ Extract reusable frame records only after reciprocal identity is stable.
 Adapt physical operator samples to existing owners instead of copying KSD numerical
 implementations.
 
-- Reuse PhysKit `BlockHoppingModel`, Bloch, band, diagnostics, and conjugate-closed
+- Reuse PhysKit `DenseBlockHoppingModel`, Bloch, band, diagnostics, and conjugate-closed
   truncation contracts.
 - Reuse Optimization centered matrix Fourier transforms, evaluation, Parseval evidence,
   and Hermiticity diagnostics.

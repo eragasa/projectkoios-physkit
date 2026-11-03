@@ -10,8 +10,8 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeDisplacement,
 )
 from projectkoios.physkit.periodic.lattice.hopping import (
-    BlockHoppingModel,
-    BlockHoppingTerm,
+    DenseBlockHoppingModel,
+    DenseBlockHoppingTerm,
 )
 from projectkoios.physkit.solidstate.tb.truncation import (
     ConjugateClosedBlockHoppingTruncator,
@@ -19,14 +19,14 @@ from projectkoios.physkit.solidstate.tb.truncation import (
 from projectkoios.physkit.units import ComplexMatrixQuantity, PhysicalUnit
 
 
-def _model() -> BlockHoppingModel:
+def _model() -> DenseBlockHoppingModel:
     dimension = LatticeDimension.ONE
     unit = PhysicalUnit("electron_volt")
-    return BlockHoppingModel(
+    return DenseBlockHoppingModel(
         "five-term model",
         dimension,
         tuple(
-            BlockHoppingTerm(
+            DenseBlockHoppingTerm(
                 LatticeDisplacement(dimension, (representative,)),
                 ComplexMatrixQuantity(np.array([[value]]), unit),
             )
@@ -100,7 +100,7 @@ def test__execute__rejects_nonclosed_or_invalid_selection() -> None:
     zero = source.terms[2].displacement
     positive = source.terms[3].displacement
 
-    with pytest.raises(TypeError, match="source must be BlockHoppingModel"):
+    with pytest.raises(TypeError, match="source must be DenseBlockHoppingModel"):
         action.execute(cast(Any, object()), (zero,), "retained")
     with pytest.raises(TypeError, match="tuple of LatticeDisplacement"):
         action.execute(source, cast(Any, [zero]), "retained")
@@ -135,7 +135,7 @@ def test__execute__rejects_nonclosed_or_invalid_selection() -> None:
 def test__execute__does_not_apply_cyclic_nyquist_aliasing() -> None:
     source = _model()
     aliased_terms = source.terms[:-1]
-    aliased_source = BlockHoppingModel(
+    aliased_source = DenseBlockHoppingModel(
         "centered even-mesh inventory",
         source.dimension,
         aliased_terms,

@@ -10,8 +10,8 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeDisplacement,
 )
 from projectkoios.physkit.periodic.lattice.hopping import (
-    BlockHoppingModel,
-    BlockHoppingTerm,
+    DenseBlockHoppingModel,
+    DenseBlockHoppingTerm,
 )
 from projectkoios.physkit.solidstate.tb.bands import (
     BlockHoppingBandTolerance,
@@ -27,13 +27,13 @@ from projectkoios.physkit.units import (
 )
 
 
-def _model() -> BlockHoppingModel:
+def _model() -> DenseBlockHoppingModel:
     dimension = LatticeDimension.ONE
-    return BlockHoppingModel(
+    return DenseBlockHoppingModel(
         "source",
         dimension,
         tuple(
-            BlockHoppingTerm(
+            DenseBlockHoppingTerm(
                 LatticeDisplacement(dimension, (value,)),
                 ComplexMatrixQuantity(np.array([[coefficient]]), Unitless()),
             )

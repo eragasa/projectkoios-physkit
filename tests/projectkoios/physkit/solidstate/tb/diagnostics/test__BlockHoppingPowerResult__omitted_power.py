@@ -10,8 +10,8 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeDisplacement,
 )
 from projectkoios.physkit.periodic.lattice.hopping import (
-    BlockHoppingModel,
-    BlockHoppingTerm,
+    DenseBlockHoppingModel,
+    DenseBlockHoppingTerm,
 )
 from projectkoios.physkit.solidstate.tb.diagnostics import BlockHoppingPowerAnalyzer
 from projectkoios.physkit.units import ComplexMatrixQuantity, PhysicalUnit
@@ -20,11 +20,11 @@ from projectkoios.physkit.units import ComplexMatrixQuantity, PhysicalUnit
 def _result():
     dimension = LatticeDimension.ONE
     unit = PhysicalUnit("electron_volt")
-    model = BlockHoppingModel(
+    model = DenseBlockHoppingModel(
         "power model",
         dimension,
         tuple(
-            BlockHoppingTerm(
+            DenseBlockHoppingTerm(
                 LatticeDisplacement(dimension, (representative,)),
                 ComplexMatrixQuantity(np.array([[value]]), unit),
             )

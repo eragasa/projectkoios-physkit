@@ -13,16 +13,16 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeDisplacement,
 )
 from projectkoios.physkit.periodic.lattice.hopping import (
-    BlockHoppingModel,
-    BlockHoppingTerm,
+    DenseBlockHoppingModel,
+    DenseBlockHoppingTerm,
 )
 from projectkoios.physkit.solidstate.tb.bands import (
     BlockHoppingBandEvaluator,
     BlockHoppingBandTolerance,
 )
 from projectkoios.physkit.solidstate.tb.bloch import (
-    BlockHoppingBlochEvaluation,
-    BlockHoppingBlochEvaluator,
+    DenseBlockHoppingBlochEvaluation,
+    DenseBlockHoppingBlochEvaluator,
 )
 from projectkoios.physkit.units import (
     ComplexMatrixQuantity,
@@ -33,32 +33,32 @@ from projectkoios.physkit.units import (
 )
 
 
-class _RecordingBlockHoppingBlochEvaluator(BlockHoppingBlochEvaluator):
+class _RecordingDenseBlockHoppingBlochEvaluator(DenseBlockHoppingBlochEvaluator):
     __slots__ = ("calls", "evaluations")
 
     def __init__(self) -> None:
         super().__init__()
-        self.calls: list[tuple[BlockHoppingModel, MatrixQuantity]] = []
-        self.evaluations: list[BlockHoppingBlochEvaluation] = []
+        self.calls: list[tuple[DenseBlockHoppingModel, MatrixQuantity]] = []
+        self.evaluations: list[DenseBlockHoppingBlochEvaluation] = []
 
     def evaluate(
         self,
-        model: BlockHoppingModel,
+        model: DenseBlockHoppingModel,
         fractional_wave_vectors: MatrixQuantity,
-    ) -> BlockHoppingBlochEvaluation:
+    ) -> DenseBlockHoppingBlochEvaluation:
         self.calls.append((model, fractional_wave_vectors))
         evaluation = super().evaluate(model, fractional_wave_vectors)
         self.evaluations.append(evaluation)
         return evaluation
 
 
-def _model(unit: PhysicalUnit | Unitless) -> BlockHoppingModel:
+def _model(unit: PhysicalUnit | Unitless) -> DenseBlockHoppingModel:
     dimension = LatticeDimension.ONE
-    return BlockHoppingModel(
+    return DenseBlockHoppingModel(
         "two-band model",
         dimension,
         (
-            BlockHoppingTerm(
+            DenseBlockHoppingTerm(
                 LatticeDisplacement(dimension, (0,)),
                 ComplexMatrixQuantity(
                     np.array([[1.0, 0.1], [0.0, 3.0]], dtype=np.complex128),
@@ -79,7 +79,7 @@ def test__evaluate__uses_bloch_evaluator_and_one_symmetrized_batch_call(
     model = _model(unit)
     wave_vectors = MatrixQuantity(np.array([[0.0], [0.25]]), Unitless())
     tolerance = BlockHoppingBandTolerance(ScalarQuantity(0.05, unit), 0.02)
-    bloch_evaluator = _RecordingBlockHoppingBlochEvaluator()
+    bloch_evaluator = _RecordingDenseBlockHoppingBlochEvaluator()
     evaluator = BlockHoppingBandEvaluator(bloch_evaluator)
     original_eigvalsh = np.linalg.eigvalsh
     calls: list[tuple[np.ndarray, str]] = []
@@ -155,7 +155,7 @@ def test__evaluate_bloch_family__uses_one_concatenated_spectrum_call(
 ) -> None:
     unit = PhysicalUnit("electron_volt")
     source = _model(unit)
-    retained = BlockHoppingModel(
+    retained = DenseBlockHoppingModel(
         "retained model",
         source.dimension,
         source.terms,
@@ -164,7 +164,7 @@ def test__evaluate_bloch_family__uses_one_concatenated_spectrum_call(
         source.basis_identifier,
     )
     wave_vectors = MatrixQuantity(np.array([[0.0], [0.25]]), Unitless())
-    bloch_evaluations = BlockHoppingBlochEvaluator().evaluate_family(
+    bloch_evaluations = DenseBlockHoppingBlochEvaluator().evaluate_family(
         (source, retained),
         wave_vectors,
     )
@@ -200,8 +200,8 @@ def test__evaluate_bloch_family__requires_exact_shared_coordinates() -> None:
     unit = PhysicalUnit("electron_volt")
     source = _model(unit)
     coordinates = MatrixQuantity(np.array([[0.0]]), Unitless())
-    first = BlockHoppingBlochEvaluator().evaluate(source, coordinates)
-    second = BlockHoppingBlochEvaluator().evaluate(
+    first = DenseBlockHoppingBlochEvaluator().evaluate(source, coordinates)
+    second = DenseBlockHoppingBlochEvaluator().evaluate(
         source,
         MatrixQuantity(np.array([[0.0]]), Unitless()),
     )
@@ -218,8 +218,8 @@ def test__evaluate_bloch__reuses_exact_existing_bloch_evaluation() -> None:
     unit = PhysicalUnit("electron_volt")
     model = _model(unit)
     wave_vectors = MatrixQuantity(np.array([[0.0]]), Unitless())
-    bloch_evaluation = BlockHoppingBlochEvaluator().evaluate(model, wave_vectors)
-    recording_bloch_evaluator = _RecordingBlockHoppingBlochEvaluator()
+    bloch_evaluation = DenseBlockHoppingBlochEvaluator().evaluate(model, wave_vectors)
+    recording_bloch_evaluator = _RecordingDenseBlockHoppingBlochEvaluator()
 
     result = BlockHoppingBandEvaluator(recording_bloch_evaluator).evaluate_bloch(
         bloch_evaluation,
@@ -324,11 +324,11 @@ def test__evaluate__reports_representative_overflow_and_eigensolver_failure(
 ) -> None:
     unit = PhysicalUnit("electron_volt")
     dimension = LatticeDimension.ONE
-    overflow_model = BlockHoppingModel(
+    overflow_model = DenseBlockHoppingModel(
         "overflow",
         dimension,
         (
-            BlockHoppingTerm(
+            DenseBlockHoppingTerm(
                 LatticeDisplacement(dimension, (0,)),
                 ComplexMatrixQuantity(np.eye(2) * 1.0e308, unit),
             ),
@@ -369,7 +369,7 @@ def test__evaluate_bloch__rejects_wrong_evaluation_tolerance_and_absolute_unit()
     unit = PhysicalUnit("electron_volt")
     model = _model(unit)
     wave_vectors = MatrixQuantity(np.array([[0.0]]), Unitless())
-    bloch_evaluation = BlockHoppingBlochEvaluator().evaluate(model, wave_vectors)
+    bloch_evaluation = DenseBlockHoppingBlochEvaluator().evaluate(model, wave_vectors)
     evaluator = BlockHoppingBandEvaluator()
     tolerance = BlockHoppingBandTolerance(ScalarQuantity(0.1, unit), 0.0)
 
@@ -394,7 +394,7 @@ def test__evaluate__rejects_wrong_model_tolerance_and_absolute_unit() -> None:
     evaluator = BlockHoppingBandEvaluator()
     tolerance = BlockHoppingBandTolerance(ScalarQuantity(0.1, unit), 0.0)
 
-    with pytest.raises(TypeError, match="model must be BlockHoppingModel"):
+    with pytest.raises(TypeError, match="model must be DenseBlockHoppingModel"):
         evaluator.evaluate(cast(Any, object()), wave_vectors, tolerance)
     with pytest.raises(TypeError, match="tolerance must be BlockHoppingBandTolerance"):
         evaluator.evaluate(model, wave_vectors, cast(Any, object()))

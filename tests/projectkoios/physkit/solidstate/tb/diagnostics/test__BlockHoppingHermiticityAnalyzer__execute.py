@@ -11,8 +11,8 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeDisplacement,
 )
 from projectkoios.physkit.periodic.lattice.hopping import (
-    BlockHoppingModel,
-    BlockHoppingTerm,
+    DenseBlockHoppingModel,
+    DenseBlockHoppingTerm,
 )
 from projectkoios.physkit.solidstate.tb import diagnostics as diagnostics_module
 from projectkoios.physkit.solidstate.tb.diagnostics import (
@@ -23,14 +23,14 @@ from projectkoios.physkit.units import ComplexMatrixQuantity, PhysicalUnit
 
 def _model(
     entries: tuple[tuple[tuple[int, int], np.ndarray], ...],
-) -> BlockHoppingModel:
+) -> DenseBlockHoppingModel:
     dimension = LatticeDimension.TWO
     unit = PhysicalUnit("electron_volt")
-    return BlockHoppingModel(
+    return DenseBlockHoppingModel(
         "block diagnostic",
         dimension,
         tuple(
-            BlockHoppingTerm(
+            DenseBlockHoppingTerm(
                 LatticeDisplacement(dimension, displacement),
                 ComplexMatrixQuantity(matrix, unit),
             )
@@ -115,11 +115,11 @@ def test__execute__reports_no_maximum_when_every_target_is_missing() -> None:
 def test__execute__does_not_apply_cyclic_nyquist_aliasing() -> None:
     dimension = LatticeDimension.ONE
     unit = PhysicalUnit("electron_volt")
-    model = BlockHoppingModel(
+    model = DenseBlockHoppingModel(
         "centered even-mesh inventory",
         dimension,
         (
-            BlockHoppingTerm(
+            DenseBlockHoppingTerm(
                 LatticeDisplacement(dimension, (-2,)),
                 ComplexMatrixQuantity(np.eye(2, dtype=np.complex128), unit),
             ),
@@ -137,7 +137,7 @@ def test__execute__does_not_apply_cyclic_nyquist_aliasing() -> None:
 
 def test__execute__rejects_wrong_model_and_nonfinite_defect_arithmetic() -> None:
     analyzer = BlockHoppingHermiticityAnalyzer()
-    with pytest.raises(TypeError, match="model must be BlockHoppingModel"):
+    with pytest.raises(TypeError, match="model must be DenseBlockHoppingModel"):
         analyzer.execute(cast(Any, object()))
 
     negative = np.full((1, 1), -1.0e308, dtype=np.complex128)

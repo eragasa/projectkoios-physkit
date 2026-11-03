@@ -11,8 +11,8 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeDisplacement,
 )
 from projectkoios.physkit.periodic.lattice.hopping import (
-    BlockHoppingModel,
-    BlockHoppingTerm,
+    DenseBlockHoppingModel,
+    DenseBlockHoppingTerm,
 )
 from projectkoios.physkit.units import ComplexMatrixQuantity, PhysicalUnit, Unitless
 
@@ -22,7 +22,7 @@ def _term(
     components: tuple[int, ...],
     values: np.ndarray,
     unit: PhysicalUnit | Unitless,
-) -> BlockHoppingTerm:
+) -> DenseBlockHoppingTerm:
     closed_components: tuple[int] | tuple[int, int] | tuple[int, int, int]
     if dimension is LatticeDimension.ONE:
         closed_components = (components[0],)
@@ -30,7 +30,7 @@ def _term(
         closed_components = (components[0], components[1])
     else:
         closed_components = (components[0], components[1], components[2])
-    return BlockHoppingTerm(
+    return DenseBlockHoppingTerm(
         LatticeDisplacement(dimension, closed_components),
         ComplexMatrixQuantity(values, unit),
     )
@@ -43,7 +43,7 @@ def test__init__retains_ordered_basis_and_energy_identity() -> None:
     onsite = _term(dimension, (0,), np.diag([2.0, 3.0]), unit)
     positive = _term(dimension, (1,), np.eye(2), unit)
 
-    model = BlockHoppingModel(
+    model = DenseBlockHoppingModel(
         identifier="two-band chain",
         dimension=dimension,
         terms=(negative, onsite, positive),
@@ -66,7 +66,7 @@ def test__init__accepts_explicit_unitless_blocks() -> None:
     unit = Unitless()
     term = _term(dimension, (0,), np.ones((1, 1)), unit)
 
-    model = BlockHoppingModel(
+    model = DenseBlockHoppingModel(
         "dimensionless",
         dimension,
         (term,),
@@ -93,7 +93,7 @@ def test__init__rejects_inconsistent_dimension_shape_and_unit() -> None:
         (wrong_unit, "units must match"),
     ):
         with pytest.raises(ValueError, match=message):
-            BlockHoppingModel(
+            DenseBlockHoppingModel(
                 "invalid",
                 dimension,
                 (valid, term),
@@ -111,7 +111,7 @@ def test__init__rejects_duplicate_or_unsorted_displacements() -> None:
 
     for terms in ((negative, negative), (positive, negative)):
         with pytest.raises(ValueError, match="sorted and unique"):
-            BlockHoppingModel(
+            DenseBlockHoppingModel(
                 "invalid",
                 dimension,
                 terms,
@@ -127,9 +127,9 @@ def test__init__rejects_empty_or_nonowned_contract_values() -> None:
     term = _term(dimension, (0,), np.eye(2), unit)
 
     with pytest.raises(ValueError, match="terms must be nonempty"):
-        BlockHoppingModel("empty", dimension, (), unit, "zero", "basis")
+        DenseBlockHoppingModel("empty", dimension, (), unit, "zero", "basis")
     with pytest.raises(TypeError, match="terms must be a tuple"):
-        BlockHoppingModel(
+        DenseBlockHoppingModel(
             "list",
             dimension,
             cast(Any, [term]),
@@ -137,8 +137,8 @@ def test__init__rejects_empty_or_nonowned_contract_values() -> None:
             "zero",
             "basis",
         )
-    with pytest.raises(TypeError, match="BlockHoppingTerm"):
-        BlockHoppingModel(
+    with pytest.raises(TypeError, match="DenseBlockHoppingTerm"):
+        DenseBlockHoppingModel(
             "wrong term",
             dimension,
             (cast(Any, object()),),
@@ -147,7 +147,7 @@ def test__init__rejects_empty_or_nonowned_contract_values() -> None:
             "basis",
         )
     with pytest.raises(TypeError, match="PhysicalUnit or Unitless"):
-        BlockHoppingModel(
+        DenseBlockHoppingModel(
             "wrong unit",
             dimension,
             (term,),
@@ -156,4 +156,4 @@ def test__init__rejects_empty_or_nonowned_contract_values() -> None:
             "basis",
         )
     with pytest.raises(ValueError, match="basis_identifier must be nonempty"):
-        BlockHoppingModel("empty basis", dimension, (term,), unit, "zero", "")
+        DenseBlockHoppingModel("empty basis", dimension, (term,), unit, "zero", "")

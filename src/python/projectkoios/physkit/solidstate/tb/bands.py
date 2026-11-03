@@ -1,6 +1,6 @@
 r"""Complete unit-aware bands from matrix-valued Bloch Hamiltonians.
 
-The public adapters evaluate one :class:`BlockHoppingModel` or an explicit ordered
+The public adapters evaluate one :class:`DenseBlockHoppingModel` or an explicit ordered
 source-and-truncation family, apply a caller-supplied numerical Hermiticity tolerance,
 construct the explicit Hermitian representative :math:`(H + H^\dagger)/2`, and return
 every ascending eigenvalue at every supplied fractional reciprocal coordinate.
@@ -41,10 +41,10 @@ from projectkoios.numerics.linalg.numpy.hermitian_spectrum import (
 )
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.periodic.lattice.finite_domain import LatticeDisplacement
-from projectkoios.physkit.periodic.lattice.hopping import BlockHoppingModel
+from projectkoios.physkit.periodic.lattice.hopping import DenseBlockHoppingModel
 from projectkoios.physkit.solidstate.tb.bloch import (
-    BlockHoppingBlochEvaluation,
-    BlockHoppingBlochEvaluator,
+    DenseBlockHoppingBlochEvaluation,
+    DenseBlockHoppingBlochEvaluator,
 )
 from projectkoios.physkit.solidstate.tb.truncation import (
     BlockHoppingTruncationResult,
@@ -256,7 +256,7 @@ class BlockHoppingBandDiagnostics:
 
 def _aggregate_diagnostics(
     point_diagnostics: tuple[BlockHoppingBandPointDiagnostics, ...],
-    model: BlockHoppingModel,
+    model: DenseBlockHoppingModel,
 ) -> BlockHoppingBandDiagnostics | None:
     """The reduction returns componentwise maxima for one band evaluation.
 
@@ -264,7 +264,7 @@ def _aggregate_diagnostics(
     ----------
     point_diagnostics : tuple of BlockHoppingBandPointDiagnostics
         Ordered point diagnostics to reduce.
-    model : BlockHoppingModel
+    model : DenseBlockHoppingModel
         Model supplying the energy unit.
 
     Returns
@@ -306,7 +306,7 @@ class BlockHoppingBandEvaluation(ResultsObject):
 
     Parameters
     ----------
-    bloch_evaluation : BlockHoppingBlochEvaluation
+    bloch_evaluation : DenseBlockHoppingBlochEvaluation
         Authoritative Bloch matrices, model, and fractional coordinates used by the
         spectrum calculation.
     band_energies : MatrixQuantity
@@ -331,7 +331,7 @@ class BlockHoppingBandEvaluation(ResultsObject):
     :class:`BlockHoppingBandEvaluator`, avoiding a second eigensolver call.
     """
 
-    bloch_evaluation: BlockHoppingBlochEvaluation
+    bloch_evaluation: DenseBlockHoppingBlochEvaluation
     band_energies: MatrixQuantity
     tolerance: BlockHoppingBandTolerance
     point_diagnostics: tuple[BlockHoppingBandPointDiagnostics, ...]
@@ -341,8 +341,8 @@ class BlockHoppingBandEvaluation(ResultsObject):
 
     def __post_init__(self) -> None:
         """The initializer validates structural correlation and evidence shapes."""
-        if type(self.bloch_evaluation) is not BlockHoppingBlochEvaluation:
-            raise TypeError("bloch_evaluation must be BlockHoppingBlochEvaluation")
+        if type(self.bloch_evaluation) is not DenseBlockHoppingBlochEvaluation:
+            raise TypeError("bloch_evaluation must be DenseBlockHoppingBlochEvaluation")
         point_count = len(self.bloch_evaluation.bloch_matrices)
         # One row of energies corresponds to one retained Bloch matrix and q point.
         if type(self.band_energies) is not MatrixQuantity:
@@ -410,7 +410,7 @@ class BlockHoppingBandEvaluation(ResultsObject):
             raise ValueError("backend_version must be nonempty")
 
     @property
-    def model(self) -> BlockHoppingModel:
+    def model(self) -> DenseBlockHoppingModel:
         """The property returns the authoritative Bloch evaluation's model."""
         return self.bloch_evaluation.model
 
@@ -504,7 +504,7 @@ class BlockHoppingRangeBandEvaluation(ResultsObject):
             raise ValueError("retained displacement inventories must be unique")
 
     @property
-    def source(self) -> BlockHoppingModel:
+    def source(self) -> DenseBlockHoppingModel:
         """Return the exact source model retained by the source band result."""
         return self.source_band_evaluation.model
 
@@ -524,7 +524,7 @@ class BlockHoppingBandEvaluator:
 
     Parameters
     ----------
-    bloch_evaluator : BlockHoppingBlochEvaluator or None, optional
+    bloch_evaluator : DenseBlockHoppingBlochEvaluator or None, optional
         Matrix Bloch evaluator to consume. ``None`` constructs the maintained
         default evaluator.
 
@@ -544,39 +544,39 @@ class BlockHoppingBandEvaluator:
 
     def __init__(
         self,
-        bloch_evaluator: BlockHoppingBlochEvaluator | None = None,
+        bloch_evaluator: DenseBlockHoppingBlochEvaluator | None = None,
     ) -> None:
         """The constructor retains a Bloch evaluator and canonical backend."""
         if bloch_evaluator is None:
-            bloch_evaluator = BlockHoppingBlochEvaluator()
-        elif not isinstance(bloch_evaluator, BlockHoppingBlochEvaluator):
+            bloch_evaluator = DenseBlockHoppingBlochEvaluator()
+        elif not isinstance(bloch_evaluator, DenseBlockHoppingBlochEvaluator):
             raise TypeError(
-                "bloch_evaluator must be BlockHoppingBlochEvaluator or None"
+                "bloch_evaluator must be DenseBlockHoppingBlochEvaluator or None"
             )
         self._bloch_evaluator = bloch_evaluator
         self._spectrum_solver = NumpyBatchedHermitianSpectrumSolver()
 
     @property
-    def bloch_evaluator(self) -> BlockHoppingBlochEvaluator:
+    def bloch_evaluator(self) -> DenseBlockHoppingBlochEvaluator:
         """The property returns the matrix Bloch evaluator used by this adapter.
 
         Returns
         -------
-        BlockHoppingBlochEvaluator
+        DenseBlockHoppingBlochEvaluator
             Exact nominal evaluator retained at construction.
         """
         return self._bloch_evaluator
 
     def evaluate_bloch(
         self,
-        bloch_evaluation: BlockHoppingBlochEvaluation,
+        bloch_evaluation: DenseBlockHoppingBlochEvaluation,
         tolerance: BlockHoppingBandTolerance,
     ) -> BlockHoppingBandEvaluation:
         """Evaluate complete bands from one existing Bloch evaluation.
 
         Parameters
         ----------
-        bloch_evaluation : BlockHoppingBlochEvaluation
+        bloch_evaluation : DenseBlockHoppingBlochEvaluation
             Exact model, coordinates, and Bloch matrices to retain in the result.
         tolerance : BlockHoppingBandTolerance
             Caller-supplied numerical Hermiticity tolerance.
@@ -601,20 +601,20 @@ class BlockHoppingBandEvaluator:
         -----
         The supplied Bloch evaluation is retained exactly and is not recomputed.
         """
-        if type(bloch_evaluation) is not BlockHoppingBlochEvaluation:
-            raise TypeError("bloch_evaluation must be BlockHoppingBlochEvaluation")
+        if type(bloch_evaluation) is not DenseBlockHoppingBlochEvaluation:
+            raise TypeError("bloch_evaluation must be DenseBlockHoppingBlochEvaluation")
         return self.evaluate_bloch_family((bloch_evaluation,), tolerance)[0]
 
     def evaluate_bloch_family(
         self,
-        bloch_evaluations: tuple[BlockHoppingBlochEvaluation, ...],
+        bloch_evaluations: tuple[DenseBlockHoppingBlochEvaluation, ...],
         tolerance: BlockHoppingBandTolerance,
     ) -> tuple[BlockHoppingBandEvaluation, ...]:
         """Evaluate a compatible Bloch family with one complete-spectrum batch.
 
         Parameters
         ----------
-        bloch_evaluations : tuple of BlockHoppingBlochEvaluation
+        bloch_evaluations : tuple of DenseBlockHoppingBlochEvaluation
             Nonempty ordered evaluations sharing coordinates, basis metadata, energy
             semantics, and point count.
         tolerance : BlockHoppingBandTolerance
@@ -643,11 +643,11 @@ class BlockHoppingBandEvaluator:
         partitioned deterministically. Empty shared coordinates skip linear algebra.
         """
         if type(bloch_evaluations) is not tuple or any(
-            type(evaluation) is not BlockHoppingBlochEvaluation
+            type(evaluation) is not DenseBlockHoppingBlochEvaluation
             for evaluation in bloch_evaluations
         ):
             raise TypeError(
-                "bloch_evaluations must be a tuple of BlockHoppingBlochEvaluation"
+                "bloch_evaluations must be a tuple of DenseBlockHoppingBlochEvaluation"
             )
         if not bloch_evaluations:
             raise ValueError("bloch_evaluations must be nonempty")
@@ -749,7 +749,7 @@ class BlockHoppingBandEvaluator:
 
     def evaluate_family(
         self,
-        models: tuple[BlockHoppingModel, ...],
+        models: tuple[DenseBlockHoppingModel, ...],
         fractional_wave_vectors: MatrixQuantity,
         tolerance: BlockHoppingBandTolerance,
     ) -> tuple[BlockHoppingBandEvaluation, ...]:
@@ -757,7 +757,7 @@ class BlockHoppingBandEvaluator:
 
         Parameters
         ----------
-        models : tuple of BlockHoppingModel
+        models : tuple of DenseBlockHoppingModel
             Nonempty ordered model family accepted by the Bloch evaluator.
         fractional_wave_vectors : MatrixQuantity
             Exact shared unitless reciprocal-coordinate record.
@@ -796,9 +796,10 @@ class BlockHoppingBandEvaluator:
         if len(bloch_evaluations) != len(models):
             raise ValueError("Bloch family result count must match model count")
         for model, evaluation in zip(models, bloch_evaluations, strict=True):
-            if type(evaluation) is not BlockHoppingBlochEvaluation:
+            if type(evaluation) is not DenseBlockHoppingBlochEvaluation:
                 raise TypeError(
-                    "bloch_evaluator family entries must be BlockHoppingBlochEvaluation"
+                    "bloch_evaluator family entries must be "
+                    "DenseBlockHoppingBlochEvaluation"
                 )
             if evaluation.model is not model:
                 raise ValueError("Bloch family results must retain supplied models")
@@ -810,7 +811,7 @@ class BlockHoppingBandEvaluator:
 
     def evaluate(
         self,
-        model: BlockHoppingModel,
+        model: DenseBlockHoppingModel,
         fractional_wave_vectors: MatrixQuantity,
         tolerance: BlockHoppingBandTolerance,
     ) -> BlockHoppingBandEvaluation:
@@ -818,7 +819,7 @@ class BlockHoppingBandEvaluator:
 
         Parameters
         ----------
-        model : BlockHoppingModel
+        model : DenseBlockHoppingModel
             Matrix-valued hopping model to evaluate.
         fractional_wave_vectors : MatrixQuantity
             Unitless fractional reciprocal coordinates with one row per point.
@@ -849,8 +850,8 @@ class BlockHoppingBandEvaluator:
         This convenience action invokes :attr:`bloch_evaluator` exactly once and
         delegates the resulting object to :meth:`evaluate_bloch`.
         """
-        if type(model) is not BlockHoppingModel:
-            raise TypeError("model must be BlockHoppingModel")
+        if type(model) is not DenseBlockHoppingModel:
+            raise TypeError("model must be DenseBlockHoppingModel")
         if type(tolerance) is not BlockHoppingBandTolerance:
             raise TypeError("tolerance must be BlockHoppingBandTolerance")
         if tolerance.hermiticity_absolute.unit != model.energy_unit:
@@ -859,8 +860,10 @@ class BlockHoppingBandEvaluator:
             model,
             fractional_wave_vectors,
         )
-        if type(bloch_evaluation) is not BlockHoppingBlochEvaluation:
-            raise TypeError("bloch_evaluator must return BlockHoppingBlochEvaluation")
+        if type(bloch_evaluation) is not DenseBlockHoppingBlochEvaluation:
+            raise TypeError(
+                "bloch_evaluator must return DenseBlockHoppingBlochEvaluation"
+            )
         if bloch_evaluation.model is not model:
             raise ValueError("Bloch evaluation must retain the supplied model")
         if bloch_evaluation.fractional_wave_vectors is not fractional_wave_vectors:
@@ -919,7 +922,7 @@ class BlockHoppingRangeBandEvaluator:
 
     def evaluate(
         self,
-        source: BlockHoppingModel,
+        source: DenseBlockHoppingModel,
         selections: tuple[BlockHoppingRangeBandSelection, ...],
         fractional_wave_vectors: MatrixQuantity,
         tolerance: BlockHoppingBandTolerance,
@@ -928,7 +931,7 @@ class BlockHoppingRangeBandEvaluator:
 
         Parameters
         ----------
-        source : BlockHoppingModel
+        source : DenseBlockHoppingModel
             Ordinary-integer-lattice source model retained by every truncation result.
         selections : tuple of BlockHoppingRangeBandSelection
             Nonempty ordered inventories and distinct retained-model identifiers.
@@ -961,8 +964,8 @@ class BlockHoppingRangeBandEvaluator:
         Selection order determines entry order only. It does not imply increasing
         physical range, improving accuracy, or scientific convergence.
         """
-        if type(source) is not BlockHoppingModel:
-            raise TypeError("source must be BlockHoppingModel")
+        if type(source) is not DenseBlockHoppingModel:
+            raise TypeError("source must be DenseBlockHoppingModel")
         if type(selections) is not tuple or any(
             type(selection) is not BlockHoppingRangeBandSelection
             for selection in selections

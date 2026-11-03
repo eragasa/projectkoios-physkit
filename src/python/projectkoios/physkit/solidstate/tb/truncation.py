@@ -19,20 +19,20 @@ from dataclasses import dataclass
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.periodic.lattice.finite_domain import LatticeDisplacement
 from projectkoios.physkit.periodic.lattice.hopping import (
-    BlockHoppingModel,
-    BlockHoppingTerm,
+    DenseBlockHoppingModel,
+    DenseBlockHoppingTerm,
 )
 from projectkoios.physkit.solidstate.tb.diagnostics import BlockHoppingPowerAnalyzer
 from projectkoios.physkit.units import ScalarQuantity
 
 
 def _canonical_retained_terms(
-    source: BlockHoppingModel,
+    source: DenseBlockHoppingModel,
     retained_displacements: tuple[LatticeDisplacement, ...],
-) -> tuple[BlockHoppingTerm, ...]:
+) -> tuple[DenseBlockHoppingTerm, ...]:
     """Validate one explicit inventory and return its canonical source terms."""
-    if type(source) is not BlockHoppingModel:
-        raise TypeError("source must be BlockHoppingModel")
+    if type(source) is not DenseBlockHoppingModel:
+        raise TypeError("source must be DenseBlockHoppingModel")
     if type(retained_displacements) is not tuple or any(
         type(displacement) is not LatticeDisplacement
         for displacement in retained_displacements
@@ -65,10 +65,10 @@ def _canonical_retained_terms(
 
 
 def _truncated_model(
-    source: BlockHoppingModel,
-    retained_terms: tuple[BlockHoppingTerm, ...],
+    source: DenseBlockHoppingModel,
+    retained_terms: tuple[DenseBlockHoppingTerm, ...],
     truncated_identifier: str,
-) -> BlockHoppingModel:
+) -> DenseBlockHoppingModel:
     """Build the metadata-preserving model represented by retained source terms."""
     if type(truncated_identifier) is not str:
         raise TypeError("truncated_identifier must be a string")
@@ -76,7 +76,7 @@ def _truncated_model(
         raise ValueError("truncated_identifier must be nonempty")
     if truncated_identifier == source.identifier:
         raise ValueError("truncated_identifier must differ from source identifier")
-    return BlockHoppingModel(
+    return DenseBlockHoppingModel(
         identifier=truncated_identifier,
         dimension=source.dimension,
         terms=retained_terms,
@@ -90,9 +90,9 @@ def _truncated_model(
 class BlockHoppingTruncationResult(ResultsObject):
     """Retain one explicit conjugate-closed hopping selection."""
 
-    source: BlockHoppingModel
+    source: DenseBlockHoppingModel
     retained_displacements: tuple[LatticeDisplacement, ...]
-    truncated: BlockHoppingModel
+    truncated: DenseBlockHoppingModel
     omitted_power: ScalarQuantity
 
     def __post_init__(self) -> None:
@@ -101,8 +101,8 @@ class BlockHoppingTruncationResult(ResultsObject):
             self.source,
             self.retained_displacements,
         )
-        if type(self.truncated) is not BlockHoppingModel:
-            raise TypeError("truncated must be BlockHoppingModel")
+        if type(self.truncated) is not DenseBlockHoppingModel:
+            raise TypeError("truncated must be DenseBlockHoppingModel")
         if self.truncated.identifier == self.source.identifier:
             raise ValueError("truncated model identifier must differ from the source")
         if (
@@ -151,7 +151,7 @@ class ConjugateClosedBlockHoppingTruncator:
 
     def execute(
         self,
-        source: BlockHoppingModel,
+        source: DenseBlockHoppingModel,
         retained_displacements: tuple[LatticeDisplacement, ...],
         truncated_identifier: str,
     ) -> BlockHoppingTruncationResult:

@@ -11,15 +11,15 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeDisplacement,
 )
 from projectkoios.physkit.periodic.lattice.hopping import (
-    BlockHoppingModel,
-    BlockHoppingTerm,
+    DenseBlockHoppingModel,
+    DenseBlockHoppingTerm,
 )
 from projectkoios.physkit.solidstate.tb.bands import (
     BlockHoppingBandEvaluation,
     BlockHoppingBandEvaluator,
     BlockHoppingBandTolerance,
 )
-from projectkoios.physkit.solidstate.tb.bloch import BlockHoppingBlochEvaluator
+from projectkoios.physkit.solidstate.tb.bloch import DenseBlockHoppingBlochEvaluator
 from projectkoios.physkit.units import (
     ComplexMatrixQuantity,
     MatrixQuantity,
@@ -32,11 +32,11 @@ from projectkoios.physkit.units import (
 def _canonical() -> BlockHoppingBandEvaluation:
     dimension = LatticeDimension.ONE
     unit = PhysicalUnit("electron_volt")
-    model = BlockHoppingModel(
+    model = DenseBlockHoppingModel(
         "Hermitian two-band model",
         dimension,
         (
-            BlockHoppingTerm(
+            DenseBlockHoppingTerm(
                 LatticeDisplacement(dimension, (0,)),
                 ComplexMatrixQuantity(np.diag([1.0, 2.0]), unit),
             ),
@@ -77,7 +77,7 @@ def test__init__rejects_wrong_bloch_evaluation_and_band_contracts() -> None:
 
     with pytest.raises(TypeError, match="bloch_evaluation"):
         replace(canonical, bloch_evaluation=cast(Any, object()))
-    shorter_bloch_evaluation = BlockHoppingBlochEvaluator().evaluate(
+    shorter_bloch_evaluation = DenseBlockHoppingBlochEvaluator().evaluate(
         canonical.model,
         MatrixQuantity(np.array([[0.0]]), Unitless()),
     )
