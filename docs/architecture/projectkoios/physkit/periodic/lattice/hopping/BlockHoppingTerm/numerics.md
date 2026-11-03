@@ -8,6 +8,11 @@ rejected.
 The factory does not copy between representations, inspect numerical density, apply
 a sparsity threshold, or alter values.
 
+## Numerical validation behavior
+
+None. Factory dispatch is nominal representation selection, not a numerical
+algorithm or numerical acceptance test.
+
 - [Index](index.md)
 - [Schematics](schematics.md)
 - [Scientific contract](scientifics.md)

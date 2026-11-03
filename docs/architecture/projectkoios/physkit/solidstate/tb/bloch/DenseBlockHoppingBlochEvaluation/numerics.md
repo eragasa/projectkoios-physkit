@@ -8,6 +8,11 @@ coordinate inventories correlate with empty matrix tuples.
 The result performs structural correlation checks only; it does not recompute the
 Fourier sum.
 
+## Numerical validation behavior
+
+None. This result record retains evaluator output but does not independently recompute
+or numerically validate the Bloch sum.
+
 - [Index](index.md)
 - [Schematics](schematics.md)
 - [Scientific contract](scientifics.md)

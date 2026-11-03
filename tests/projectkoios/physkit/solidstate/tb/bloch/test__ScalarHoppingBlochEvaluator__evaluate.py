@@ -32,6 +32,7 @@ def _term(
     displacement: LatticeIntegerComponents,
     coefficient: complex,
 ) -> ScalarHoppingTerm:
+    """Construct one scalar hopping term from its complex coefficient."""
     return ScalarHoppingTerm(
         LatticeDisplacement(dimension, displacement),
         float(coefficient.real),
@@ -40,6 +41,7 @@ def _term(
 
 
 def _one_dimensional_model() -> ScalarHoppingModel:
+    """Return a conjugate-supported chain with an analytically tractable sum."""
     dimension = LatticeDimension.ONE
     return ScalarHoppingModel(
         identifier="complex Hermitian chain",
@@ -77,7 +79,8 @@ class _RecordingEvaluator(FiniteFourierSeriesEvaluator):
         )
 
 
-def test__evaluate__maps_model_and_wave_vectors_to_unit_free_owner_definition() -> None:
+def test__ScalarHoppingBlochEvaluator__adapter__maps_unit_free_definition() -> None:
+    """Map the physical model to one exact dimensionless Fourier definition."""
     model = _one_dimensional_model()
     fractional_wave_vectors = MatrixQuantity(
         np.array([[0.125], [0.75]]),
@@ -85,11 +88,13 @@ def test__evaluate__maps_model_and_wave_vectors_to_unit_free_owner_definition() 
     )
     finite_series_evaluator = _RecordingEvaluator()
 
-    result = ScalarHoppingBlochEvaluator(finite_series_evaluator).evaluate(
+    ScalarHoppingBlochEvaluator(finite_series_evaluator).evaluate(
         model,
         fractional_wave_vectors,
     )
 
+    # One equality captures the complete delegated problem without mixing in the
+    # separate responsibility of restoring physical units on returned values.
     assert finite_series_evaluator.definition == (
         FiniteFourierSeriesEvaluationDefinition(
             dimension=1,
@@ -98,9 +103,28 @@ def test__evaluate__maps_model_and_wave_vectors_to_unit_free_owner_definition() 
             coefficients=(1.0 - 2.0j, 0.5 + 0.0j, 1.0 + 2.0j),
         )
     )
-    assert result.model is model
-    assert result.fractional_wave_vectors is fractional_wave_vectors
-    assert result.bloch_values.unit == model.energy_unit
+
+
+def test__ScalarHoppingBlochEvaluator__result__restores_correlated_values() -> None:
+    """Restore delegated values with the original model, coordinates, and unit."""
+    model = _one_dimensional_model()
+    fractional_wave_vectors = MatrixQuantity(
+        np.array([[0.125], [0.75]]),
+        Unitless(),
+    )
+
+    result = ScalarHoppingBlochEvaluator(_RecordingEvaluator()).evaluate(
+        model,
+        fractional_wave_vectors,
+    )
+
+    # Correlated metadata is one retained-result requirement, so compare it as one
+    # tuple rather than as a train of independent scalar assertions.
+    assert (
+        result.model,
+        result.fractional_wave_vectors,
+        result.bloch_values.unit,
+    ) == (model, fractional_wave_vectors, model.energy_unit)
     np.testing.assert_array_equal(
         result.bloch_values.magnitude,
         np.array([2.0 + 3.0j, -1.0 + 0.5j]),
@@ -108,7 +132,8 @@ def test__evaluate__maps_model_and_wave_vectors_to_unit_free_owner_definition() 
 
 
 @pytest.mark.integration
-def test__evaluate__uses_positive_exponent_without_normalization() -> None:
+def test__ScalarHoppingBlochEvaluator__phase__matches_direct_sum() -> None:
+    """Match an independent sum using exp(+2πiqR) with no normalization factor."""
     model = _one_dimensional_model()
     fractional_wave_vectors = MatrixQuantity(
         np.array([[0.0], [0.25]]),
@@ -120,6 +145,8 @@ def test__evaluate__uses_positive_exponent_without_normalization() -> None:
         fractional_wave_vectors,
     )
 
+    # q=1/4 is phase-sensitive because the conjugate hopping pair is complex;
+    # the expected -3.5 therefore distinguishes the positive exponent convention.
     np.testing.assert_allclose(
         result.bloch_values.magnitude,
         np.array([2.5 + 0.0j, -3.5 + 0.0j]),
@@ -128,7 +155,8 @@ def test__evaluate__uses_positive_exponent_without_normalization() -> None:
     )
 
 
-def test__evaluate__returns_empty_energy_unit_vector_for_empty_point_set() -> None:
+def test__ScalarHoppingBlochEvaluator__empty_grid__retains_energy_unit() -> None:
+    """Retain the energy unit when the reciprocal-point inventory is empty."""
     model = _one_dimensional_model()
 
     result = ScalarHoppingBlochEvaluator().evaluate(
@@ -140,7 +168,8 @@ def test__evaluate__returns_empty_energy_unit_vector_for_empty_point_set() -> No
     assert result.bloch_values.unit == model.energy_unit
 
 
-def test__evaluate__requires_owned_model() -> None:
+def test__ScalarHoppingBlochEvaluator__model__rejects_wrong_owner() -> None:
+    """Reject models outside the nominal scalar-hopping ownership boundary."""
     with pytest.raises(TypeError, match="model must be ScalarHoppingModel"):
         ScalarHoppingBlochEvaluator().evaluate(
             cast(Any, object()),
@@ -148,7 +177,8 @@ def test__evaluate__requires_owned_model() -> None:
         )
 
 
-def test__evaluate__requires_fractional_wave_vector_quantity() -> None:
+def test__ScalarHoppingBlochEvaluator__coordinates__rejects_wrong_owner() -> None:
+    """Reject reciprocal coordinates without the required quantity owner."""
     model = _one_dimensional_model()
 
     with pytest.raises(
@@ -160,7 +190,8 @@ def test__evaluate__requires_fractional_wave_vector_quantity() -> None:
         )
 
 
-def test__evaluate__requires_unitless_fractional_wave_vectors() -> None:
+def test__ScalarHoppingBlochEvaluator__coordinates__rejects_units() -> None:
+    """Reject dimensional inputs for fractional reciprocal coordinates."""
     model = _one_dimensional_model()
 
     with pytest.raises(ValueError, match="fractional_wave_vectors must be unitless"):
@@ -170,7 +201,8 @@ def test__evaluate__requires_unitless_fractional_wave_vectors() -> None:
         )
 
 
-def test__evaluate__requires_wave_vector_width_to_match_model_dimension() -> None:
+def test__ScalarHoppingBlochEvaluator__coordinates__rejects_width() -> None:
+    """Reject coordinate rows whose width differs from the lattice dimension."""
     model = _one_dimensional_model()
 
     with pytest.raises(ValueError, match=r"shape \(point_count, 1\)"):
@@ -180,7 +212,8 @@ def test__evaluate__requires_wave_vector_width_to_match_model_dimension() -> Non
         )
 
 
-def test__evaluate__propagates_owner_numerical_failure() -> None:
+def test__ScalarHoppingBlochEvaluator__nonfinite_phase__propagates_failure() -> None:
+    """Propagate nonfinite phase arithmetic instead of returning invalid energies."""
     dimension = LatticeDimension.ONE
     model = ScalarHoppingModel(
         identifier="overflow fixture",
@@ -195,6 +228,8 @@ def test__evaluate__propagates_owner_numerical_failure() -> None:
         Unitless(),
     )
 
+    # Multiplying the largest finite binary64 coordinate by displacement two
+    # overflows while forming the phase, so the numerical owner must fail closed.
     with pytest.raises(FloatingPointError):
         ScalarHoppingBlochEvaluator().evaluate(
             model,

@@ -8,6 +8,10 @@ values are rejected before concrete-model construction.
 The selected concrete model performs the complete shared invariant validation. The
 factory does not convert coefficient storage or reorder terms.
 
+## Numerical validation behavior
+
+None. Factory dispatch selects a representation and performs no numerical algorithm.
+
 - [Index](index.md)
 - [Schematics](schematics.md)
 - [Scientific contract](scientifics.md)

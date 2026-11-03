@@ -16,6 +16,21 @@ input coordinate record and model energy unit.
 
 No route diagonalizes the matrix, checks Hermiticity, or applies a tolerance.
 
+## Numerical validation behavior
+
+Numerical tests compare scalar ordered and dense batched evaluation with independently
+constructed Fourier sums. Dense/sparse parity tests use equivalent models at shared
+points, forbid sparse densification, and verify fixed-unitary basis covariance.
+Explicit binary64 tolerances are stated by each comparison; these controls do not
+establish material-model adequacy.
+
+Specific pytest evidence:
+
+- `tests/projectkoios/physkit/solidstate/tb/bloch/test__DenseBlockHoppingBlochEvaluator__evaluate.py::test__DenseBlockHoppingBlochEvaluator__phase__matches_direct_sum`
+- `tests/projectkoios/physkit/solidstate/tb/bloch/test__DenseSparseBlockHoppingBlochParity.py::TestDenseSparseBlockHoppingBlochParity::test__SparseBlockHoppingBlochEvaluator__storage__does_not_densify`
+- `tests/projectkoios/physkit/solidstate/tb/bloch/test__DenseSparseBlockHoppingBlochParity.py::TestDenseSparseBlockHoppingBlochParity::test__DenseSparseBlochEvaluators__representation_parity__agree`
+- `tests/projectkoios/physkit/solidstate/tb/bloch/test__DenseSparseBlockHoppingBlochParity.py::TestDenseSparseBlockHoppingBlochParity::test__DenseBlockHoppingBlochEvaluator__covariance__commutes_with_unitary`
+
 ## Navigation
 
 - [Module index](index.md)

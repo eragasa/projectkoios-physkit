@@ -8,6 +8,11 @@ displacements. `basis_size` is derived from the first validated term.
 Concrete classes supply their owned dense or sparse term type. The base does not
 perform Fourier evaluation or matrix arithmetic.
 
+## Numerical validation behavior
+
+None. The abstract model owner stores correlated coefficients and metadata but
+performs no numerical transformation or comparison.
+
 - [Index](index.md)
 - [Schematics](schematics.md)
 - [Scientific contract](scientifics.md)

@@ -7,6 +7,10 @@ the coefficient unit.
 
 No sparsification, thresholding, conjugation, or unit conversion occurs.
 
+## Numerical validation behavior
+
+None. This record retains a dense coefficient but does not evaluate or compare it.
+
 - [Index](index.md)
 - [Schematics](schematics.md)
 - [Scientific contract](scientifics.md)

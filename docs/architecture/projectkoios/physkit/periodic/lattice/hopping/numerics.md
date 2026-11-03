@@ -13,6 +13,12 @@ representations and perform no dense–sparse conversion.
 Hermiticity, Fourier evaluation, diagonalization, truncation, fitting, and tolerance
 selection belong to separate actions.
 
+## Numerical validation behavior
+
+None. This module owns representations and exact invariants but performs no numerical
+algorithm. Numerical validation begins with the Bloch, diagnostic, truncation, or
+finite-operator actions that consume these records.
+
 ## Navigation
 
 - [Module index](index.md)

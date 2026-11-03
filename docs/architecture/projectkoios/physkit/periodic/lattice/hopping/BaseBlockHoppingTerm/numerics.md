@@ -7,6 +7,10 @@ as the first coefficient-shape component.
 
 The base performs no coefficient arithmetic and cannot be constructed directly.
 
+## Numerical validation behavior
+
+None. The abstract term owner performs no numerical arithmetic.
+
 - [Index](index.md)
 - [Schematics](schematics.md)
 - [Scientific contract](scientifics.md)
