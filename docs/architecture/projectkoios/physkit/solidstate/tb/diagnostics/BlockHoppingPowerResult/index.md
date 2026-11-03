@@ -2,7 +2,7 @@
 
 ## Current contract
 
-The result retains a `BlockHoppingModel` and one canonical `BlockHoppingPower` per
+The result retains a `DenseBlockHoppingModel` and one canonical `BlockHoppingPower` per
 ordered term. `total_power` returns the finite sum over all terms.
 `omitted_power(retained_displacements)` returns the raw power outside a supplied
 sorted unique model-subset inventory; the inventory may be empty and need not be

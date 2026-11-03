@@ -19,6 +19,7 @@ from .protocols import UnitQuantityProtocol
 from .quantities import (
     MODEL_SYSTEM_PINT_REGISTRY,
     ComplexMatrixQuantity,
+    ComplexQuantity,
     ComplexSparseMatrixQuantity,
     ComplexVectorQuantity,
     MatrixQuantity,
@@ -53,6 +54,7 @@ __all__ = [
     "MODEL_SYSTEM_PINT_REGISTRY",
     "ModelSystemUnitConverter",
     "ComplexMatrixQuantity",
+    "ComplexQuantity",
     "ComplexSparseMatrixQuantity",
     "ComplexVectorQuantity",
     "MatrixQuantity",

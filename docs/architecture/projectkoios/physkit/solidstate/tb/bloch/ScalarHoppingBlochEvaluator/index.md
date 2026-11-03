@@ -24,6 +24,12 @@ The class does not infer missing Hermitian partners, reduce symmetry orbits,
 choose wave-vector paths, diagonalize multi-orbital matrices, select a tolerance,
 or decide whether a model or result is physically acceptable.
 
+## Contract documentation
+
+- [Schematics](schematics.md)
+- [Numerical contract](numerics.md)
+- [Scientific contract](scientifics.md)
+
 ## Mapping
 
 - Implementation: `src/python/projectkoios/physkit/solidstate/tb/bloch.py`

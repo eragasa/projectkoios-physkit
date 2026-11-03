@@ -10,7 +10,7 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeDimension,
     LatticeDisplacement,
 )
-from projectkoios.physkit.periodic.lattice.hopping import BlockHoppingTerm
+from projectkoios.physkit.periodic.lattice.hopping import DenseBlockHoppingTerm
 from projectkoios.physkit.units import ComplexMatrixQuantity, PhysicalUnit
 
 
@@ -21,7 +21,7 @@ def test__init__retains_displacement_and_immutable_coefficient() -> None:
         PhysicalUnit("electron_volt"),
     )
 
-    term = BlockHoppingTerm(displacement, coefficient)
+    term = DenseBlockHoppingTerm(displacement, coefficient)
 
     assert term.displacement is displacement
     assert term.coefficient is coefficient
@@ -41,9 +41,9 @@ def test__init__rejects_nonowned_inputs() -> None:
     )
 
     with pytest.raises(TypeError, match="displacement must be LatticeDisplacement"):
-        BlockHoppingTerm(cast(Any, object()), coefficient)
+        DenseBlockHoppingTerm(cast(Any, object()), coefficient)
     with pytest.raises(TypeError, match="coefficient must be ComplexMatrixQuantity"):
-        BlockHoppingTerm(
+        DenseBlockHoppingTerm(
             LatticeDisplacement(LatticeDimension.ONE, (0,)),
             cast(Any, object()),
         )
@@ -60,7 +60,7 @@ def test__init__rejects_empty_or_nonsquare_coefficients(values: np.ndarray) -> N
     coefficient = ComplexMatrixQuantity(values, PhysicalUnit("electron_volt"))
 
     with pytest.raises(ValueError, match="nonempty square"):
-        BlockHoppingTerm(
+        DenseBlockHoppingTerm(
             LatticeDisplacement(LatticeDimension.ONE, (0,)),
             coefficient,
         )

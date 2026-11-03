@@ -22,10 +22,10 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeDisplacement,
 )
 from projectkoios.physkit.periodic.lattice.hopping import (
-    BlockHoppingModel,
-    BlockHoppingTerm,
+    DenseBlockHoppingModel,
+    DenseBlockHoppingTerm,
 )
-from projectkoios.physkit.solidstate.tb.bloch import BlockHoppingBlochEvaluator
+from projectkoios.physkit.solidstate.tb.bloch import DenseBlockHoppingBlochEvaluator
 from projectkoios.physkit.units import (
     ComplexMatrixQuantity,
     MatrixQuantity,
@@ -36,7 +36,7 @@ from projectkoios.physkit.units import (
 pytestmark = pytest.mark.unit
 
 
-def _model() -> BlockHoppingModel:
+def _model() -> DenseBlockHoppingModel:
     dimension = LatticeDimension.ONE
     unit = PhysicalUnit("electron_volt")
     matrices = (
@@ -44,11 +44,11 @@ def _model() -> BlockHoppingModel:
         np.array([[0.5, 0.0], [0.0, 1.0]], dtype=np.complex128),
         np.array([[1.0, 3.0], [-2.0j, 4.0]], dtype=np.complex128),
     )
-    return BlockHoppingModel(
+    return DenseBlockHoppingModel(
         identifier="two-band chain",
         dimension=dimension,
         terms=tuple(
-            BlockHoppingTerm(
+            DenseBlockHoppingTerm(
                 LatticeDisplacement(dimension, (representative,)),
                 ComplexMatrixQuantity(matrix, unit),
             )
@@ -119,7 +119,7 @@ def test__evaluate__maps_each_matrix_entry_to_the_unit_free_owner() -> None:
     wave_vectors = MatrixQuantity(np.array([[0.125], [0.75]]), Unitless())
     owner = _RecordingEvaluator()
 
-    result = BlockHoppingBlochEvaluator(owner).evaluate(model, wave_vectors)
+    result = DenseBlockHoppingBlochEvaluator(owner).evaluate(model, wave_vectors)
 
     expected_coefficients = (
         (1.0 + 0.0j, 0.5 + 0.0j, 1.0 + 0.0j),
@@ -155,7 +155,7 @@ def test__evaluate__maps_each_matrix_entry_to_the_unit_free_owner() -> None:
 
 def test__evaluate_family__uses_one_shared_grid_and_preserves_model_order() -> None:
     source = _model()
-    retained = BlockHoppingModel(
+    retained = DenseBlockHoppingModel(
         identifier="onsite truncation",
         dimension=source.dimension,
         terms=(source.terms[1],),
@@ -166,7 +166,7 @@ def test__evaluate_family__uses_one_shared_grid_and_preserves_model_order() -> N
     wave_vectors = MatrixQuantity(np.array([[0.125], [0.75]]), Unitless())
     owner = _RecordingBatchedEvaluator()
 
-    results = BlockHoppingBlochEvaluator(
+    results = DenseBlockHoppingBlochEvaluator(
         batched_finite_series_evaluator=owner,
     ).evaluate_family((source, retained), wave_vectors)
 
@@ -196,8 +196,8 @@ def test__evaluate_family__uses_one_shared_grid_and_preserves_model_order() -> N
 def test__evaluate_family__rejects_empty_or_incompatible_models() -> None:
     source = _model()
     coordinates = MatrixQuantity(np.zeros((1, 1)), Unitless())
-    evaluator = BlockHoppingBlochEvaluator()
-    incompatible = BlockHoppingModel(
+    evaluator = DenseBlockHoppingBlochEvaluator()
+    incompatible = DenseBlockHoppingModel(
         identifier="incompatible basis",
         dimension=source.dimension,
         terms=source.terms,
@@ -206,7 +206,7 @@ def test__evaluate_family__rejects_empty_or_incompatible_models() -> None:
         basis_identifier="different basis",
     )
 
-    with pytest.raises(TypeError, match="tuple of BlockHoppingModel"):
+    with pytest.raises(TypeError, match="tuple of DenseBlockHoppingModel"):
         evaluator.evaluate_family(cast(Any, [source]), coordinates)
     with pytest.raises(ValueError, match="nonempty"):
         evaluator.evaluate_family((), coordinates)
@@ -229,7 +229,7 @@ def test__evaluate__uses_one_dense_channel_reduction(
 
     monkeypatch.setattr(module.np, "matmul", recording_matmul)
 
-    BlockHoppingBlochEvaluator().evaluate(
+    DenseBlockHoppingBlochEvaluator().evaluate(
         _model(),
         MatrixQuantity(np.array([[0.0], [0.25]]), Unitless()),
     )
@@ -242,7 +242,7 @@ def test__evaluate__uses_positive_exponent_without_normalization() -> None:
     model = _model()
     coordinates = np.array([[0.0], [0.25]], dtype=np.float64)
 
-    result = BlockHoppingBlochEvaluator().evaluate(
+    result = DenseBlockHoppingBlochEvaluator().evaluate(
         model,
         MatrixQuantity(coordinates, Unitless()),
     )
@@ -267,7 +267,7 @@ def test__evaluate__uses_positive_exponent_without_normalization() -> None:
 
 
 def test__evaluate__returns_empty_matrix_inventory_for_empty_points() -> None:
-    result = BlockHoppingBlochEvaluator().evaluate(
+    result = DenseBlockHoppingBlochEvaluator().evaluate(
         _model(),
         MatrixQuantity(np.empty((0, 1)), Unitless()),
     )
@@ -276,10 +276,10 @@ def test__evaluate__returns_empty_matrix_inventory_for_empty_points() -> None:
 
 
 def test__evaluate__rejects_wrong_model_and_coordinate_semantics() -> None:
-    evaluator = BlockHoppingBlochEvaluator()
+    evaluator = DenseBlockHoppingBlochEvaluator()
     model = _model()
 
-    with pytest.raises(TypeError, match="model must be BlockHoppingModel"):
+    with pytest.raises(TypeError, match="model must be DenseBlockHoppingModel"):
         evaluator.evaluate(
             cast(Any, object()),
             MatrixQuantity(np.zeros((1, 1)), Unitless()),

@@ -20,7 +20,7 @@ dependencies = [
   "scipy>=1.18,<2",
   "matplotlib>=3.8",
   "pint>=0.26,<0.27",
-  "projectkoios-optimization[numpy,scipy] @ git+https://github.com/eragasa/projectkoios-optimization.git@e0749d1efeddbabfafa9edac76d0715912a6c1e3",
+  "projectkoios-optimization[numpy,scipy] @ git+https://github.com/eragasa/projectkoios-optimization.git@f0fa13693543c89b2c40f11583a1140df0cf7b0b",
   "sympy>=1.12"
 ]
 

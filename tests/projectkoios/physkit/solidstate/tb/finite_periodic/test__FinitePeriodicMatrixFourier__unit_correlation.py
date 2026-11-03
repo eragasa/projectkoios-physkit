@@ -4,6 +4,18 @@ import numpy as np
 import pytest
 
 from projectkoios.numerics.finite_periodic.meshes import CenteredUniformMesh
+from projectkoios.numerics.finite_periodic.numpy.transform_diagnostics import (
+    NumpyCenteredUniformMeshHermiticityAnalyzer,
+    NumpyFinitePeriodicParsevalAnalyzer,
+)
+from projectkoios.numerics.finite_periodic.numpy.transforms import (
+    NumpyCenteredUniformMeshMatrixFourierTransformDefinition,
+    NumpyCenteredUniformMeshMatrixFourierTransformResult,
+)
+from projectkoios.numerics.finite_periodic.transforms import (
+    FinitePeriodicHermiticityDiagnostics,
+    FinitePeriodicParsevalDiagnostics,
+)
 from projectkoios.physkit.solidstate.tb.finite_periodic import (
     FinitePeriodicMatrixFourierEvaluation,
     FinitePeriodicMatrixFourierSeries,
@@ -46,17 +58,17 @@ def test_transform_evaluation_and_diagnostics_preserve_energy_unit(size: int) ->
         basis_identifier="ordered-two-state-basis",
     )
 
-    transform = FinitePeriodicMatrixFourierTransformer().transform(source)
+    transform = FinitePeriodicMatrixFourierTransformer(source=source).result()
     axis = np.asarray(
         [-0.5 + index / size for index in range(size)],
         dtype=np.float64,
     )
-    evaluation = FinitePeriodicMatrixFourierTensorEvaluator().evaluate(
-        transform.series,
-        (axis,),
-    )
-    parseval = FinitePeriodicMatrixParsevalAnalyzer().analyze(transform)
-    hermiticity = FinitePeriodicMatrixHermiticityAnalyzer().analyze(transform)
+    evaluation = FinitePeriodicMatrixFourierTensorEvaluator(
+        series=transform.series,
+        coordinate_axes=(axis,),
+    ).result()
+    parseval = FinitePeriodicMatrixParsevalAnalyzer(transform=transform).result()
+    hermiticity = FinitePeriodicMatrixHermiticityAnalyzer(transform=transform).result()
 
     expected_modes = np.arange(-(size // 2), (size - 1) // 2 + 1)
     assert transform.source is source
@@ -97,13 +109,13 @@ def test_computed_results_require_their_owning_actions() -> None:
         energy_reference="zero",
         basis_identifier="basis",
     )
-    transform = FinitePeriodicMatrixFourierTransformer().transform(source)
-    evaluation = FinitePeriodicMatrixFourierTensorEvaluator().evaluate(
-        transform.series,
-        (np.asarray([0.0], dtype=np.float64),),
-    )
-    parseval = FinitePeriodicMatrixParsevalAnalyzer().analyze(transform)
-    hermiticity = FinitePeriodicMatrixHermiticityAnalyzer().analyze(transform)
+    transform = FinitePeriodicMatrixFourierTransformer(source=source).result()
+    evaluation = FinitePeriodicMatrixFourierTensorEvaluator(
+        series=transform.series,
+        coordinate_axes=(np.asarray([0.0], dtype=np.float64),),
+    ).result()
+    parseval = FinitePeriodicMatrixParsevalAnalyzer(transform=transform).result()
+    hermiticity = FinitePeriodicMatrixHermiticityAnalyzer(transform=transform).result()
 
     with pytest.raises(TypeError, match="owning action"):
         FinitePeriodicMatrixFourierTransformResult(
@@ -153,20 +165,40 @@ def test_each_diagnostic_owner_runs_once(monkeypatch: pytest.MonkeyPatch) -> Non
         energy_reference="zero",
         basis_identifier="basis",
     )
-    transform = FinitePeriodicMatrixFourierTransformer().transform(source)
+    transform = FinitePeriodicMatrixFourierTransformer(source=source).result()
     calls = {"parseval": 0, "hermiticity": 0}
     parseval_owner = diagnostics.NumpyFinitePeriodicParsevalAnalyzer
     hermiticity_owner = diagnostics.NumpyCenteredUniformMeshHermiticityAnalyzer
 
     class CountingParsevalAnalyzer:
-        def analyze(self, *args: object) -> object:
+        def __init__(
+            self,
+            *,
+            definition: NumpyCenteredUniformMeshMatrixFourierTransformDefinition,
+            transform_result: NumpyCenteredUniformMeshMatrixFourierTransformResult,
+        ) -> None:
+            self._owner: NumpyFinitePeriodicParsevalAnalyzer = parseval_owner(
+                definition=definition,
+                transform_result=transform_result,
+            )
+
+        def result(self) -> FinitePeriodicParsevalDiagnostics:
             calls["parseval"] += 1
-            return parseval_owner().analyze(*args)
+            return self._owner.result()
 
     class CountingHermiticityAnalyzer:
-        def analyze(self, *args: object) -> object:
+        def __init__(
+            self,
+            *,
+            transform_result: NumpyCenteredUniformMeshMatrixFourierTransformResult,
+        ) -> None:
+            self._owner: NumpyCenteredUniformMeshHermiticityAnalyzer = (
+                hermiticity_owner(transform_result=transform_result)
+            )
+
+        def result(self) -> FinitePeriodicHermiticityDiagnostics:
             calls["hermiticity"] += 1
-            return hermiticity_owner().analyze(*args)
+            return self._owner.result()
 
     monkeypatch.setattr(
         diagnostics,
@@ -179,8 +211,8 @@ def test_each_diagnostic_owner_runs_once(monkeypatch: pytest.MonkeyPatch) -> Non
         CountingHermiticityAnalyzer,
     )
 
-    FinitePeriodicMatrixParsevalAnalyzer().analyze(transform)
-    FinitePeriodicMatrixHermiticityAnalyzer().analyze(transform)
+    FinitePeriodicMatrixParsevalAnalyzer(transform=transform).result()
+    FinitePeriodicMatrixHermiticityAnalyzer(transform=transform).result()
 
     assert calls == {"parseval": 1, "hermiticity": 1}
 
@@ -194,7 +226,7 @@ def test_selected_series_retains_units_and_explicit_inventory_order() -> None:
         energy_reference="zero",
         basis_identifier="basis",
     )
-    complete = FinitePeriodicMatrixFourierTransformer().transform(source).series
+    complete = FinitePeriodicMatrixFourierTransformer(source=source).result().series
 
     selected = complete.take((1, 2, 3))
 
@@ -218,10 +250,14 @@ def test_empty_selected_series_evaluates_as_exact_zero_with_unit() -> None:
         energy_reference="dimensionless-zero",
         basis_identifier="basis",
     )
-    empty = FinitePeriodicMatrixFourierTransformer().transform(source).series.take(())
+    empty = (
+        FinitePeriodicMatrixFourierTransformer(source=source).result().series.take(())
+    )
     axis = np.asarray([-0.25, 0.125], dtype=np.float64)
 
-    evaluation = FinitePeriodicMatrixFourierTensorEvaluator().evaluate(empty, (axis,))
+    evaluation = FinitePeriodicMatrixFourierTensorEvaluator(
+        series=empty, coordinate_axes=(axis,)
+    ).result()
 
     assert evaluation.matrix_values.shape == (2, 2, 2)
     assert np.array_equal(evaluation.matrix_values, np.zeros((2, 2, 2)))
@@ -237,10 +273,12 @@ def test_evaluation_copies_and_freezes_explicit_target_axes() -> None:
         energy_reference="zero",
         basis_identifier="basis",
     )
-    series = FinitePeriodicMatrixFourierTransformer().transform(source).series
+    series = FinitePeriodicMatrixFourierTransformer(source=source).result().series
     axis = np.asarray([-0.25, 0.125], dtype=np.float64)
 
-    evaluation = FinitePeriodicMatrixFourierTensorEvaluator().evaluate(series, (axis,))
+    evaluation = FinitePeriodicMatrixFourierTensorEvaluator(
+        series=series, coordinate_axes=(axis,)
+    ).result()
     axis[0] = 99.0
 
     assert np.array_equal(evaluation.coordinate_axes[0], [-0.25, 0.125])

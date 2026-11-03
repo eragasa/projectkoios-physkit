@@ -27,6 +27,7 @@ __all__ = [
     "MODEL_SYSTEM_PINT_REGISTRY",
     "ModelSystemUnitConverter",
     "ComplexMatrixQuantity",
+    "ComplexQuantity",
     "ComplexSparseMatrixQuantity",
     "ComplexVectorQuantity",
     "MatrixQuantity",
@@ -109,6 +110,25 @@ class ScalarQuantity(ModelSystemQuantity):
         if type(self.magnitude) is not float:
             raise TypeError("magnitude must be a built-in float")
         if not np.isfinite(self.magnitude):
+            raise ValueError("magnitude must be finite")
+        if not isinstance(self.unit, PhysicalUnit | Unitless):
+            raise TypeError("unit must be PhysicalUnit or Unitless")
+
+
+@dataclass(frozen=True, slots=True)
+class ComplexQuantity(ModelSystemQuantity):
+    """Represent one finite built-in complex scalar and its explicit unit."""
+
+    magnitude: complex
+    unit: ModelSystemUnit
+
+    def __post_init__(self) -> None:
+        """Validate exact finite complex input and nominal unit ownership."""
+        if type(self.magnitude) is not complex:
+            raise TypeError("magnitude must be a built-in complex")
+        if not np.isfinite(self.magnitude.real) or not np.isfinite(
+            self.magnitude.imag
+        ):
             raise ValueError("magnitude must be finite")
         if not isinstance(self.unit, PhysicalUnit | Unitless):
             raise TypeError("unit must be PhysicalUnit or Unitless")
@@ -524,6 +544,15 @@ class PintUnitConverter:
             magnitude=float(converted.magnitude),
             unit=target,
         )
+
+    def convert_complex(
+        self, quantity: ComplexQuantity, target: ModelSystemUnit
+    ) -> ComplexQuantity:
+        """Convert one complex scalar through a multiplicative unit factor."""
+        if not isinstance(quantity, ComplexQuantity):
+            raise TypeError("quantity must be ComplexQuantity")
+        factor = self.conversion_factor(quantity.unit, target)
+        return ComplexQuantity(quantity.magnitude * factor, target)
 
     def convert_vector(
         self, quantity: VectorQuantity, target: ModelSystemUnit

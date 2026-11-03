@@ -40,7 +40,7 @@ The source and retained models share Fourier phases and one complete-spectrum ba
 
 ```mermaid
 flowchart LR
-    S["Source BlockHoppingModel"]
+    S["Source DenseBlockHoppingModel"]
     I["Ordered explicit inventories<br/>and distinct model identifiers"]
     Q["Fractional coordinates<br/>(P, d), unitless"]
     T["Caller Hermiticity tolerance"]

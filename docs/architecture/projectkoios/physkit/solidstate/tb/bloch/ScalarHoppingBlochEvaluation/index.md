@@ -13,6 +13,12 @@ Construction validates model ownership, coordinate dimension, coordinate unit,
 value count, and value unit. It does not claim Hermiticity, force values to be
 real, choose a numerical tolerance, or establish scientific acceptance.
 
+## Contract documentation
+
+- [Schematics](schematics.md)
+- [Numerical contract](numerics.md)
+- [Scientific contract](scientifics.md)
+
 ## Mapping
 
 - Implementation: `src/python/projectkoios/physkit/solidstate/tb/bloch.py`

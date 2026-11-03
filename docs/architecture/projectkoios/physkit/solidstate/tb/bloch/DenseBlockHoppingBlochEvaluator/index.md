@@ -1,4 +1,4 @@
-# Class `BlockHoppingBlochEvaluator`
+# Class `DenseBlockHoppingBlochEvaluator`
 
 This page defines unit-aware Bloch matrices for one block model or a compatible model
 family.
@@ -8,7 +8,7 @@ family.
 The evaluator maps ordered matrix-entry coefficient series to correlated Bloch
 matrices without adding spectral or truncation policy.
 
-- `evaluate(...)` returns one `BlockHoppingBlochEvaluation`.
+- `evaluate(...)` returns one `DenseBlockHoppingBlochEvaluation`.
 - `evaluate_family(...)` returns one evaluation per model in supplied order.
 - Every family result retains the exact shared coordinate object.
 - Models share lattice dimension, basis size and identity, energy unit, and energy
@@ -46,10 +46,16 @@ The adapter performs only Bloch assembly.
 - No retained inventory is selected.
 - No distance, cutoff, error, normalization, or acceptance result is produced.
 
+## Contract documentation
+
+- [Schematics](schematics.md)
+- [Numerical contract](numerics.md)
+- [Scientific contract](scientifics.md)
+
 ## Mapping
 
 The implementation and focused tests are maintained together.
 
-- Code: `src/python/projectkoios/physkit/solidstate/tb/bloch.py::BlockHoppingBlochEvaluator`
-- Constructor tests: `tests/projectkoios/physkit/solidstate/tb/bloch/test__BlockHoppingBlochEvaluator__init.py`
-- Evaluation tests: `tests/projectkoios/physkit/solidstate/tb/bloch/test__BlockHoppingBlochEvaluator__evaluate.py`
+- Code: `src/python/projectkoios/physkit/solidstate/tb/bloch.py::DenseBlockHoppingBlochEvaluator`
+- Constructor tests: `tests/projectkoios/physkit/solidstate/tb/bloch/test__DenseBlockHoppingBlochEvaluator__init.py`
+- Evaluation tests: `tests/projectkoios/physkit/solidstate/tb/bloch/test__DenseBlockHoppingBlochEvaluator__evaluate.py`

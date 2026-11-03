@@ -31,7 +31,7 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
     LatticeIntegerComponents,
 )
 from projectkoios.physkit.periodic.lattice.hopping import (
-    BlockHoppingModel,
+    DenseBlockHoppingModel,
     ScalarHoppingModel,
 )
 from projectkoios.physkit.periodic.lattice.symmetry import (
@@ -347,7 +347,7 @@ class BlockHoppingCoefficientComparison:
 
 
 def _block_hermiticity_comparisons(
-    model: BlockHoppingModel,
+    model: DenseBlockHoppingModel,
 ) -> tuple[BlockHoppingCoefficientComparison, ...]:
     """Build canonical comparisons for ``T[-R] = T[R]†``."""
     terms_by_displacement = {term.displacement.components: term for term in model.terms}
@@ -390,13 +390,13 @@ def _block_hermiticity_comparisons(
 class BlockHoppingHermiticityResult(ResultsObject):
     """Retain canonical Hermiticity comparisons for one block model."""
 
-    model: BlockHoppingModel
+    model: DenseBlockHoppingModel
     comparisons: tuple[BlockHoppingCoefficientComparison, ...]
 
     def __post_init__(self) -> None:
         """Validate model ownership and canonical comparison content."""
-        if type(self.model) is not BlockHoppingModel:
-            raise TypeError("model must be BlockHoppingModel")
+        if type(self.model) is not DenseBlockHoppingModel:
+            raise TypeError("model must be DenseBlockHoppingModel")
         if type(self.comparisons) is not tuple or any(
             type(comparison) is not BlockHoppingCoefficientComparison
             for comparison in self.comparisons
@@ -442,17 +442,17 @@ class BlockHoppingHermiticityAnalyzer:
 
     __slots__ = ()
 
-    def execute(self, model: BlockHoppingModel) -> BlockHoppingHermiticityResult:
+    def execute(self, model: DenseBlockHoppingModel) -> BlockHoppingHermiticityResult:
         """Return canonical block comparisons without choosing a tolerance."""
-        if type(model) is not BlockHoppingModel:
-            raise TypeError("model must be BlockHoppingModel")
+        if type(model) is not DenseBlockHoppingModel:
+            raise TypeError("model must be DenseBlockHoppingModel")
         return BlockHoppingHermiticityResult(
             model=model,
             comparisons=_block_hermiticity_comparisons(model),
         )
 
 
-def _squared_energy_unit(model: BlockHoppingModel) -> PhysicalUnit | Unitless:
+def _squared_energy_unit(model: DenseBlockHoppingModel) -> PhysicalUnit | Unitless:
     """Return the explicit square of one model energy unit."""
     if isinstance(model.energy_unit, Unitless):
         return Unitless()
@@ -476,7 +476,7 @@ class BlockHoppingPower:
             raise ValueError("frobenius_power must be nonnegative")
 
 
-def _block_powers(model: BlockHoppingModel) -> tuple[BlockHoppingPower, ...]:
+def _block_powers(model: DenseBlockHoppingModel) -> tuple[BlockHoppingPower, ...]:
     """Calculate canonical raw block powers with explicit squared-energy units."""
     squared_unit = _squared_energy_unit(model)
     powers: list[BlockHoppingPower] = []
@@ -508,13 +508,13 @@ def _block_power_sum(powers: Iterable[BlockHoppingPower], /) -> float:
 class BlockHoppingPowerResult(ResultsObject):
     """Retain raw squared Frobenius norms for every ordered hopping block."""
 
-    model: BlockHoppingModel
+    model: DenseBlockHoppingModel
     powers: tuple[BlockHoppingPower, ...]
 
     def __post_init__(self) -> None:
         """Validate ownership, ordering, correlation, and squared-energy units."""
-        if type(self.model) is not BlockHoppingModel:
-            raise TypeError("model must be BlockHoppingModel")
+        if type(self.model) is not DenseBlockHoppingModel:
+            raise TypeError("model must be DenseBlockHoppingModel")
         if type(self.powers) is not tuple or any(
             type(power) is not BlockHoppingPower for power in self.powers
         ):
@@ -573,8 +573,8 @@ class BlockHoppingPowerAnalyzer:
 
     __slots__ = ()
 
-    def execute(self, model: BlockHoppingModel) -> BlockHoppingPowerResult:
+    def execute(self, model: DenseBlockHoppingModel) -> BlockHoppingPowerResult:
         """Return one power result in canonical model order."""
-        if type(model) is not BlockHoppingModel:
-            raise TypeError("model must be BlockHoppingModel")
+        if type(model) is not DenseBlockHoppingModel:
+            raise TypeError("model must be DenseBlockHoppingModel")
         return BlockHoppingPowerResult(model=model, powers=_block_powers(model))

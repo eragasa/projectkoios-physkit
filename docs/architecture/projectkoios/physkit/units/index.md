@@ -5,8 +5,8 @@
 The package owns reusable physical-unit and immutable quantity semantics.
 
 - `PhysicalUnit` and `Unitless` are the nominal unit identities for model-system data.
-- Scalar, real/complex vector, real/complex matrix, and real/complex sparse matrix
-  quantities retain explicit units and immutable numerical storage.
+- Real and complex scalar, real/complex vector, real/complex matrix, and real/complex
+  sparse matrix quantities retain explicit units and immutable numerical storage.
 - Real dense vector and matrix quantities accept only integer, unsigned-integer, or
   floating NumPy dtypes before binary64 conversion. Boolean, string, object, and
   complex arrays are rejected rather than coerced or truncated.
@@ -43,7 +43,8 @@ Unit conversion mechanics remain separate from scientific normalization.
 
 - Pint dimensional compatibility and physical conversion belong to PhysKit.
 - Affine scalar/vector conversions preserve offset-unit behavior.
-- Complex, matrix, and sparse conversions require compatible multiplicative factors;
+- Complex scalar, complex vector, matrix, and sparse conversions require compatible
+  multiplicative factors;
   they reject nonzero affine offsets rather than treating an affine map as linear.
 - `conversion_factor(...)` is defined only when zero maps to zero.
 - Calculator-native scaling fields, external-file conventions, campaign normalization,

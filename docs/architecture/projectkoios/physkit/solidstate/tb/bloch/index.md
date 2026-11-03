@@ -10,7 +10,9 @@ fractional reciprocal coordinates $\mathbf q$ and integer displacements $\mathbf
 
 - Scalar models evaluate
   $h(\mathbf q)=\sum_{\mathbf R}t_{\mathbf R}\exp(+2\pi i\,\mathbf q\cdot\mathbf R)$.
-- Block models apply the same finite series to every ordered matrix entry.
+- Dense block models apply the finite series to every ordered matrix entry.
+- Sparse block models sum phase-weighted CSR blocks directly and return sparse
+  Bloch matrices without dense conversion.
 - The positive exponent and absence of normalization are fixed conventions.
 - Models retain coefficient order, energy unit, energy reference, and basis identity.
 - Results remain complex because hopping models do not impose Hermiticity.
@@ -26,9 +28,10 @@ The scalar adapter preserves the exact ordered finite-series contract.
 - Point, term, and coordinate-component reduction order remain observable.
 - Empty coordinate shape `(0, dimension)` produces an empty complex vector.
 
-## Block and family Numerics boundary
+## Dense block and family Numerics boundary
 
-The default block adapter uses the pinned shared-grid batched finite-Fourier owner.
+The default dense-block adapter uses the pinned shared-grid batched finite-Fourier
+owner.
 
 - The exact owner revision is commit
   `2a18e485109e307b2f7928bd0418bcf796aeb0d5`, tree
@@ -53,8 +56,16 @@ The public records and evaluators distinguish scalar and block ownership.
 
 - [`ScalarHoppingBlochEvaluator`](ScalarHoppingBlochEvaluator/index.md)
 - [`ScalarHoppingBlochEvaluation`](ScalarHoppingBlochEvaluation/index.md)
-- [`BlockHoppingBlochEvaluator`](BlockHoppingBlochEvaluator/index.md)
-- [`BlockHoppingBlochEvaluation`](BlockHoppingBlochEvaluation/index.md)
+- [`DenseBlockHoppingBlochEvaluator`](DenseBlockHoppingBlochEvaluator/index.md)
+- [`DenseBlockHoppingBlochEvaluation`](DenseBlockHoppingBlochEvaluation/index.md)
+- [`SparseBlockHoppingBlochEvaluator`](SparseBlockHoppingBlochEvaluator/index.md)
+- [`SparseBlockHoppingBlochEvaluation`](SparseBlockHoppingBlochEvaluation/index.md)
+
+## Contract documentation
+
+- [Schematics](schematics.md)
+- [Numerical contract](numerics.md)
+- [Scientific contract](scientifics.md)
 
 ## Local mapping
 

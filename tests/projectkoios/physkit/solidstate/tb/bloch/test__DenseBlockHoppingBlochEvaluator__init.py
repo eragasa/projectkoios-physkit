@@ -14,7 +14,7 @@ from projectkoios.numerics.finite_periodic.finite_series import (
     FiniteFourierSeriesEvaluationResult,
     FiniteFourierSeriesEvaluator,
 )
-from projectkoios.physkit.solidstate.tb.bloch import BlockHoppingBlochEvaluator
+from projectkoios.physkit.solidstate.tb.bloch import DenseBlockHoppingBlochEvaluator
 
 
 class _BatchedEvaluator(BatchedFiniteFourierSeriesEvaluator):
@@ -58,13 +58,13 @@ class _Evaluator(FiniteFourierSeriesEvaluator):
 def test__init__retains_injected_nominal_evaluator() -> None:
     owner = _Evaluator()
 
-    evaluator = BlockHoppingBlochEvaluator(owner)
+    evaluator = DenseBlockHoppingBlochEvaluator(owner)
 
     assert evaluator.finite_series_evaluator is owner
 
 
 def test__init__constructs_default_nominal_evaluators() -> None:
-    evaluator = BlockHoppingBlochEvaluator()
+    evaluator = DenseBlockHoppingBlochEvaluator()
 
     assert isinstance(evaluator.finite_series_evaluator, FiniteFourierSeriesEvaluator)
     assert isinstance(
@@ -76,7 +76,7 @@ def test__init__constructs_default_nominal_evaluators() -> None:
 def test__init__retains_explicit_batched_evaluator() -> None:
     batched = _BatchedEvaluator()
 
-    evaluator = BlockHoppingBlochEvaluator(
+    evaluator = DenseBlockHoppingBlochEvaluator(
         batched_finite_series_evaluator=batched,
     )
 
@@ -84,15 +84,15 @@ def test__init__retains_explicit_batched_evaluator() -> None:
 
 
 def test__init__uses_scalar_only_when_scalar_owner_is_injected() -> None:
-    evaluator = BlockHoppingBlochEvaluator(_Evaluator())
+    evaluator = DenseBlockHoppingBlochEvaluator(_Evaluator())
 
     assert evaluator.batched_finite_series_evaluator is None
 
 
 def test__init__rejects_nonowned_evaluators() -> None:
     with pytest.raises(TypeError, match="FiniteFourierSeriesEvaluator or None"):
-        BlockHoppingBlochEvaluator(cast(Any, object()))
+        DenseBlockHoppingBlochEvaluator(cast(Any, object()))
     with pytest.raises(TypeError, match="BatchedFiniteFourierSeriesEvaluator or None"):
-        BlockHoppingBlochEvaluator(
+        DenseBlockHoppingBlochEvaluator(
             batched_finite_series_evaluator=cast(Any, object()),
         )

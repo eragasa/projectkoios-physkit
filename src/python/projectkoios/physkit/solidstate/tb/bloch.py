@@ -21,6 +21,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import numpy as np
+from scipy import sparse
 
 from projectkoios.numerics.finite_periodic.batched_finite_series import (
     BatchedFiniteFourierSeriesEvaluationDefinition,
@@ -37,40 +38,98 @@ from projectkoios.numerics.finite_periodic.numpy.batched_finite_series import (
 )
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.periodic.lattice.hopping import (
-    BlockHoppingModel,
+    BaseBlockHoppingModel,
+    DenseBlockHoppingModel,
     ScalarHoppingModel,
+    SparseBlockHoppingModel,
 )
 from projectkoios.physkit.units import (
     ComplexMatrixQuantity,
+    ComplexSparseMatrixQuantity,
     ComplexVectorQuantity,
     MatrixQuantity,
     Unitless,
 )
 
 
-def _validate_fractional_wave_vectors(
-    model: ScalarHoppingModel | BlockHoppingModel,
-    fractional_wave_vectors: MatrixQuantity,
-) -> None:
-    """Validate unit and shape at the physics-semantic boundary."""
-    if not isinstance(fractional_wave_vectors, MatrixQuantity):
-        raise TypeError("fractional_wave_vectors must be MatrixQuantity")
-    if not isinstance(fractional_wave_vectors.unit, Unitless):
-        raise ValueError("fractional_wave_vectors must be unitless")
-    expected_width = model.dimension.value
-    if fractional_wave_vectors.magnitude.shape[1] != expected_width:
-        raise ValueError(
-            f"fractional_wave_vectors must have shape (point_count, {expected_width})"
-        )
+class _BlochFractionalWaveVectorValidator:
+    """Validate reciprocal coordinates against one retained hopping model.
+
+    Parameters
+    ----------
+    model : ScalarHoppingModel or BaseBlockHoppingModel
+        Model supplying the required ordinary-lattice dimension.
+
+    Raises
+    ------
+    TypeError
+        If ``model`` is not a supported hopping-model owner.
+
+    Notes
+    -----
+    This action owns the shared Bloch-coordinate boundary. It performs no coordinate
+    conversion and retains no mutable numerical state.
+    """
+
+    __slots__ = ("_expected_width",)
+
+    def __init__(self, model: ScalarHoppingModel | BaseBlockHoppingModel) -> None:
+        """Retain the exact reciprocal-coordinate width required by ``model``."""
+        if not isinstance(model, ScalarHoppingModel | BaseBlockHoppingModel):
+            raise TypeError("model must be a scalar or block hopping model")
+        self._expected_width = model.dimension.value
+
+    def validate(self, fractional_wave_vectors: MatrixQuantity) -> None:
+        """Validate coordinate ownership, unit, and dimensional compatibility.
+
+        Parameters
+        ----------
+        fractional_wave_vectors : MatrixQuantity
+            Candidate reciprocal-coordinate matrix.
+
+        Raises
+        ------
+        TypeError
+            If coordinates are not a matrix quantity.
+        ValueError
+            If coordinates are dimensional or have the wrong column count.
+        """
+        if not isinstance(fractional_wave_vectors, MatrixQuantity):
+            raise TypeError("fractional_wave_vectors must be MatrixQuantity")
+        if not isinstance(fractional_wave_vectors.unit, Unitless):
+            raise ValueError("fractional_wave_vectors must be unitless")
+        if fractional_wave_vectors.magnitude.shape[1] != self._expected_width:
+            raise ValueError(
+                "fractional_wave_vectors must have shape "
+                f"(point_count, {self._expected_width})"
+            )
 
 
 @dataclass(frozen=True, slots=True, eq=False)
 class ScalarHoppingBlochEvaluation(ResultsObject):
-    """Retain a hopping model, sampled wave vectors, and correlated Bloch values.
+    """Correlate a scalar hopping model with sampled complex Bloch values.
 
-    ``bloch_values`` carries the model's energy unit and may be complex because a
-    :class:`ScalarHoppingModel` does not impose Hermiticity. Hermitian-model
-    acceptance remains a separate diagnostic or consumer policy.
+    Parameters
+    ----------
+    model : ScalarHoppingModel
+        Exact ordinary-lattice source model.
+    fractional_wave_vectors : MatrixQuantity
+        Unitless reciprocal coordinates with one row per sampled point.
+    bloch_values : ComplexVectorQuantity
+        One complex value per coordinate row in the model energy unit.
+
+    Raises
+    ------
+    TypeError
+        If a value lacks its required nominal quantity or model owner.
+    ValueError
+        If coordinate width, point count, or energy unit is inconsistent with the
+        model.
+
+    Notes
+    -----
+    Values may be complex because the model does not require Hermitian displacement
+    pairing. Hermitian-model acceptance remains a separate diagnostic policy.
     """
 
     model: ScalarHoppingModel
@@ -81,7 +140,9 @@ class ScalarHoppingBlochEvaluation(ResultsObject):
         """Validate model ownership, coordinate semantics, unit, and shape."""
         if type(self.model) is not ScalarHoppingModel:
             raise TypeError("model must be ScalarHoppingModel")
-        _validate_fractional_wave_vectors(self.model, self.fractional_wave_vectors)
+        _BlochFractionalWaveVectorValidator(self.model).validate(
+            self.fractional_wave_vectors
+        )
         if not isinstance(self.bloch_values, ComplexVectorQuantity):
             raise TypeError("bloch_values must be ComplexVectorQuantity")
         if self.bloch_values.unit != self.model.energy_unit:
@@ -92,18 +153,43 @@ class ScalarHoppingBlochEvaluation(ResultsObject):
 
 
 @dataclass(frozen=True, slots=True, eq=False)
-class BlockHoppingBlochEvaluation(ResultsObject):
-    """Retain a block model, sampled wave vectors, and Bloch matrices."""
+class DenseBlockHoppingBlochEvaluation(ResultsObject):
+    """Correlate a dense hopping model with sampled dense Bloch matrices.
 
-    model: BlockHoppingModel
+    Parameters
+    ----------
+    model : DenseBlockHoppingModel
+        Exact ordinary-lattice source model.
+    fractional_wave_vectors : MatrixQuantity
+        Unitless reciprocal coordinates with one row per sampled point.
+    bloch_matrices : tuple[ComplexMatrixQuantity, ...]
+        One dense square matrix per coordinate row, in matching order.
+
+    Raises
+    ------
+    TypeError
+        If a value lacks its required exact nominal owner.
+    ValueError
+        If coordinate width, point count, matrix shape, or energy unit is
+        inconsistent with the model.
+
+    Notes
+    -----
+    Structural correlation does not establish Hermiticity, diagonalization, or
+    reciprocal-space convergence.
+    """
+
+    model: DenseBlockHoppingModel
     fractional_wave_vectors: MatrixQuantity
     bloch_matrices: tuple[ComplexMatrixQuantity, ...]
 
     def __post_init__(self) -> None:
         """Validate model ownership, units, matrix shapes, and point correlation."""
-        if type(self.model) is not BlockHoppingModel:
-            raise TypeError("model must be BlockHoppingModel")
-        _validate_fractional_wave_vectors(self.model, self.fractional_wave_vectors)
+        if type(self.model) is not DenseBlockHoppingModel:
+            raise TypeError("model must be DenseBlockHoppingModel")
+        _BlochFractionalWaveVectorValidator(self.model).validate(
+            self.fractional_wave_vectors
+        )
         if type(self.bloch_matrices) is not tuple or any(
             type(matrix) is not ComplexMatrixQuantity for matrix in self.bloch_matrices
         ):
@@ -123,13 +209,23 @@ class BlockHoppingBlochEvaluation(ResultsObject):
 
 
 class ScalarHoppingBlochEvaluator:
-    """Adapt a scalar hopping model to the generic finite-series evaluator.
+    """Adapt a scalar hopping model to a finite Fourier-series evaluator.
 
     Parameters
     ----------
-    finite_series_evaluator
-        Nominal Numerics evaluator to use. When omitted, the reviewed ordered
-        NumPy backend is constructed lazily through the Numerics factory.
+    finite_series_evaluator : FiniteFourierSeriesEvaluator or None, optional
+        Nominal Numerics evaluator. When omitted, the reviewed ordered NumPy backend
+        is constructed through the Numerics factory.
+
+    Raises
+    ------
+    TypeError
+        If an injected evaluator lacks the required nominal interface.
+
+    Notes
+    -----
+    The adapter preserves displacement order, coordinate order, and the model energy
+    unit. It does not impose Hermiticity or project values onto the real axis.
     """
 
     __slots__ = ("_finite_series_evaluator",)
@@ -162,16 +258,42 @@ class ScalarHoppingBlochEvaluator:
         model: ScalarHoppingModel,
         fractional_wave_vectors: MatrixQuantity,
     ) -> ScalarHoppingBlochEvaluation:
-        """Evaluate the scalar Bloch Hamiltonian at supplied fractional vectors.
+        """Evaluate one scalar model at fractional reciprocal coordinates.
 
-        Rows of ``fractional_wave_vectors`` are reciprocal coordinates in turns
-        relative to the primitive direct-lattice axes. Empty point sets are
-        permitted and return an empty energy-unit-bearing complex vector.
+        Parameters
+        ----------
+        model : ScalarHoppingModel
+            Ordered scalar hopping model.
+        fractional_wave_vectors : MatrixQuantity
+            Unitless coordinates of shape ``(point_count, model.dimension.value)``.
+
+        Returns
+        -------
+        ScalarHoppingBlochEvaluation
+            Complex values in coordinate-row order and the model energy unit.
+
+        Raises
+        ------
+        TypeError
+            If the model or coordinates lack their required nominal owners.
+        ValueError
+            If coordinate units or shape are incompatible with the model.
+        FloatingPointError
+            If delegated finite-Fourier arithmetic produces nonfinite values.
+
+        Notes
+        -----
+        Coordinate components are turns relative to primitive reciprocal axes. Empty
+        point sets produce an empty energy-unit-bearing complex vector.
         """
         if type(model) is not ScalarHoppingModel:
             raise TypeError("model must be ScalarHoppingModel")
-        _validate_fractional_wave_vectors(model, fractional_wave_vectors)
+        _BlochFractionalWaveVectorValidator(model).validate(
+            fractional_wave_vectors
+        )
 
+        # Strip physical wrappers only at the Numerics boundary while preserving
+        # canonical displacement and coordinate order exactly.
         definition = FiniteFourierSeriesEvaluationDefinition(
             dimension=model.dimension.value,
             coordinates=tuple(
@@ -182,6 +304,9 @@ class ScalarHoppingBlochEvaluator:
             coefficients=tuple(term.value for term in model.terms),
         )
         finite_series_result = self._finite_series_evaluator.evaluate(definition)
+
+        # Restore the source energy convention and retain the exact coordinate record
+        # so result correlation remains explicit and immutable.
         return ScalarHoppingBlochEvaluation(
             model=model,
             fractional_wave_vectors=fractional_wave_vectors,
@@ -195,7 +320,7 @@ class ScalarHoppingBlochEvaluator:
         )
 
 
-class BlockHoppingBlochEvaluator:
+class DenseBlockHoppingBlochEvaluator:
     """Adapt block hopping models to finite Fourier-series owners.
 
     Parameters
@@ -262,21 +387,21 @@ class BlockHoppingBlochEvaluator:
 
     def evaluate(
         self,
-        model: BlockHoppingModel,
+        model: DenseBlockHoppingModel,
         fractional_wave_vectors: MatrixQuantity,
-    ) -> BlockHoppingBlochEvaluation:
+    ) -> DenseBlockHoppingBlochEvaluation:
         """Evaluate one block model under its Bloch convention.
 
         Parameters
         ----------
-        model : BlockHoppingModel
+        model : DenseBlockHoppingModel
             Ordered matrix-valued hopping model.
         fractional_wave_vectors : MatrixQuantity
             Unitless reciprocal coordinates with one row per point.
 
         Returns
         -------
-        BlockHoppingBlochEvaluation
+        DenseBlockHoppingBlochEvaluation
             Correlated matrices in coordinate-row order.
 
         Raises
@@ -293,20 +418,20 @@ class BlockHoppingBlochEvaluator:
         The default batched backend uses dense channel reduction and need not be
         bitwise identical to the ordered scalar compatibility path.
         """
-        if type(model) is not BlockHoppingModel:
-            raise TypeError("model must be BlockHoppingModel")
+        if type(model) is not DenseBlockHoppingModel:
+            raise TypeError("model must be DenseBlockHoppingModel")
         return self.evaluate_family((model,), fractional_wave_vectors)[0]
 
     def evaluate_family(
         self,
-        models: tuple[BlockHoppingModel, ...],
+        models: tuple[DenseBlockHoppingModel, ...],
         fractional_wave_vectors: MatrixQuantity,
-    ) -> tuple[BlockHoppingBlochEvaluation, ...]:
+    ) -> tuple[DenseBlockHoppingBlochEvaluation, ...]:
         """Evaluate a compatible ordered model family on one coordinate grid.
 
         Parameters
         ----------
-        models : tuple of BlockHoppingModel
+        models : tuple of DenseBlockHoppingModel
             Nonempty ordered models sharing dimension, basis, energy unit, and energy
             reference. Displacement inventories may differ.
         fractional_wave_vectors : MatrixQuantity
@@ -314,7 +439,7 @@ class BlockHoppingBlochEvaluator:
 
         Returns
         -------
-        tuple of BlockHoppingBlochEvaluation
+        tuple of DenseBlockHoppingBlochEvaluation
             One result per model in supplied order.
 
         Raises
@@ -334,13 +459,15 @@ class BlockHoppingBlochEvaluator:
         ordered result family without invoking numerical backend work.
         """
         if type(models) is not tuple or any(
-            type(model) is not BlockHoppingModel for model in models
+            type(model) is not DenseBlockHoppingModel for model in models
         ):
-            raise TypeError("models must be a tuple of BlockHoppingModel values")
+            raise TypeError("models must be a tuple of DenseBlockHoppingModel values")
         if not models:
             raise ValueError("models must be nonempty")
         reference = models[0]
-        _validate_fractional_wave_vectors(reference, fractional_wave_vectors)
+        _BlochFractionalWaveVectorValidator(reference).validate(
+            fractional_wave_vectors
+        )
         if any(model.dimension is not reference.dimension for model in models[1:]):
             raise ValueError("family model dimensions must match")
         if any(model.basis_size != reference.basis_size for model in models[1:]):
@@ -364,9 +491,9 @@ class BlockHoppingBlochEvaluator:
 
     def _evaluate_ordered(
         self,
-        model: BlockHoppingModel,
+        model: DenseBlockHoppingModel,
         fractional_wave_vectors: MatrixQuantity,
-    ) -> BlockHoppingBlochEvaluation:
+    ) -> DenseBlockHoppingBlochEvaluation:
         """Evaluate one model through the exact ordered scalar owner."""
         coordinates = tuple(
             tuple(float(component) for component in wave_vector)
@@ -397,9 +524,9 @@ class BlockHoppingBlochEvaluator:
 
     def _evaluate_batched(
         self,
-        models: tuple[BlockHoppingModel, ...],
+        models: tuple[DenseBlockHoppingModel, ...],
         fractional_wave_vectors: MatrixQuantity,
-    ) -> tuple[BlockHoppingBlochEvaluation, ...]:
+    ) -> tuple[DenseBlockHoppingBlochEvaluation, ...]:
         """Evaluate compatible models through one shared-grid owner call."""
         reference = models[0]
         coordinates = tuple(
@@ -455,15 +582,162 @@ class BlockHoppingBlochEvaluator:
 
     @staticmethod
     def _result(
-        model: BlockHoppingModel,
+        model: DenseBlockHoppingModel,
         fractional_wave_vectors: MatrixQuantity,
         values: np.ndarray,
-    ) -> BlockHoppingBlochEvaluation:
+    ) -> DenseBlockHoppingBlochEvaluation:
         """Restore units and point correlation for one model's matrix stack."""
-        return BlockHoppingBlochEvaluation(
+        return DenseBlockHoppingBlochEvaluation(
             model=model,
             fractional_wave_vectors=fractional_wave_vectors,
             bloch_matrices=tuple(
                 ComplexMatrixQuantity(matrix, model.energy_unit) for matrix in values
             ),
+        )
+
+
+@dataclass(frozen=True, slots=True, eq=False)
+class SparseBlockHoppingBlochEvaluation(ResultsObject):
+    """Correlate a sparse hopping model with sampled sparse Bloch matrices.
+
+    Parameters
+    ----------
+    model : SparseBlockHoppingModel
+        Exact ordinary-lattice source model.
+    fractional_wave_vectors : MatrixQuantity
+        Unitless reciprocal coordinates with one row per sampled point.
+    bloch_matrices : tuple[ComplexSparseMatrixQuantity, ...]
+        One canonical sparse square matrix per coordinate row.
+
+    Raises
+    ------
+    TypeError
+        If a value lacks its required exact nominal owner.
+    ValueError
+        If coordinate width, point count, matrix shape, or energy unit is
+        inconsistent with the model.
+
+    Notes
+    -----
+    The result preserves sparse storage and never materializes a dense matrix.
+    Structural correlation does not establish Hermiticity or convergence.
+    """
+
+    model: SparseBlockHoppingModel
+    fractional_wave_vectors: MatrixQuantity
+    bloch_matrices: tuple[ComplexSparseMatrixQuantity, ...]
+
+    def __post_init__(self) -> None:
+        """Validate sparse ownership, units, shapes, and point correlation."""
+        if type(self.model) is not SparseBlockHoppingModel:
+            raise TypeError("model must be SparseBlockHoppingModel")
+        _BlochFractionalWaveVectorValidator(self.model).validate(
+            self.fractional_wave_vectors
+        )
+        if type(self.bloch_matrices) is not tuple or any(
+            type(matrix) is not ComplexSparseMatrixQuantity
+            for matrix in self.bloch_matrices
+        ):
+            raise TypeError(
+                "bloch_matrices must contain ComplexSparseMatrixQuantity values"
+            )
+        point_count = self.fractional_wave_vectors.magnitude.shape[0]
+        if len(self.bloch_matrices) != point_count:
+            raise ValueError("bloch_matrices must match the wave-vector count")
+        expected_shape = (self.model.basis_size, self.model.basis_size)
+        if any(matrix.shape != expected_shape for matrix in self.bloch_matrices):
+            raise ValueError("Bloch matrix shapes must match model basis_size")
+        if any(matrix.unit != self.model.energy_unit for matrix in self.bloch_matrices):
+            raise ValueError("Bloch matrix units must match the model energy unit")
+
+
+class SparseBlockHoppingBlochEvaluator:
+    r"""Evaluate sparse hopping blocks directly in canonical CSR storage.
+
+    Notes
+    -----
+    For fractional reciprocal coordinate :math:`\mathbf q`, the evaluator computes
+
+    .. math::
+
+       H(\mathbf q) = \sum_{\mathbf R} T(\mathbf R)
+       \exp(+2\pi i\,\mathbf q\cdot\mathbf R).
+
+    The positive exponent and absence of normalization match the dense and scalar
+    PhysKit Bloch conventions. No dense fallback is permitted.
+    """
+
+    __slots__ = ()
+
+    def evaluate(
+        self,
+        model: SparseBlockHoppingModel,
+        fractional_wave_vectors: MatrixQuantity,
+    ) -> SparseBlockHoppingBlochEvaluation:
+        """Evaluate one sparse model on an ordered reciprocal-coordinate grid.
+
+        Parameters
+        ----------
+        model : SparseBlockHoppingModel
+            Ordered sparse-block hopping model.
+        fractional_wave_vectors : MatrixQuantity
+            Unitless coordinates of shape ``(point_count, model.dimension.value)``.
+
+        Returns
+        -------
+        SparseBlockHoppingBlochEvaluation
+            Correlated canonical sparse matrices in coordinate-row order.
+
+        Raises
+        ------
+        TypeError
+            If the model or coordinates lack their required nominal owners.
+        ValueError
+            If coordinate units or shape are incompatible with the model.
+        FloatingPointError
+            If phase-weighted sparse accumulation produces nonfinite values.
+        """
+        if type(model) is not SparseBlockHoppingModel:
+            raise TypeError("model must be SparseBlockHoppingModel")
+        _BlochFractionalWaveVectorValidator(model).validate(
+            fractional_wave_vectors
+        )
+
+        shape = (model.basis_size, model.basis_size)
+        matrices: list[ComplexSparseMatrixQuantity] = []
+        for wave_vector in fractional_wave_vectors.magnitude:
+            # Start each reciprocal point in sparse storage. The represented pattern
+            # grows only through the exact union of phase-weighted source patterns.
+            represented = sparse.csr_array(shape, dtype=np.complex128)
+            for term in model.terms:
+                phase_argument = float(
+                    np.dot(
+                        wave_vector,
+                        np.asarray(term.displacement.components, dtype=np.float64),
+                    )
+                )
+                phase = np.exp(2.0j * np.pi * phase_argument)
+                represented = represented + term.coefficient.to_csr() * phase
+
+            # Sparse addition may create duplicate or exactly cancelled entries;
+            # restore the canonical quantity contract before retaining the result.
+            represented.sum_duplicates()
+            represented.eliminate_zeros()
+            represented.sort_indices()
+            if not np.all(np.isfinite(represented.data.real)) or not np.all(
+                np.isfinite(represented.data.imag)
+            ):
+                raise FloatingPointError(
+                    "sparse Bloch evaluation produced nonfinite values"
+                )
+            matrices.append(
+                ComplexSparseMatrixQuantity.from_csr(
+                    represented,
+                    model.energy_unit,
+                )
+            )
+        return SparseBlockHoppingBlochEvaluation(
+            model=model,
+            fractional_wave_vectors=fractional_wave_vectors,
+            bloch_matrices=tuple(matrices),
         )

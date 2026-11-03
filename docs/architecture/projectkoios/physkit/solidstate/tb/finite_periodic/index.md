@@ -21,6 +21,8 @@ identity, and ordered-basis identity.
 - `take(...)` applies explicit ordered term indices but derives no physical support.
 - Computed transform, evaluation, and diagnostic records can be created only by their
   owning actions, preventing manually forged results from entering the public flow.
+- Each action binds its complete physical input at construction and exposes only a
+  zero-argument `result()` terminal operation; there are no stateless action instances.
 
 Reduced coordinates and integer modes are dimensionless. Samples, coefficients, and
 reconstructed matrices retain the source energy unit through every PhysKit record.
@@ -35,7 +37,7 @@ Generic arithmetic delegates to the exact pinned Optimization owner.
 - `NumpyTensorProductFourierMatrixSeriesEvaluator` owns bounded separable evaluation.
 - `NumpyFinitePeriodicParsevalAnalyzer` owns raw Parseval reductions.
 - `NumpyCenteredUniformMeshHermiticityAnalyzer` owns parity-aware cyclic pairing.
-- Each diagnostic owner runs exactly once per public analyzer call; result validation
+- Each diagnostic owner runs exactly once per public analyzer result; result validation
   checks units and represented relations without repeating the numerical reduction.
 - PhysKit passes only dimensionless coordinates, integer modes, and raw complex
   magnitudes to Numerics, then restores physical units and identities.
@@ -80,8 +82,8 @@ The package façade exports these exact identities.
 The public façade preserves one import surface while separating responsibilities.
 
 - `records.py` owns source definitions, selected series, and action-created results.
-- `actions.py` owns transform and tensor-evaluation delegation.
-- `diagnostics.py` owns unit-aware Parseval and Hermiticity evidence.
+- `actions.py` owns constructor-bound transform and tensor-evaluation delegation.
+- `diagnostics.py` owns constructor-bound unit-aware Parseval and Hermiticity evidence.
 
 ## Local mapping
 

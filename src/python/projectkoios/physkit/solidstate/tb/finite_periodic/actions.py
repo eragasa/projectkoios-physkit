@@ -23,20 +23,21 @@ from .records import (
 
 @final
 class FinitePeriodicMatrixFourierTransformer:
-    """Apply the canonical Numerics transform while preserving physical units."""
+    """Transform constructor-bound physical samples with canonical Numerics."""
 
-    __slots__ = ()
+    __slots__ = ("_source",)
 
-    def transform(
-        self,
-        source: FinitePeriodicMatrixSamples,
-    ) -> FinitePeriodicMatrixFourierTransformResult:
-        """Transform complete samples without selecting support or tolerance."""
+    def __init__(self, *, source: FinitePeriodicMatrixSamples) -> None:
         if type(source) is not FinitePeriodicMatrixSamples:
             raise TypeError("source must be FinitePeriodicMatrixSamples")
-        numerical = NumpyCenteredUniformMeshMatrixFourierTransformer().transform(
-            source._numerical_definition()
-        )
+        self._source = source
+
+    def result(self) -> FinitePeriodicMatrixFourierTransformResult:
+        """Transform the bound samples without selecting support or tolerance."""
+        source = self._source
+        numerical = NumpyCenteredUniformMeshMatrixFourierTransformer(
+            definition=source._numerical_definition()
+        ).result()
         series = FinitePeriodicMatrixFourierSeries(
             source_mesh=source.mesh,
             integer_modes=numerical.series.integer_modes,
@@ -55,28 +56,36 @@ class FinitePeriodicMatrixFourierTransformer:
 
 @final
 class FinitePeriodicMatrixFourierTensorEvaluator:
-    """Evaluate a physical matrix series through the canonical tensor kernel."""
+    """Evaluate one constructor-bound physical matrix series and tensor grid."""
 
-    __slots__ = ()
+    __slots__ = ("_definition", "_series")
 
-    def evaluate(
+    def __init__(
         self,
+        *,
         series: FinitePeriodicMatrixFourierSeries,
         coordinate_axes: tuple[FloatArray, ...],
         maximum_working_elements: int = 1_000_000,
-    ) -> FinitePeriodicMatrixFourierEvaluation:
-        """Evaluate one complete or explicitly selected series on a tensor grid."""
+    ) -> None:
         if type(series) is not FinitePeriodicMatrixFourierSeries:
             raise TypeError("series must be FinitePeriodicMatrixFourierSeries")
-        definition = NumpyTensorProductFourierMatrixEvaluationDefinition.from_arrays(
-            series.source_mesh,
-            series._numerical_series(),
-            coordinate_axes,
-            maximum_working_elements,
+        self._series = series
+        self._definition = (
+            NumpyTensorProductFourierMatrixEvaluationDefinition.from_arrays(
+                series.source_mesh,
+                series._numerical_series(),
+                coordinate_axes,
+                maximum_working_elements,
+            )
         )
-        numerical = NumpyTensorProductFourierMatrixSeriesEvaluator().evaluate(
-            definition
-        )
+
+    def result(self) -> FinitePeriodicMatrixFourierEvaluation:
+        """Evaluate the bound complete or explicitly selected series."""
+        series = self._series
+        definition = self._definition
+        numerical = NumpyTensorProductFourierMatrixSeriesEvaluator(
+            definition=definition
+        ).result()
         return FinitePeriodicMatrixFourierEvaluation._from_action(
             series=series,
             coordinate_axes=definition.coordinate_axes,
