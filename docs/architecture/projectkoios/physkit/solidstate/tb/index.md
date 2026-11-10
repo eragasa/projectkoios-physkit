@@ -35,6 +35,8 @@ The module pages describe each cohesive tight-binding capability.
 - [Module `finite_periodic`](finite_periodic/index.md)
 - [Module `diagnostics`](diagnostics/index.md)
 - [Module `truncation`](truncation/index.md)
+- [Module `orbital_center_gauge`](orbital_center_gauge/index.md)
+- [Package `slater_koster`](slater_koster/index.md)
 - [Parent package](../index.md)
 
 ## Local mapping
