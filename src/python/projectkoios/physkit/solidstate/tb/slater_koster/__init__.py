@@ -1,4 +1,21 @@
-"""Reusable Slater--Koster basis, bond, two-center, and assembly capabilities."""
+r"""Public façade for reusable homopolar ``sp3s*`` mechanics.
+
+The package aggregates one cohesive specialization: exact ordered spatial bases,
+directed physical bond geometry, seven angular channels, explicit parameter groups,
+energy-valued two-center matrices, and dense ordinary-cell assembly. The represented
+conventions include
+
+.. math::
+
+   T(d;V)=\sum_\alpha V_\alpha B_\alpha(d),
+   \qquad
+   H_{R_b}\mathrel{+}=E_{s_b}T_bE_{t_b}^{\mathsf T}.
+
+Material composition, neighbor selection, onsite terms, Bloch evaluation, fitting,
+evidence, and scientific acceptance remain outside this façade. Symbols are exported
+only from this narrow owning package and are not recursively re-exported through broader
+``solidstate`` or ``tb`` namespaces.
+"""
 
 from .assembly import (
     HomopolarSp3sStarCellGaugeModelAssembler,

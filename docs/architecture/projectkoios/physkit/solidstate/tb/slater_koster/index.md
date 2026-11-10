@@ -26,14 +26,19 @@ Bloch evaluation, linear parameterization, fitting, residuals, sample weights, e
 acceptance, spin, spin–orbit coupling, overlap matrices, heteropolar bonds, or `f`
 orbitals.
 
-## Public capability groups
+## Module architecture
 
-- Basis: `basis.py`
-- Bond geometry: `bond.py`
-- Angular channels: `channels.py`
-- Explicit parameter groups: `parameters.py`
-- Two-center matrix construction: `sp3s_star.py`
-- Ordinary-cell dense assembly: `assembly.py`
+Every maintained source module has its own four-page current-state contract.
+
+- [`basis.py`](basis/index.md): exact ordered centers and spatial coordinates.
+- [`bond.py`](bond/index.md): directed ordinary-cell bonds and physical geometry.
+- [`channels.py`](channels/index.md): seven nondimensional angular matrices.
+- [`parameters.py`](parameters/index.md): explicit integral-sharing groups.
+- [`sp3s_star.py`](sp3s_star/index.md): energy-valued two-center matrices.
+- [`assembly.py`](assembly/index.md): dense ordinary-cell coefficient assembly.
+
+The package façade in `__init__.py` deliberately aggregates this cohesive specialization
+without re-exporting it through broader parent packages.
 
 ## Contract documentation
 
