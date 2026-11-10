@@ -1,7 +1,8 @@
 # Package `projectkoios.physkit.solidstate.tb.slater_koster`
 
 This package owns reusable spinless orthogonal homopolar Slater–Koster spatial-basis,
-bond, channel, two-center matrix, and ordinary-cell assembly mechanics.
+bond, channel, two-center matrix, ordinary-cell assembly, linear parameterization, and
+reciprocal-sample evaluation mechanics.
 
 ## Current responsibility
 
@@ -17,14 +18,18 @@ bond, channel, two-center matrix, and ordinary-cell assembly mechanics.
 - Embed directed five-orbital representatives into an exact ordered primitive-cell
   basis and generate their Hermitian reverses.
 - Accumulate and sort dense coefficients by exact ordinary-cell displacement.
+- Construct one nondimensional hopping model for every explicit parameter-group and
+  channel pair.
+- Evaluate the compatible linear model family while retaining group, channel, and
+  reciprocal-sample order.
 - Require named arguments for public records and action inputs.
 
 ## Exclusions
 
 This tranche does not own onsite terms, neighbor-shell selection, material selection,
-Bloch evaluation, linear parameterization, fitting, residuals, sample weights, evidence,
-acceptance, spin, spin–orbit coupling, overlap matrices, heteropolar bonds, or `f`
-orbitals.
+parameter fitting, design-matrix flattening, residuals, sample selection or weights,
+evidence, acceptance, spin, spin–orbit coupling, overlap matrices, heteropolar bonds, or
+`f` orbitals.
 
 ## Module architecture
 
@@ -36,6 +41,10 @@ Every maintained source module has its own four-page current-state contract.
 - [`parameters.py`](parameters/index.md): explicit integral-sharing groups.
 - [`sp3s_star.py`](sp3s_star/index.md): energy-valued two-center matrices.
 - [`assembly.py`](assembly/index.md): dense ordinary-cell coefficient assembly.
+- [`linear_parameterization.py`](linear_parameterization/index.md): nondimensional
+  group/channel hopping models.
+- [`linear_bloch.py`](linear_bloch/index.md): ordered reciprocal evaluation of the
+  linear model family.
 
 The package façade in `__init__.py` deliberately aggregates this cohesive specialization
 without re-exporting it through broader parent packages.

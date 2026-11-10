@@ -2,8 +2,8 @@ r"""Public façade for reusable homopolar ``sp3s*`` mechanics.
 
 The package aggregates one cohesive specialization: exact ordered spatial bases,
 directed physical bond geometry, seven angular channels, explicit parameter groups,
-energy-valued two-center matrices, and dense ordinary-cell assembly. The represented
-conventions include
+energy-valued two-center matrices, dense ordinary-cell assembly, linear channel models,
+and reciprocal-sample evaluation. The represented conventions include
 
 .. math::
 
@@ -11,7 +11,7 @@ conventions include
    \qquad
    H_{R_b}\mathrel{+}=E_{s_b}T_bE_{t_b}^{\mathsf T}.
 
-Material composition, neighbor selection, onsite terms, Bloch evaluation, fitting,
+Material composition, neighbor selection, onsite terms, fitting, residual construction,
 evidence, and scientific acceptance remain outside this façade. Symbols are exported
 only from this narrow owning package and are not recursively re-exported through broader
 ``solidstate`` or ``tb`` namespaces.
@@ -41,6 +41,14 @@ from .channels import (
     HomopolarSp3sStarTwoCenterChannelBasis,
     HomopolarSp3sStarTwoCenterChannelBasisConstructor,
 )
+from .linear_bloch import (
+    HomopolarSp3sStarLinearBlochEvaluation,
+    HomopolarSp3sStarLinearBlochEvaluator,
+)
+from .linear_parameterization import (
+    HomopolarSp3sStarLinearParameterization,
+    HomopolarSp3sStarLinearParameterizationAssembler,
+)
 from .parameters import HomopolarSp3sStarParameterGroup
 from .sp3s_star import (
     SP3S_STAR_ORBITAL_ORDER,
@@ -58,6 +66,10 @@ __all__ = [
     "HomopolarSp3sStarCellGaugeModelAssembly",
     "HomopolarSp3sStarCellGaugeModelDefinition",
     "HomopolarSp3sStarIntegralChannelEnum",
+    "HomopolarSp3sStarLinearBlochEvaluation",
+    "HomopolarSp3sStarLinearBlochEvaluator",
+    "HomopolarSp3sStarLinearParameterization",
+    "HomopolarSp3sStarLinearParameterizationAssembler",
     "HomopolarSp3sStarParameterGroup",
     "HomopolarSp3sStarParameterizedBond",
     "HomopolarSp3sStarSpatialBasis",

@@ -66,9 +66,25 @@ coefficient matrix. Explicit reverse representatives are rejected. Coefficients 
 stored in lexicographic displacement order with `complex128` arithmetic. Assembly
 raises `OverflowError` if finite block accumulation becomes nonfinite.
 
+The linear assembler replaces $T(d_b;V_{g_b})$ with one angular matrix at a time and
+constructs nondimensional coefficient models $B_{g,\alpha}(R)$ satisfying
+
+$$
+H_R(V)=\sum_{g,\alpha}V_{g,\alpha}B_{g,\alpha}(R).
+$$
+
+Reciprocal evaluation uses
+
+$$
+B_{g,\alpha}(q)=\sum_R B_{g,\alpha}(R)e^{+2\pi i q\cdot R},
+$$
+
+retained in group, channel, and sample order.
+
 Focused tests compare all channel matrices with independently assembled arrays,
-exercise scales from `1e-150` through `1e150`, verify $T(-d)=T(d)^T$, and check exact
-forward/reverse block placement in zero and nonzero cells.
+exercise scales from `1e-150` through `1e150`, verify $T(-d)=T(d)^T$, check exact
+forward/reverse block placement, reconstruct direct cell and Bloch models, and verify
+ordinary-cell reciprocal periodicity.
 
 - [Index](index.md)
 - [Schematics](schematics.md)

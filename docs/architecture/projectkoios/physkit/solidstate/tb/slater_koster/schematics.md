@@ -15,6 +15,9 @@ flowchart TD
     E[Ordered basis embedding]
     H[Dense ordinary-cell coefficients]
     M[Dense block-hopping model]
+    L[Group/channel linear models]
+    Q[Ordered reciprocal coordinates]
+    F[Group/channel/sample Bloch matrices]
 
     C --> B
     O --> B
@@ -29,13 +32,19 @@ flowchart TD
     T --> E
     E --> H
     H --> M
+    A --> L
+    B --> L
+    G --> L
+    L --> F
+    Q --> F
 ```
 
 The integer displacement identifies the ordinary-cell translation. The Cartesian
 bond vector alone determines the normalized direction; center offsets are never folded
 into the integer displacement. Assembly adds the source-to-target block at the declared
 displacement and its transpose at the reversed displacement. It does not add onsite
-terms or evaluate Bloch phases.
+terms. The linear path evaluates ordinary-cell Bloch phases only after constructing the
+explicit nondimensional group/channel model family.
 
 - [Index](index.md)
 - [Numerics](numerics.md)

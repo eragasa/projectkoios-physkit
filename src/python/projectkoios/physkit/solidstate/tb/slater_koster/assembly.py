@@ -34,6 +34,7 @@ from projectkoios.physkit.periodic.lattice.finite_domain import (
 from projectkoios.physkit.periodic.lattice.hopping import (
     DenseBlockHoppingModel,
     DenseBlockHoppingTerm,
+    SolidStateUnit,
 )
 from projectkoios.physkit.units import (
     ComplexMatrixQuantity,
@@ -485,7 +486,7 @@ def _coefficient(
 def _dense_terms(
     *,
     coefficients: dict[LatticeDisplacement, Complex128Matrix],
-    unit: PhysicalUnit,
+    unit: SolidStateUnit,
 ) -> tuple[DenseBlockHoppingTerm, ...]:
     """Freeze accumulated coefficients into canonical dense hopping terms."""
     # Lexicographic displacement order gives deterministic model identity and satisfies

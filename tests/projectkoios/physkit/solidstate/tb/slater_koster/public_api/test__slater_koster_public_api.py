@@ -6,6 +6,12 @@ import projectkoios.physkit.solidstate.tb.slater_koster as slater_koster
 from projectkoios.physkit.solidstate.tb.slater_koster.assembly import (
     HomopolarSp3sStarCellGaugeModelAssembler,
 )
+from projectkoios.physkit.solidstate.tb.slater_koster.linear_bloch import (
+    HomopolarSp3sStarLinearBlochEvaluator,
+)
+from projectkoios.physkit.solidstate.tb.slater_koster.linear_parameterization import (
+    HomopolarSp3sStarLinearParameterizationAssembler,
+)
 from projectkoios.physkit.solidstate.tb.slater_koster.sp3s_star import (
     HomopolarSp3sStarTwoCenterHoppingConstructor,
 )
@@ -23,6 +29,14 @@ class TestSlaterKosterPublicApi:
             slater_koster.HomopolarSp3sStarCellGaugeModelAssembler
             is HomopolarSp3sStarCellGaugeModelAssembler
         )
+        assert (
+            slater_koster.HomopolarSp3sStarLinearParameterizationAssembler
+            is HomopolarSp3sStarLinearParameterizationAssembler
+        )
+        assert (
+            slater_koster.HomopolarSp3sStarLinearBlochEvaluator
+            is HomopolarSp3sStarLinearBlochEvaluator
+        )
         assert slater_koster.__all__ == [
             "HOMOPOLAR_SP3S_STAR_CHANNEL_ORDER",
             "SP3S_STAR_ORBITAL_ORDER",
@@ -31,6 +45,10 @@ class TestSlaterKosterPublicApi:
             "HomopolarSp3sStarCellGaugeModelAssembly",
             "HomopolarSp3sStarCellGaugeModelDefinition",
             "HomopolarSp3sStarIntegralChannelEnum",
+            "HomopolarSp3sStarLinearBlochEvaluation",
+            "HomopolarSp3sStarLinearBlochEvaluator",
+            "HomopolarSp3sStarLinearParameterization",
+            "HomopolarSp3sStarLinearParameterizationAssembler",
             "HomopolarSp3sStarParameterGroup",
             "HomopolarSp3sStarParameterizedBond",
             "HomopolarSp3sStarSpatialBasis",
