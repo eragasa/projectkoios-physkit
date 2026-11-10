@@ -1,7 +1,7 @@
 # Package `projectkoios.physkit.solidstate.tb.slater_koster`
 
 This package owns reusable spinless orthogonal homopolar Slater–Koster spatial-basis,
-bond, channel, and two-center matrix mechanics.
+bond, channel, two-center matrix, and ordinary-cell assembly mechanics.
 
 ## Current responsibility
 
@@ -14,13 +14,17 @@ bond, channel, and two-center matrix mechanics.
 - Construct the real five-by-five hopping matrix as a linear combination of
   nondimensional angular channel matrices.
 - Preserve `T(-d) = T(d)^T` for real homopolar integrals.
+- Embed directed five-orbital representatives into an exact ordered primitive-cell
+  basis and generate their Hermitian reverses.
+- Accumulate and sort dense coefficients by exact ordinary-cell displacement.
 - Require named arguments for public records and action inputs.
 
 ## Exclusions
 
 This tranche does not own onsite terms, neighbor-shell selection, material selection,
-fitting, residuals, sample weights, evidence, acceptance, spin, spin–orbit coupling,
-overlap matrices, heteropolar bonds, or `f` orbitals.
+Bloch evaluation, linear parameterization, fitting, residuals, sample weights, evidence,
+acceptance, spin, spin–orbit coupling, overlap matrices, heteropolar bonds, or `f`
+orbitals.
 
 ## Public capability groups
 
@@ -29,6 +33,7 @@ overlap matrices, heteropolar bonds, or `f` orbitals.
 - Angular channels: `channels.py`
 - Explicit parameter groups: `parameters.py`
 - Two-center matrix construction: `sp3s_star.py`
+- Ordinary-cell dense assembly: `assembly.py`
 
 ## Contract documentation
 

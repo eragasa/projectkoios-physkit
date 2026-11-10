@@ -1,6 +1,6 @@
 # Slater–Koster source mapping
 
-This mapping records the first reusable Slater–Koster migration tranche from the
+This mapping records the reusable Slater–Koster migration tranches from the
 `ksdft2effmass` calculation incubation into PhysKit.
 
 ## Donor context
@@ -21,6 +21,7 @@ This mapping records the first reusable Slater–Koster migration tranche from t
 | `calculations/Si/bulk/solidstate/tb/slater_koster/channels.py` | `66f564cd3814ffd9c5c0e13955bb128bdab17d1617e558f84760ac6659582f24` | `src/python/projectkoios/physkit/solidstate/tb/slater_koster/channels.py` |
 | `calculations/Si/bulk/solidstate/tb/slater_koster/parameters.py` | `bb4881a56f60e3b30e371333b6ae17b6f89d00f3ce8255ca8a401879567f047d` | `src/python/projectkoios/physkit/solidstate/tb/slater_koster/parameters.py` |
 | `calculations/Si/bulk/solidstate/tb/slater_koster/sp3s_star.py` | `687fa6adca05db5b57ff9e33f740a36cb7d852d97436f72af6b614e4fd74942d` | `src/python/projectkoios/physkit/solidstate/tb/slater_koster/sp3s_star.py` |
+| `calculations/Si/bulk/solidstate/tb/slater_koster/assembly.py` | `74370af68b4dc9af77dc6f90dcf3396e99798fc54a3135c5c65c55a2fb82c621` | `src/python/projectkoios/physkit/solidstate/tb/slater_koster/assembly.py` |
 | `calculations/Si/bulk/solidstate/tb/slater_koster/mathematics.md` | `1a789ad1937d1868db2156c47aff647102e09e8ad190dea3dc048bd3190a9845` | `docs/architecture/projectkoios/physkit/solidstate/tb/slater_koster/` |
 
 ## Deliberate destination adaptations
@@ -32,6 +33,10 @@ This mapping records the first reusable Slater–Koster migration tranche from t
   `ResultsObject` records.
 - The generic orbital-center gauge transformation remains outside the
   Slater–Koster specialization.
+- Assembly uses explicit `SlaterKosterDirectedBond` values rather than donor
+  tuple-based bond keys, preserves exact basis and parameter-group correlation, and
+  delegates the resulting coefficient inventory to PhysKit's existing dense
+  block-hopping owner.
 - Material selection, neighbor-shell selection, fitting, residual construction,
   campaign policy, evidence, and scientific disposition were not migrated.
 - Physical lengths and energies use the existing `UnitSystem`; the default physical

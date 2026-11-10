@@ -28,7 +28,6 @@ from projectkoios.numerics.numpy.typing import Float64Matrix
 from projectkoios.physkit.core.results import ResultsObject
 from projectkoios.physkit.units import (
     MatrixQuantity,
-    ModelSystemUnit,
     PhysicalUnit,
     PintUnitConverter,
     ScalarQuantity,
@@ -107,9 +106,12 @@ class HomopolarSp3sStarTwoCenterIntegrals:
         )
 
     @property
-    def energy_unit(self) -> ModelSystemUnit:
-        """Return the exact unit shared by every integral."""
-        return self.ss_sigma.unit
+    def energy_unit(self) -> PhysicalUnit:
+        """Return the exact physical energy unit shared by every integral."""
+        unit = self.ss_sigma.unit
+        if type(unit) is not PhysicalUnit:
+            raise RuntimeError("validated integral energy unit changed")
+        return unit
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)

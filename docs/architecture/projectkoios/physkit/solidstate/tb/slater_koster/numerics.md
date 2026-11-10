@@ -48,9 +48,27 @@ these formulas as direction cosines. It has Euclidean norm one to a tolerance of
 finite inputs produce nonfinite matrix entries. Values are not clipped or silently
 regularized.
 
+For a directed representative bond $b=(R_b,s_b,t_b,d_b,g_b)$, ordinary-cell
+assembly embeds the five-orbital block as
+
+$$
+H_{R_b}\mathrel{+}=E_{s_b}T(d_b;V_{g_b})E_{t_b}^{\mathsf T}
+$$
+
+and generates the Hermitian reverse
+
+$$
+H_{-R_b}\mathrel{+}=E_{t_b}T(d_b;V_{g_b})^{\mathsf T}E_{s_b}^{\mathsf T}.
+$$
+
+For zero displacement between distinct centers, both contributions accumulate in one
+coefficient matrix. Explicit reverse representatives are rejected. Coefficients are
+stored in lexicographic displacement order with `complex128` arithmetic. Assembly
+raises `OverflowError` if finite block accumulation becomes nonfinite.
+
 Focused tests compare all channel matrices with independently assembled arrays,
-exercise scales from `1e-150` through `1e150`, and verify
-$T(-d)=T(d)^T$.
+exercise scales from `1e-150` through `1e150`, verify $T(-d)=T(d)^T$, and check exact
+forward/reverse block placement in zero and nonzero cells.
 
 - [Index](index.md)
 - [Schematics](schematics.md)

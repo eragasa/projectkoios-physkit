@@ -1,5 +1,10 @@
-"""Reusable Slater--Koster spatial-basis and two-center capabilities."""
+"""Reusable Slater--Koster basis, bond, two-center, and assembly capabilities."""
 
+from .assembly import (
+    HomopolarSp3sStarCellGaugeModelAssembler,
+    HomopolarSp3sStarCellGaugeModelAssembly,
+    HomopolarSp3sStarCellGaugeModelDefinition,
+)
 from .basis import (
     HomopolarSp3sStarSpatialBasis,
     RealCubicOrbitalComponentEnum,
@@ -32,6 +37,9 @@ __all__ = [
     "HOMOPOLAR_SP3S_STAR_CHANNEL_ORDER",
     "SP3S_STAR_ORBITAL_ORDER",
     "HomopolarSp3sStarBondGeometry",
+    "HomopolarSp3sStarCellGaugeModelAssembler",
+    "HomopolarSp3sStarCellGaugeModelAssembly",
+    "HomopolarSp3sStarCellGaugeModelDefinition",
     "HomopolarSp3sStarIntegralChannelEnum",
     "HomopolarSp3sStarParameterGroup",
     "HomopolarSp3sStarParameterizedBond",
